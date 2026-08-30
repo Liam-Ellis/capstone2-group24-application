@@ -38,7 +38,7 @@ router.put('/updatebyID/:ID', async (req, res) => {
 });
 
 router.delete('/delete/:ID', async (req, res) => {
-    HCIStudent.findOneAndDelete({ID: req.params.StudentID})
+    HCIStudent.findOneAndDelete({ID: req.params.ID})
     .then(stu => {
         res.json({message: 'Student has been removed Successfully'})
     })

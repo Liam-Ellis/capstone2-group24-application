@@ -9,7 +9,7 @@ const HCIStudent = require("../models/HCIStudent.js");
 
 // The following enables Capstone Student Edits and Deletion
 
-router.put('/updatebyID/:StudentID', async (req, res) => {
+router.put('/capstone/updatebyID/:StudentID', async (req, res) => {
     const update = req.body;
 
     CapstoneStudent.findOneAndUpdate({StudentID: req.params.StudentID}, update, {new: true, runValidators: true})
@@ -18,7 +18,7 @@ router.put('/updatebyID/:StudentID', async (req, res) => {
     
 });
 
-router.delete('/delete/:StudentID', async (req, res) => {
+router.delete('/capstone/delete/:StudentID', async (req, res) => {
     CapstoneStudent.findOneAndDelete({StudentID: req.params.StudentID})
     .then(stu => {
         res.json({message: 'Student has been removed Successfully'})
@@ -29,7 +29,7 @@ router.delete('/delete/:StudentID', async (req, res) => {
 
 // The following enables HCI Student Edits and Deletion
 
-router.put('/updatebyID/:ID', async (req, res) => {
+router.put('/hci/updatebyID/:ID', async (req, res) => {
     const update = req.body;
 
     HCIStudent.findOneAndUpdate({ID: req.params.ID}, update, {new: true, runValidators: true})
@@ -37,7 +37,7 @@ router.put('/updatebyID/:ID', async (req, res) => {
     .catch(err => res.status(400).json({error: err.message}))
 });
 
-router.delete('/delete/:ID', async (req, res) => {
+router.delete('/hci/delete/:ID', async (req, res) => {
     HCIStudent.findOneAndDelete({ID: req.params.ID})
     .then(stu => {
         res.json({message: 'Student has been removed Successfully'})

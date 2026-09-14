@@ -8,6 +8,9 @@ const multer = require("multer");
 const path = require('path');
 const fs = require('fs');
 const csv = require('csv-parser');
+const { pipeline } = require("stream/promises");
+const CapstoneStudent = require("./models/CapstoneStudent");
+const HCIStudent = require("./models/HCIStudent");
 
 const upload = multer({
     dest: 'uploads/',
@@ -20,7 +23,38 @@ const upload = multer({
     }
 });
 
+async function parseUpload(filepath, Model, type) {
+    try {
+        await pipeline(
+            fs.createReadStream(filepath),
+            csv({strict: true, maxRowBytes: 1024 * 1024 }),
+            async (rows) => {
+                for await (const row of rows) {
+
+                    let processedCSV = row;
+
+                    if (type == 'CapstoneStudent') {
+                        if (processedCSV.Group) processedCSV.Group = Number(processedCSV.Group);
+                        if (processedCSV.TermsAccepted) processedCSV.TermsAccepted = Number(processedCSV.TermsAccepted);
+                        if (typeof processedCSV.PreferenceFor == 'string') {
+                            processedCSV.PreferenceFor = row.PreferenceFor.split(',').map(s => s.trim());
+                        }
+                        if (typeof processedCSV.PreferenceAgainst == 'string') {
+                            processedCSV.PreferenceAgainst = row.PreferenceAgainst.split(',').map(s => s.trim());
+                        }
+                    }
+                    await Model.create(processedCSV);
+                }
+            },
+        )
+    } finally {
+        await fs.promises.unlink(filepath)
+    }
+}
+
 router.post('/upload', upload.single('document'), (req, res) => {
+
+
 
     res.json({message: "Success: File Uploaded."});
 

@@ -58,6 +58,20 @@ router.post('/upload:type', upload.single('document'), (req, res) => {
 
 });
 
+function transformRow(row, type) {
+    if (type === 'capstone') {
+        if (row.Group) row.Group = Number(row.Group);
+        if (row.TermsAccepted) row.TermsAccepted = Number(row.TermsAccepted);
+        if (typeof row.PreferenceFor == 'string') {
+            row.PreferenceFor = row.PreferenceFor.split(',').map(s => s.trim());
+        }
+        if (typeof row.PreferenceAgainst == 'string') {
+            row.PreferenceAgainst = row.PreferenceAgainst.split(',').map(s => s.trim());
+        }
+    }
+    return row;
+}
+
 
 module.exports = router;
 

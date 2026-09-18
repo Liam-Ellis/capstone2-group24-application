@@ -23,30 +23,20 @@ const upload = multer({
     }
 });
 
-async function parseUpload(filepath, Model, type) {
+async function parseCSV(filepath) {
     try {
+        const results = []
         await pipeline(
-            fs.createReadStream(filepath),
-            csv({strict: true, maxRowBytes: 1024 * 1024 }),
+            fs.createReadStream(filepath) ,
+            csv({ strict: true, maxRowBytes: 1024 * 1024 }),
             async (rows) => {
                 for await (const row of rows) {
+                    results.push(row)
 
-                    let processedCSV = row;
-
-                    if (type == 'CapstoneStudent') {
-                        if (processedCSV.Group) processedCSV.Group = Number(processedCSV.Group);
-                        if (processedCSV.TermsAccepted) processedCSV.TermsAccepted = Number(processedCSV.TermsAccepted);
-                        if (typeof processedCSV.PreferenceFor == 'string') {
-                            processedCSV.PreferenceFor = row.PreferenceFor.split(',').map(s => s.trim());
-                        }
-                        if (typeof processedCSV.PreferenceAgainst == 'string') {
-                            processedCSV.PreferenceAgainst = row.PreferenceAgainst.split(',').map(s => s.trim());
-                        }
-                    }
-                    await Model.create(processedCSV);
                 }
             },
         )
+        return results
     } finally {
         await fs.promises.unlink(filepath)
     }

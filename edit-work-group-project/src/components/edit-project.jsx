@@ -3,17 +3,56 @@ import { useState } from "react";
 function EditProject() {
     const [ editExistingProject, setEditExistingProject] = useState(false);
     const [ projectDetails, setProjectDetails ] = useState({
-        type: [],
-        round: "",
-        name: "",
-        description: "",
-        intendedSize: ""
+        ID: 1,
+        Type: [],
+        Round: "",
+        Name: "",
+        Description: "",
+        IntendedSize: ""
     });
+
+
+
+async function PostProjectChanges (){
+        try 
+        {
+            console.log("posting changes")
+            
+            const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                },
+                body: JSON.stringify(projectDetails), // Converts JS object to JSON string
+            });
+
+            if (response.status == 200)
+            {
+                alert("Project edited successfully!");
+            } else if (response.status == 400)
+            {
+                alert("invalid project ID, this is rare and may have been caused by a project getting deleted while you were trying to edit it")
+            } else if (response.status == 500)
+            {
+                alert("server failure, most likely the backend server is down")
+            }else{
+                //getting here is very bad
+                alert("unknown outcome occurred")
+            }
+            const result = await response.json();
+            console.log("Server response:", result.message);
+        } catch (error) 
+        {
+            console.error("Error sending data:", error);
+            alert("error connecting to backend, backend is likely down")
+        }
+    }
+
 
     const inputChanges = (e) => {
         const { name, value } = e.target;
 
-        setRoundsDetails(prevDetails => ({
+        setProjectDetails(prevDetails => ({
             ...prevDetails, 
             [name]: value
         }));
@@ -23,8 +62,7 @@ function EditProject() {
         e.preventDefault();
 
         console.log(editExistingProject);
-        
-        alert("Edit project details successfully!");
+        PostProjectChanges()
     };
 
     return(

@@ -119,6 +119,7 @@ app.get('/api/requestAllProjects', async (req, res) =>{
 //the solution here is to add some form of ID that the UC can't edit, although that means changing the schema, which I need to discuss with the team.
 app.post('/api/SaveEditedProject', async (req, res) => {
     const inProject = req.body
+    console.log("inbound project to edit: \n" + inProject + "\n")
     const projectToEdit = await Project.findOne({ ID: inProject.ID})
 
     if (projectToEdit == null) {

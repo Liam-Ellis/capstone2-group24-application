@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
-
+const mongoose = require("mongoose")
+const {CapstoneStudent} = require ("../../../../models")
+const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
+mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
 
 
 //testing for the different outcomes of posting an individual student
@@ -14,7 +17,7 @@ test.describe('Individual studont POST', () => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/addIndv'});
     });
 
-    test('valid API Post request', async () => {
+    test('valid API Post request',{lock: 'POST_valid_indivdual_student',}, async () => {
         const validStudent = ({
                 studentId: "12341234",
                 lastName: "Student",
@@ -31,6 +34,14 @@ test.describe('Individual studont POST', () => {
                 body: JSON.stringify(validStudent), // Converts JS object to JSON string
             });
             expect(response.status).toEqual(200);
+
+            const student = await CapstoneStudent.findOne({ StudentID: "12341234"})
+
+            expect(student).not.toBeNull()
+
+            //cleanup
+            await CapstoneStudent.deleteOne({StudentID: "12341234"})
+
     });
 
 

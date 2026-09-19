@@ -3,7 +3,7 @@ import { useState } from "react";
 function EditProject() {
     const [ editExistingProject, setEditExistingProject] = useState(false);
     const [ projectDetails, setProjectDetails ] = useState({
-        ID: 1,
+        ID: 1, ////// THIS NEEDS TO BE CHANGED!!! this ID should be the project ID of the chosen project to edit, i.e. when this page loads this ID needs to be set
         Type: [],
         Round: "",
         Name: "",

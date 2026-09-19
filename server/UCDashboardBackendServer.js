@@ -86,7 +86,7 @@ app.post('/api/POST_student', async (req, res) => {
     }
 
     const newStudent = new CapstoneStudent(studentDBModel)
-    //await newStudent.save()
+    await newStudent.save()
     console.log("yipee")
     return res.status(200).json({ 
         message: "Data received successfully"
@@ -134,7 +134,7 @@ app.post('/api/SaveEditedProject', async (req, res) => {
     projectToEdit.Name =  inProject.Name
     projectToEdit.Description =  inProject.Description
     projectToEdit.IntendedSize =  inProject.IntendedSize
-    //projectToEdit.save()
+    projectToEdit.save()
 
     res.status(200).json({ 
         message: "project edited successfully"

@@ -105,7 +105,11 @@ function WORK3008() {
                 {
                   name: "Round Setup",
                   path: "/ucdashboard/work3008/rounds"
-                }
+                },
+                {
+                  name: "Download Applications",
+                  path: "/ucdashboard/work3008/applications"
+                },
               ]}
             />
           </ul>

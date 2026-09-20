@@ -3,6 +3,10 @@ import './App.css'
 import UC_Dashboard from './pages/UC_Dashboard'
 import WORK3008 from "./pages/WORK3008";
 import ISAD3000 from "./pages/ISAD3000";
+import StudentList  from './pages/StudentList';
+import DownloadApplications from './pages/DownloadApplications'
+import AddStudents  from './pages/AddStudents';
+import AddStudent  from './pages/AddStudent';
 
 import { Routes, Route, Link } from "react-router-dom"
 
@@ -58,7 +62,11 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/ucdashboard" element={<UC_Dashboard />} />
+      <Route path="/ucdashboard/isad3000/students" element={<StudentList />} />
+      <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents />} />
+      <Route path="/ucdashboard/isad3000/addstudent" element={<AddStudent />} />
       <Route path="/ucdashboard/work3008" element={<WORK3008 />} />
+      <Route path="/ucdashboard/work3008/applications" element={<DownloadApplications />} />
       <Route
         path="/ucdashboard/isad3000"
         element={<ISAD3000 />}

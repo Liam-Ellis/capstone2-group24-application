@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ProjectSchema = new mongoose.Schema({
   ID: {
-    type: Number,
+    type: String,
     required: true,
   },
 
@@ -17,6 +17,16 @@ const ProjectSchema = new mongoose.Schema({
   },
 
   Name: {
+    type: String,
+    required: true,
+  },
+
+  Client: {
+    type: String,
+    required: true,
+  },
+
+  ClientEmail: {
     type: String,
     required: true,
   },

@@ -97,7 +97,8 @@
 }
 
 
-.project-description {
+.project-details {
+  position: relative;
   flex: 7;
   background: white;
   padding: 20px;
@@ -105,7 +106,7 @@
 
 }
 
-.project-description h3 {
+.project-details h3 {
   margin: 0 0 20px 0;
   padding-bottom: 12px;
   border-bottom: 1px solid #ddd;
@@ -113,9 +114,47 @@
   font-weight: 600;
 }
 
-.project-description p {
+.project-details p {
   white-space: pre-line;
   margin: 10px 0;
   font-size: 14px;
   line-height: 1.6;
+}
+
+
+.project-buttons {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.delete-project-btn {
+  padding: 10px 16px;
+  background-color: red;
+  color: white;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.delete-project-btn:hover {
+  background-color: rgb(115, 0, 0);
+}
+
+
+.edit-project-btn {
+  padding: 10px 16px;
+  background-color: white;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.edit-project-btn:hover {
+  background-color: #f0f0f0;
 }

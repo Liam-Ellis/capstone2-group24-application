@@ -22,7 +22,7 @@ test.describe('Individual studont POST', () => {
 
     test('valid API edit request', async () => {
         const validProject = ({
-                ID: -1,
+                ID: "-1",
                 Type: "WORK",
                 Round: 2,
                 Name: "Liam's project",
@@ -49,7 +49,7 @@ test.describe('Individual studont POST', () => {
 
             //cleanup
             projectToEdit.Type =  "Group"
-            projectToEdit.Round =  1
+            projectToEdit.Round =  "1"
             projectToEdit.Name =  "Testing Project"
             projectToEdit.Description =  "This is for playwright testing"
             projectToEdit.IntendedSize =  6
@@ -59,7 +59,7 @@ test.describe('Individual studont POST', () => {
 
     test('invalid API edit request, ID doesnt exist', async () => {
         const invalidProject = ({
-                ID: -10,
+                ID: "-10",
                 Type: "Group",
                 Round: 1,
                 Name: "Liam's project",

@@ -7,6 +7,8 @@ function EditProject() {
         Type: [],
         Round: "",
         Name: "",
+        Client: "default client", //we need to update this page to have this as a field
+        ClientEmail: "default@email", //we need to update to add this field too
         Description: "",
         IntendedSize: ""
     });

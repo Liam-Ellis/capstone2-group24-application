@@ -20,12 +20,14 @@ test.describe('Individual studont POST', () => {
 
 
 
-    test('valid API edit request', async () => {
+    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async () => {
         const validProject = ({
                 ID: "-1",
                 Type: "WORK",
                 Round: 2,
                 Name: "Liam's project",
+                Client: "Liam Ellis",
+                ClientEmail: "Liam@email",
                 Description: "cool project",
                 IntendedSize: 6
             });
@@ -51,9 +53,11 @@ test.describe('Individual studont POST', () => {
             projectToEdit.Type =  "Group"
             projectToEdit.Round =  "1"
             projectToEdit.Name =  "Testing Project"
+            projectToEdit.Client = "not Liam"
+            projectToEdit.ClientEmail = "testing@email"
             projectToEdit.Description =  "This is for playwright testing"
             projectToEdit.IntendedSize =  6
-            projectToEdit.save()
+            await projectToEdit.save()
     });
 
 

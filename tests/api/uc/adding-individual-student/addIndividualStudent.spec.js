@@ -12,7 +12,7 @@ mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
  */
 let apiContext;
 
-test.describe('Individual studont POST', () => {
+test.describe('Individual student POST', () => {
     test.beforeAll(async ({ playwright }) => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/addIndv'});
     });

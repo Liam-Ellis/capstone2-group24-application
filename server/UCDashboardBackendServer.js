@@ -132,6 +132,8 @@ app.post('/api/SaveEditedProject', async (req, res) => {
     projectToEdit.Type =  inProject.Type
     projectToEdit.Round =  inProject.Round
     projectToEdit.Name =  inProject.Name
+    projectToEdit.Client = inProject.Client
+    projectToEdit.ClientEmail = inProject.ClientEmail
     projectToEdit.Description =  inProject.Description
     projectToEdit.IntendedSize =  inProject.IntendedSize
     projectToEdit.save()

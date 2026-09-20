@@ -25,6 +25,16 @@ const UCAccountSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+
+    Salt: {
+        type: String,
+        required: true,
+    },
+
+    OTP: {
+        type: String,
+        required: false,
+    },
 }, { timestamps: true });
 
 const UCAccount = mongoose.model("uc_account", UCAccountSchema);

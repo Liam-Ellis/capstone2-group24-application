@@ -1,6 +1,8 @@
 import "./UC_Dashboard.css";
 import logo from "./logo.webp";
 import { useNavigate } from "react-router-dom";
+
+
 function UC_Dashboard() {
   const navigate = useNavigate();
   const units = [
@@ -24,7 +26,6 @@ function UC_Dashboard() {
   return (
     <div className="landing-container">
 
-      {/* Sidebar */}
       <aside className="sidebar">
         <h2>UC Dashboard</h2>
 
@@ -32,7 +33,6 @@ function UC_Dashboard() {
           <ul>
             <li>Institution Page</li>
             <li>Units</li>
-            <li>Discover Event</li>
             <li>Settings</li>
           </ul> 
         </nav>

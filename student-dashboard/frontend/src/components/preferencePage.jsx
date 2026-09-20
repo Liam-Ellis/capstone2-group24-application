@@ -5,6 +5,7 @@ function PreferencePage() {
         studentId: "",
         fullName: "",
         CWA: "",
+        emailNotifications: "",
         pref1: "",
         pref2: "",
         pref3: "",
@@ -31,7 +32,7 @@ function PreferencePage() {
 
         try {
             const response = await fetch(
-                "http://localhost:3000/api/preferences",
+                "http://localhost:3000/api/preference",
                 {
                     method: "POST",
                     headers: {
@@ -58,7 +59,7 @@ function PreferencePage() {
 
     return (
         <div className="pref-page">
-            <div className="pref-container" onSubmit={handleSubmit}>
+            <form className="pref-container" onSubmit={handleSubmit}>
                 <label> Student ID </label>
                 <input 
                     type="number"
@@ -122,7 +123,7 @@ function PreferencePage() {
                                 <input 
                                     type="radio"
                                     name="major"
-                                    value="{opt}"
+                                    value={opt}
                                     onChange={inputChanges}
                                 />
                                 {labels[i]}
@@ -169,7 +170,7 @@ function PreferencePage() {
                     Submit
                 </button>
 
-            </div>
+            </form>
         </div>
     )
 }

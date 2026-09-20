@@ -38,6 +38,10 @@ function App() {
         Student Dashboard
       </h1>
 
+      <h2> Upload Resume / Cover Letter </h2>
+      <UploadResume applicationUploaded={handleUpload} />
+      <ApplicationStatus status={appStatus} />
+
       {/* show rounds when no project has been selected */}
       <h2> Round Page </h2>
       {!selectedProject && (<RoundPage viewProject={handleViewProject} />)}
@@ -59,9 +63,8 @@ function App() {
           </button>
 
           <h2> Apply for {selectedProject.title} </h2>
-          <UploadResume applicationUploaded={handleUpload} />
-
-          <ApplicationStatus status={appStatus} />
+          {/*<UploadResume applicationUploaded={handleUpload} />*/}
+          {/*<ApplicationStatus status={appStatus} />*/}
         </div>
       )}
       

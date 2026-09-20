@@ -9,24 +9,24 @@ function RoundPage({ viewProject }) {
         const fetchRounds = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:3000/api/rounds",
+                    "http://localhost:3000/api/round"
                 );
 
-            const data = await response.json();
-            if(!response.ok) {
-                throw new Error(data.message);
+                const data = await response.json();
+                if(!response.ok) {
+                    throw new Error(data.message);
+                }
+                
+                setRounds(data);
             }
-            
-            setRounds(data);
-        }
-        catch (err) {
-            console.error("Unable to get rounds: ", err);
-            setError("Unable to load rounds");
-        } 
+            catch (err) {
+                console.error("Unable to get rounds: ", err);
+                setError("Unable to load rounds");
+            } 
         
-    };
+        };
 
-    fetchRounds();
+        fetchRounds();
     },[]);
 
     if (error) {
@@ -53,7 +53,7 @@ function RoundPage({ viewProject }) {
     );
 }
 
-function Round({ round, viewProject }) {
+function Round({ round, onViewProject }) {
     const [project, setProject] = useState([]);
     const [showProject, setShowProject] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -64,7 +64,7 @@ function Round({ round, viewProject }) {
 
         try {
             const response = await fetch(
-                `http://localhost:3000/api/project/round/${round._id}`,
+                `http://localhost:3000/api/project/round/${round._id}`
             );
 
             const data = await response.json();
@@ -80,7 +80,7 @@ function Round({ round, viewProject }) {
         finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <div className="round-container">
@@ -100,17 +100,17 @@ function Round({ round, viewProject }) {
                     {loading && <p> Loading projects... </p>}
                     {!loading && project.length ===0 && <p> No project available </p>}
                  
-                    {project.map((project) => {
+                    {project.map((proj) => (
                         <div className="project-container"
-                        key={project._id}
+                        key={proj._id}
                         >
-                            <h4> {project.title} </h4>
-                            <p> {project.description} </p>
-                            <button onClick={() => onViewProject(project)}>
+                            <h4> {proj.title} </h4>
+                            <p> {proj.description} </p>
+                            <button onClick={() => onViewProject(proj)}>
                                 View Project
                             </button>
                         </div>
-                    })}
+                    ))}
                 </div>
             )}
 

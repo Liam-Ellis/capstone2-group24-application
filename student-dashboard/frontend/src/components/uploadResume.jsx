@@ -23,19 +23,13 @@ function UploadResume({ applicationUploaded }) {
             return;
         }
 
-        // to run the program when backend is not done
-        console.log("Submit button clicked");
-        console.log("selected file: ", application.document);
-        applicationUploaded(application.document);
-        alert("Resume or Cover Letter uploaded successfully!");
- 
+        // send pdf file to the backend and store in the database
         const saveData = new FormData();
-
         saveData.append("document", application.document);
 
         try {
             const response = await fetch(
-                "http://localhost:3000/api/applications/upload",
+                "http://localhost:3000/api/application/upload",
                 {
                     method: "POST",
                     body: saveData
@@ -46,13 +40,14 @@ function UploadResume({ applicationUploaded }) {
             if(!response.ok) {
                 throw new Error(data.message);
             }
-            else {
-                console.log("Submit button clicked");
-                alert("Resume or cover letter uploaded successfully!");
-            }
+
+            applicationUploaded(application.document);
+            alert("Resume or cover letter uploaded successfully!");
+            
         }
         catch (err) {
             console.error("Unable to upload document: ", err);
+            alert("Failed to upload document");
         } 
     };
 

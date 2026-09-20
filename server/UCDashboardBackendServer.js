@@ -5,8 +5,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const cors = require ("cors")
-const {CapstoneStudent, Group, ProjectApplication} = require ("../models")
-const GroupWorkProjects = require ("../models/Project.js")
+const {CapstoneStudent, Group, ProjectApplication, Project} = require ("../models")
 const { group } = require("node:console")
 const fs = require ("node:fs")
 const AdmZip = require("adm-zip");
@@ -72,12 +71,9 @@ app.post('/api/POST_student', async (req, res) => {
     {
         console.log("student failed to save, was invalid")
         //a lot of different probalems can get us here, but most of them are just the user inputting an invalid student
-        if (exception instanceof TypeError)
-        {
-            return res.status(400).json({
-                message: "object given was not a valid student"
-            }).end()
-        }
+        return res.status(400).json({
+            message: "object given was not a valid student"
+        }).end()
     }
 
     //next we see if the student exists in the database already, if they do then we don't want a duplicate of them
@@ -122,8 +118,9 @@ app.get('/api/requestAllProjects', async (req, res) =>{
 //the correct project to save over. 
 //the solution here is to add some form of ID that the UC can't edit, although that means changing the schema, which I need to discuss with the team.
 app.post('/api/SaveEditedProject', async (req, res) => {
-    const inProject = JSON.parse(req.body)
-    /*const projectToEdit = await Project.findOne({ ProjectID: inProject.ProjectID})
+    const inProject = req.body
+    console.log("inbound project to edit: \n" + inProject + "\n")
+    const projectToEdit = await Project.findOne({ ID: inProject.ID})
 
     if (projectToEdit == null) {
         return res.status(400).json({
@@ -135,6 +132,8 @@ app.post('/api/SaveEditedProject', async (req, res) => {
     projectToEdit.Type =  inProject.Type
     projectToEdit.Round =  inProject.Round
     projectToEdit.Name =  inProject.Name
+    projectToEdit.Client = inProject.Client
+    projectToEdit.ClientEmail = inProject.ClientEmail
     projectToEdit.Description =  inProject.Description
     projectToEdit.IntendedSize =  inProject.IntendedSize
     projectToEdit.save()
@@ -142,7 +141,7 @@ app.post('/api/SaveEditedProject', async (req, res) => {
     res.status(200).json({ 
         message: "project edited successfully"
     }).end()
-    */
+    
 });
 
 /* not neccessary
@@ -211,16 +210,16 @@ async function studentExistsInDB(inStudent){
 
 function createValidStudent(inStudent)
 {
-    //if any of the data points given are invalid we throw an error
-    /*
-    if (!inStudent.Email.includes("@"))
+    if (!inStudent.email.includes("@"))
     {
+        console.log("invalid email")
         throw TypeError
     }
-    if (inStudent.length != 8)
+    if (inStudent.studentId.length != 8)
     {
+        console.log("invalid id")
         throw TypeError
-    }*/
+    }
     //console.log(Object.values(inStudent))
     //console.log(Object.keys(inStudent))
     //console.log(Object.hasOwn(inStudent, "email"));

@@ -17,12 +17,15 @@
     "resend": "^6.28.1"
   },
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js"
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm start",
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "start": "concurrently \"npm run client\" \"npm run server\""
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.8.0",
+    "concurrently": "^10.0.5",
     "nodemon": "^3.1.14"
   },
   "name": "bentley-sem-1-24",

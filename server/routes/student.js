@@ -9,7 +9,7 @@ const {
     Round,
     CapstoneStudent,
     Group,
-} = require("../models/index.js");
+} = require("../../models/index.js");
 
 const verifyStudentSession = require('./auth').verifyStudentSession;
 

@@ -17,10 +17,8 @@
     "resend": "^6.28.1"
   },
   "scripts": {
-    "client": "cd client && npm run dev",
-    "server": "cd server && npm start",
-    "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "start": "concurrently \"npm run client\" \"npm run server\""
+    "start": "cd server && npm install && node app.js",
+    "build": "cd client && npm install && npm run build"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

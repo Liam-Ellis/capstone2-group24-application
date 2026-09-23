@@ -17,8 +17,8 @@ const authRoute = require('./routes/auth').router;
 const studentRoutes = require('./routes/student');
 
 // Use routes
-app.use('/auth', authRoute);
-app.use('/student', studentRoutes);
+app.use('/api/auth', authRoute);
+app.use('/api/student', studentRoutes);
 
 app.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");

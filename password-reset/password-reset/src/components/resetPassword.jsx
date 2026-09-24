@@ -16,7 +16,7 @@ function ResetPassword() {
         setMessage("");
 
         const response = await fetch(
-            'http://localhost:3000/api/auth/resetPassword',
+            'http://localhost:3000/auth/resetPassword',
             {
                 method: 'POST',
                 headers: {

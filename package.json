@@ -17,8 +17,7 @@
     "resend": "^6.28.1"
   },
   "scripts": {
-    "start": "cd server && npm install && node app.js",
-    "build": "cd client && npm install && npm run build"
+    "start": "cd server && npm install && node app.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

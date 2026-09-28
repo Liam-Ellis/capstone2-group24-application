@@ -77,6 +77,10 @@ function LogIn() {
           </div>
         </section>
 
+        <section className="links">
+          <a href="" onClick={() => {navigate("/setup");}}>Create an account</a>
+          <a href="" onClick={() => {navigate("/forgot");}}>Forgot password</a>
+        </section>
       </main>
 
     </div>

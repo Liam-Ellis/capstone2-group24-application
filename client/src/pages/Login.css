@@ -21,7 +21,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
 }
 
 
@@ -33,6 +33,24 @@ body {
 .greeting h1 {
     font-size: 32px;
     color: #1F2937;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.links a {
+    display: flex;
+    justify-content: center;
+    color: #1F2937;
+    margin-top: 0.5%;
+}
+
+.links a:hover {
+    color: #436391;
 }
 
 /* Units Section */

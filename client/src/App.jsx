@@ -8,6 +8,7 @@ import DownloadApplications from './pages/DownloadApplications'
 import AddStudents  from './pages/AddStudents';
 import AddStudent  from './pages/AddStudent';
 import GroupAllocation from './pages/GroupAllocation';
+import LogIn from './pages/Login';
 
 import { Routes, Route, Link } from "react-router-dom"
 
@@ -32,6 +33,9 @@ function Home() {
           <ul>
             <li>
                 <Link to="/ucdashboard">UC_Dashboard </Link>
+            </li>
+            <li>
+                <Link to="/login">LogIn </Link>
             </li>
             <li>
               <a href="https://chat.vite.dev/" target="_blank">
@@ -62,6 +66,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LogIn />} />
       <Route path="/ucdashboard" element={<UC_Dashboard />} />
       <Route path="/ucdashboard/isad3000/students" element={<StudentList />} />
       <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents />} />

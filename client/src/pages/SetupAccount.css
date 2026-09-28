@@ -1,0 +1,93 @@
+
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+U:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "M PLUS U", sans-serif;
+    background-color: #F5F7FA;
+}
+
+.landing-container {
+    min-height: 100vh;
+}
+
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2%;
+}
+
+
+.greeting {
+    display: flex;
+    justify-content: center;
+}
+
+.greeting h1 {
+    font-size: 32px;
+    color: #1F2937;
+}
+
+/* Units Section */
+
+.units-section  {
+    display: flex;
+    justify-content: center;
+}
+
+.units-section h2 {
+    color: #1F2937;
+    margin-bottom: 20px;
+}
+
+/* Unit Card */
+
+.unit-card {
+    background: white;
+    border-radius: 12px;
+    width: 55%;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.unit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.unit-card h3 {
+    font-size: 22px;
+    color: #B58B0B;
+    margin-bottom: 10px;
+}
+
+.unit-card p {
+    color: #6B7280;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* Button */
+
+.unit-card button {
+    background-color: #B58B0B;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.2s ease;
+}
+
+.unit-card button:hover {
+    background-color: #B58B0B;
+}

@@ -1,5 +1,5 @@
 /* Student upload resume or cover letter */
-import { useState } from "react";
+import { useState } from 'react';
 
 function UploadResume({ applicationUploaded }) {
     const [application, setApplication] = useState({
@@ -52,25 +52,29 @@ function UploadResume({ applicationUploaded }) {
     };
 
     return(
-        <div className="form-container">
-            <div className="form-box">
-                <form onSubmit={handleSubmit}>
-            
-                    <label> Upload Resume or Cover Letter </label>    
-                    <input
-                        type="file"
-                        name="document"
-                        accept=".pdf"
-                        onChange={inputChanges}
-                        required
-                    />
+        <>
+            <h1> Upload Document </h1>
+            <div className="form-container">
+                <div className="form-box">
+                    <form onSubmit={handleSubmit}>
+                
+                        <label> Upload Resume or Cover Letter </label>    
+                        <input
+                            type="file"
+                            name="document"
+                            accept=".pdf"
+                            onChange={inputChanges}
+                            required
+                        />
 
-                    <button type="submit">
-                        Submit
-                    </button>    
-                </form>
+                        <button type="submit">
+                            Submit
+                        </button>    
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
+        
     )
 
 }

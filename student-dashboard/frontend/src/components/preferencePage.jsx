@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function PreferencePage() {
     const [studentDetails, setStudentDetails] = useState({
@@ -18,161 +19,198 @@ function PreferencePage() {
         dislikePref5: ""
     });
 
-    const inputChanges = (e) => {
-        const { name, value } = e.target;
-
-        setStudentDetails(prevDetails => ({
-            ...prevDetails,
-            [name]: value
-        }));
-    };
+    const [formErrors, setFormErrors] = useState({});
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationError = validate(studentDetails);
+
+        if (Object.keys(validationError).length > 0) {
+            setFormErrors(validationError);
+            return;
+        }
 
         try {
             const response = await fetch(
-                "http://localhost:3000/api/preference",
+                'http://localhost:3000/api/preference',
                 {
-                    method: "POST",
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(studentDetails)
+                    body: JSON.stringify(studentDetails),
+                    credentials: 'include'
                 }
             );
 
             const data = await response.json();
-            if(!response.ok) {
-                alert(data.message);
+            if(response.ok === true) {
+                alert('Preference submitted successfully!');
+                navigate('/dashboard');
             }
             else {
-                console.log("Submit button clicked");
-                alert("Preferences submitted successfully!");
+                setFormErrors({general: data.message || 'Preference failed to submit!'});
+                return;
             }
         }
         catch (err) {
             console.error("Unable to upload document: ", err);
-            alert("Failed to submit!");
+            setFormErrors({ general: 'Please try again!' });
         }
     };
 
+    const inputChanges = (e) => {
+        const { name, value } = e.target;
+        setStudentDetails({ ...studentDetails, [name]: value });
+        setFormErrors({});
+        console.log(studentDetails);
+    };
+
+    const validate = (values) => {
+        const errors = {};
+        if (!values.studentId.trim()) {
+            errors.studentId = "Student ID is required!";
+        }
+
+        if (!values.fullName.trim()) {
+            errors.fullName = "Full name is required!";
+        }
+
+        if (!values.CWA.trim()) {
+            errors.CWA = "Course Weighted Average is required!";
+        }
+
+        return errors;
+    };
+
     return (
-        <div className="pref-page">
-            <form className="pref-container" onSubmit={handleSubmit}>
-                <label> Student ID </label>
-                <input 
-                    type="number"
-                    name="studentId"
-                    value={studentDetails.studentId}
-                    onChange={inputChanges}
-                    placeholder="Student ID"
-                />
+        <>
+            <h1> Preference Page </h1>
 
-                <label> Full Name </label>
-                <input 
-                    type="text"
-                    name="fullName"
-                    value={studentDetails.fullName}
-                    onChange={inputChanges}
-                    placeholder="Full Name"
-                />
+            <div className="pref-page">
+                <form className="pref-container" onSubmit={handleSubmit}>
+                    <label> Student ID </label>
+                    <input 
+                        type="number"
+                        name="studentId"
+                        value={studentDetails.studentId}
+                        isInvalid={!!formErrors.studentId}
+                        onChange={inputChanges}
+                        placeholder="Student ID"
+                    />
 
-                <label> Course Weighted Average (CWA) </label>
-                <input 
-                    type="number"
-                    name="CWA"
-                    value={studentDetails.CWA}
-                    onChange={inputChanges}
-                    placeholder="Course Weighted Average"
-                />
+                    <label> Full Name </label>
+                    <input 
+                        type="text"
+                        name="fullName"
+                        value={studentDetails.fullName}
+                        isInvalid={!!formErrors.fullName}
+                        onChange={inputChanges}
+                        placeholder="Full Name"
+                    />
 
-                <div className="radio-container">
-                    <label> Email Notifications </label>
-                    <label className="radio-opt">
-                        <input
-                            type="radio"
-                            name="emailNotifications"
-                            value="Yes"
-                            onChange={inputChanges}
-                        />
-                        Yes, send me emails
-                    </label>
+                    <label> Course Weighted Average (CWA) </label>
+                    <input 
+                        type="number"
+                        name="CWA"
+                        value={studentDetails.CWA}
+                        isInvalid={!!formErrors.CWA}
+                        onChange={inputChanges}
+                        placeholder="Course Weighted Average"
+                    />
 
-                    <label className="radio-opt">
-                        <input
-                            type="radio"
-                            name="emailNotifications"
-                            value="No"
-                            onChange={inputChanges}
-                        />
-                        No, opt out of emails
-                    </label>
+                    <div className="radio-container">
+                        <label> Email Notifications </label>
+                        <label className="radio-opt">
+                            <input
+                                type="radio"
+                                name="emailNotifications"
+                                value="Yes"
+                                onChange={inputChanges}
+                            />
+                            Yes, send me emails
+                        </label>
 
-                    <label> Select your course / major </label>
-                    {["opt1", "opt2", "opt3", "opt4", "opt5"].map((opt, i) => {
-                        const labels = [
-                            "Bachelor of Computing (Computer Science)",
-                            "Bachelor of Computing (Cyber Security)",
-                            "Bachelor of Computing (Software Engineering)",
-                            "Bachelor of Information Technology",
-                            "Other"
-                        ];
-                        return (
-                            <label className="radio-opt" key={opt}>
-                                <input 
-                                    type="radio"
-                                    name="major"
-                                    value={opt}
-                                    onChange={inputChanges}
-                                />
-                                {labels[i]}
+                        <label className="radio-opt">
+                            <input
+                                type="radio"
+                                name="emailNotifications"
+                                value="No"
+                                onChange={inputChanges}
+                            />
+                            No, opt out of emails
+                        </label>
+
+                        <label> Select your course / major </label>
+                        {["opt1", "opt2", "opt3", "opt4", "opt5"].map((opt, i) => {
+                            const labels = [
+                                "Bachelor of Computing (Computer Science)",
+                                "Bachelor of Computing (Cyber Security)",
+                                "Bachelor of Computing (Software Engineering)",
+                                "Bachelor of Information Technology",
+                                "Other"
+                            ];
+                            return (
+                                <label className="radio-opt" key={opt}>
+                                    <input 
+                                        type="radio"
+                                        name="major"
+                                        value={opt}
+                                        onChange={inputChanges}
+                                    />
+                                    {labels[i]}
+                                </label>
+                            );
+                        })}
+                    </div>
+
+                    {[1, 2, 3, 4, 5].map((n) => (
+                        <div key={`pref${n}`}>
+                            <label>
+                                {n}{n === 1 ? "st " : n === 2 ? "nd " : n === 3 ? "rd " : "th "} 
+                                Preference - Name of student you would like to be in a group with
                             </label>
-                        );
-                    })}
-                </div>
 
-                {[1, 2, 3, 4, 5].map((n) => (
-                    <div key={`pref${n}`}>
-                        <label>
-                            {n}{n === 1 ? "st " : n === 2 ? "nd " : n === 3 ? "rd " : "th "} 
-                            Preference - Name of student you would like to be in a group with
-                        </label>
+                            <input
+                                type="text"
+                                name={`pref${n}`}
+                                value={studentDetails[`pref${n}`]}
+                                onChange={inputChanges}
+                                placeholder={`${n}${n === 1  ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th"} Preferences`}
+                            />
+                        </div>
+                    ))}
 
-                        <input
-                            type="text"
-                            name={`pref${n}`}
-                            value={studentDetails[`pref${n}`]}
-                            onChange={inputChanges}
-                            placeholder={`${n}${n === 1  ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th"} Preferences`}
-                        />
-                    </div>
-                ))}
+                    {[1, 2, 3, 4, 5].map((n) => (
+                        <div key={`dislikePref${n}`}>
+                            <label>
+                                {n}{n === 1 ? "st " : n === 2 ? "nd " : n === 3 ? "rd " : "th "} 
+                                Preference - Name of student you would NOT like to be in a group with
+                            </label>
 
-                {[1, 2, 3, 4, 5].map((n) => (
-                    <div key={`dislikePref${n}`}>
-                        <label>
-                            {n}{n === 1 ? "st " : n === 2 ? "nd" : n === 3 ? "rd" : "th"} 
-                            Preference - Name of student you would NOT like to be in a group with
-                        </label>
+                            <input
+                                type="text"
+                                name={`dislikePref${n}`}
+                                value={studentDetails[`dislikePref${n}`]}
+                                onChange={inputChanges}
+                                placeholder={`${n}${n === 1  ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th"} Preferences`}
+                            />
+                        </div>
+                    ))}
 
-                        <input
-                            type="text"
-                            name={`dislikePref${n}`}
-                            value={studentDetails[`dislikePref${n}`]}
-                            onChange={inputChanges}
-                            placeholder={`${n}${n === 1  ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th"} Preferences`}
-                        />
-                    </div>
-                ))}
-                
-                <button type="submit">
-                    Submit
-                </button>
+                    {formErrors.general && (
+                        <div> {formErrors.general} </div>
+                    )}
+                    
+                    <button type="submit">
+                        Submit
+                    </button>
 
-            </form>
-        </div>
+                </form>
+            </div>
+        </>
     )
 }
 
-export default PreferencePage;
+export default PreferencePage

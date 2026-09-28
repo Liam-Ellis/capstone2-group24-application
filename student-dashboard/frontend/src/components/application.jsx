@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+/* View Application Status */
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-/* View Rounds Page */
-function RoundPage({ viewProject }) {
+function RoundPage() {
     const [rounds, setRounds] = useState([]);
     const [error, setError] = useState("");
 
@@ -34,31 +35,33 @@ function RoundPage({ viewProject }) {
     }
 
     return (
-        <div className="round-page">
-            <h2> Application Rounds </h2>
-
-            {rounds.length === 0 ? (
-                <p> No application rounds </p>
-            ) : (
-                rounds.map((round) => (
-                    <Round 
-                        key={round._id}
-                        round={round}
-                        onViewProject={viewProject}
-                    />
-                        
-                ))
-            )}
-        </div>
+        <>
+            <h1> Application Rounds </h1>
+            <div className="round-page">
+                {rounds.length === 0 ? (
+                    <p> No application rounds </p>
+                ) : (
+                    rounds.slice(0,3).map((round) => (
+                        <Round 
+                            key={round._id}
+                            round={round}
+                        />
+                            
+                    ))
+                )}
+            </div>
+        </>
     );
 }
 
-function Round({ round, onViewProject }) {
-    const [project, setProject] = useState([]);
+function Round({ round }) {
+    const [projects, setProjects] = useState([]);
     const [showProject, setShowProject] = useState(false);
     const [loading, setLoading] = useState(false);
     
-    const handleViewProject = async () => {
+    const navigate = useNavigate();
+
+    const handleViewProjects = async () => {
         setShowProject(true);
         setLoading(true);
 
@@ -71,7 +74,7 @@ function Round({ round, onViewProject }) {
             if(!response.ok) {
                 throw new Error(data.message);
             }
-            setProject(data);
+            setProjects(data);
             
         }
         catch (err) {
@@ -82,13 +85,26 @@ function Round({ round, onViewProject }) {
         }
     };
 
+    const handleViewProject = (project) => {
+        navigate(`/project/${project._id}`);
+    };
+
+    let displayStatus;
+
+    if (round.status === "CLOSED") {
+        displayStatus = "CLOSED";
+    }
+    else if (round.status === "OPEN") {
+        displayStatus = applicationStatus || "NOT_APPLIED";
+    }
+
     return (
         <div className="round-container">
             <h3> {round.name} </h3>
             <p> Status: <strong>{round.status} </strong></p>
 
             {round.status === "OPEN" ? (
-                <button onClick={handleViewProject}>
+                <button onClick={handleViewProjects}>
                     View Project
                 </button>
             ) : (
@@ -98,15 +114,15 @@ function Round({ round, onViewProject }) {
             {showProject && (
                 <div className="project-list">
                     {loading && <p> Loading projects... </p>}
-                    {!loading && project.length ===0 && <p> No project available </p>}
+                    {!loading && projects.length === 0 && <p> No project available </p>}
                  
-                    {project.map((proj) => (
+                    {projects.map((project) => (
                         <div className="project-container"
-                        key={proj._id}
+                        key={project._id}
                         >
-                            <h4> {proj.title} </h4>
-                            <p> {proj.description} </p>
-                            <button onClick={() => onViewProject(proj)}>
+                            <h4> {project.title} </h4>
+                            <p> {project.description} </p>
+                            <button onClick={() => handleViewProject(project)}>
                                 View Project
                             </button>
                         </div>
@@ -118,5 +134,12 @@ function Round({ round, onViewProject }) {
     );
 }
 
+function Application() {
+    return (
+        <>
+            <RoundPage />
+        </>
+    );
+}
 
-export default RoundPage;
+export default Application;

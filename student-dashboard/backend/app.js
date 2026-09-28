@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const preferenceRoutes = require("./routes/preferenceRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const roundRoutes = require("./routes/roundRoutes");
@@ -11,12 +12,16 @@ const applicationRoutes = require("./routes/applicationRoutes");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
 
+app.use("/dashboard", dashboardRoutes);
 app.use("/api/preference", preferenceRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/round", roundRoutes);

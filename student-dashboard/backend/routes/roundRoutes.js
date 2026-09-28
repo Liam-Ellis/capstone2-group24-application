@@ -1,9 +1,8 @@
 const express = require("express");
 
 const router = express.Router();
-const {
-    getRounds } = require("../controllers/roundController"); 
+const { getRounds } = require("../controllers/roundController"); 
     
 router.get("/", getRounds);
 
-module.exports = router;
+module.exports = router; 

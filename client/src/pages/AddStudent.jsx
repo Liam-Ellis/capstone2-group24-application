@@ -18,7 +18,7 @@ function AddStudent() {
     async function PostStudent (){
         try 
         {
-            const response = await fetch('http://localhost:50000/api/POST_student', {
+            const response = await fetch('http://localhost:3000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

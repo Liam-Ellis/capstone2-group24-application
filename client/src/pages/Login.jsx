@@ -17,15 +17,15 @@ function LogIn() {
   };
 
   return (
-    <div className="landing-container">
-      <main className="main-content">
+    <div>
+      <main className="main-login-content">
 
-        <section className="greeting">
+        <section className="title">
           <h1>Log In</h1>
         </section>
 
-        <section className="units-section">
-          <div className="unit-card">
+        <section className="login-form-container">
+          <div className="form-card">
               <form onSubmit={handleSubmit}>
 
                 <div className="form-section">

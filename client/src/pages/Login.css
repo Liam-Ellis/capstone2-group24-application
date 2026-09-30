@@ -12,25 +12,21 @@ body {
     background-color: #F5F7FA;
 }
 
-.landing-container {
-    min-height: 100vh;
+.main-login-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5%;
 }
 
 
-.main-content {
+.title {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     margin-bottom: 2%;
 }
 
-
-.greeting {
-    display: flex;
-    justify-content: center;
-}
-
-.greeting h1 {
+.title h1 {
     font-size: 32px;
     color: #1F2937;
 }
@@ -46,48 +42,38 @@ body {
     display: flex;
     justify-content: center;
     color: #1F2937;
-    margin-top: 0.5%;
 }
 
 .links a:hover {
     color: #436391;
 }
 
-/* Units Section */
 
-.units-section  {
+.login-form-container  {
     display: flex;
     justify-content: center;
 }
 
-.units-section h2 {
+.login-form-container h2 {
     color: #1F2937;
-    margin-bottom: 20px;
 }
 
-/* Unit Card */
 
-.unit-card {
+.form-card {
     background: white;
     border-radius: 12px;
-    width: 55%;
-    padding: 25px;
+    width: 40%;
+    padding: 2%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.unit-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.unit-card h3 {
+.form-card h3 {
     font-size: 22px;
     color: #B58B0B;
     margin-bottom: 10px;
 }
 
-.unit-card p {
+.form-card p {
     color: #6B7280;
     margin-bottom: 25px;
     line-height: 1.5;
@@ -95,7 +81,7 @@ body {
 
 /* Button */
 
-.unit-card button {
+.form-card button {
     background-color: #B58B0B;
     color: white;
     border: none;
@@ -106,6 +92,6 @@ body {
     transition: background-color 0.2s ease;
 }
 
-.unit-card button:hover {
+.form-card button:hover {
     background-color: #B58B0B;
 }

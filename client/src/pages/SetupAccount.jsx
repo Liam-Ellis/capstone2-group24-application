@@ -17,15 +17,15 @@ function SetupAccount() {
   };
 
   return (
-    <div className="landing-container">
-      <main className="main-content">
+    <div>
+      <main className="main-setup-content">
 
-        <section className="greeting">
+        <section className="title">
           <h1>Create Account</h1>
         </section>
 
-        <section className="units-section">
-          <div className="unit-card">
+        <section className="setup-form-container">
+          <div className="setup-form-card">
               <form onSubmit={handleSubmit}>
 
                 <div className="form-section">

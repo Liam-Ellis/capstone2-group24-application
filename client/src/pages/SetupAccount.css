@@ -12,64 +12,51 @@ body {
     background-color: #F5F7FA;
 }
 
-.landing-container {
-    min-height: 100vh;
+.main-setup-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5%;
 }
 
 
-.main-content {
+.setup-title {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     margin-bottom: 2%;
 }
 
-
-.greeting {
-    display: flex;
-    justify-content: center;
-}
-
-.greeting h1 {
+.setup-title h1 {
     font-size: 32px;
     color: #1F2937;
 }
 
-/* Units Section */
 
-.units-section  {
+.setup-form-container  {
     display: flex;
     justify-content: center;
 }
 
-.units-section h2 {
+.setup-form-container h2 {
     color: #1F2937;
-    margin-bottom: 20px;
 }
 
-/* Unit Card */
 
-.unit-card {
+.setup-form-card {
     background: white;
     border-radius: 12px;
-    width: 55%;
-    padding: 25px;
+    width: 40%;
+    padding: 2%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.unit-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.unit-card h3 {
+.setup-form-card h3 {
     font-size: 22px;
     color: #B58B0B;
     margin-bottom: 10px;
 }
 
-.unit-card p {
+.setup-form-card p {
     color: #6B7280;
     margin-bottom: 25px;
     line-height: 1.5;
@@ -77,7 +64,7 @@ body {
 
 /* Button */
 
-.unit-card button {
+.setup-form-card button {
     background-color: #B58B0B;
     color: white;
     border: none;
@@ -88,6 +75,6 @@ body {
     transition: background-color 0.2s ease;
 }
 
-.unit-card button:hover {
+.setup-form-card button:hover {
     background-color: #B58B0B;
 }

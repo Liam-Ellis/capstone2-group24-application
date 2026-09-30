@@ -11,6 +11,7 @@ import GroupAllocation from './pages/GroupAllocation';
 import LogIn from './pages/Login';
 import SetupAccount from './pages/SetupAccount';
 import OTPEntry from './pages/OTPEntry';
+import ForgotPassword from './pages/ForgotPassword';
 
 import { Routes, Route, Link } from "react-router-dom"
 
@@ -71,6 +72,7 @@ function App() {
       <Route path="/login" element={<LogIn />} />
       <Route path="/setup" element={<SetupAccount />} />
       <Route path="/otp" element={<OTPEntry />} />
+      <Route path="/forgot" element={<ForgotPassword />} />
       <Route path="/ucdashboard" element={<UC_Dashboard />} />
       <Route path="/ucdashboard/isad3000/students" element={<StudentList />} />
       <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents />} />

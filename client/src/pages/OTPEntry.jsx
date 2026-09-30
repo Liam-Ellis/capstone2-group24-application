@@ -31,17 +31,18 @@ function OTPEntry({email}) {
           <div className="otp-form-card">
               <form onSubmit={handleSubmit}>
 
-                <div className="form-section">
+                <div className="otp-form-section">
                   <p>Please enter the OTP sent to {email}</p>
-                  <OtpInput value={OTP} onChange={setOTP} inputType="tel" numInputs={5} inputStyle="inputStyle" renderInput={(props) => <input {...props} />} />
+                  <OtpInput className="otp-input" value={OTP} onChange={setOTP} inputType="tel" numInputs={5} inputStyle="inputStyle" renderInput={(props) => <input {...props} />} />
                 </div>
 
-              <button
-                type="submit"
-                className="submit-btn"
-              >
-                Submit
-              </button>
+              <div className="otp-btn">
+                <button
+                  type="submit"
+                >
+                  Submit
+                </button>
+              </div>
             </form>
           </div>
         </section>

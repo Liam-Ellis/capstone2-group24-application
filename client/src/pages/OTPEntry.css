@@ -69,9 +69,22 @@ body {
     color: black;
     margin-bottom: 5%;
     line-height: 1.5;
+    display: flex;
+    justify-content: center;
+}
+
+.otp-input {
+    display: flex;
+    justify-content: center;
 }
 
 /* Button */
+
+.otp-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}
 
 .otp-form-card button {
     background-color: #B58B0B;

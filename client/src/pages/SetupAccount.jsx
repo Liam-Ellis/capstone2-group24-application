@@ -6,14 +6,40 @@ import { useState } from "react";
 function SetupAccount() {
   const navigate = useNavigate();
 
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+
   const [userType, setUserType] = useState("Student");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setError("");
+    setMessage("");
 
+    const response = await fetch(
+      'http://localhost:3000/auth/setup',
+      {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              email: email,
+              type: userType.toLowerCase()
+          })
+      }
+    );
+
+    const responseMsg = await response.text();
+
+    if(!response.ok) {
+      setError(responseMsg);
+    }
+    else {
+      setMessage('Your default password has been sent to');
+    }
   };
 
   return (
@@ -53,18 +79,6 @@ function SetupAccount() {
                       required
                     />
                   </label>
-
-                  <label>
-                    Password
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(event) =>
-                        setPassword(event.target.value)
-                      }
-                      required
-                    />
-                  </label>
                 </div>
 
               <button
@@ -73,6 +87,21 @@ function SetupAccount() {
               >
                 Create Account
               </button>
+
+              {error && (
+                <div className="error-msg-div">
+                  <p>{error}</p>
+                </div>)}
+
+              {message && (
+                <div className="success-msg-div">
+                  <div className="success-msg">
+                    <p>{message}<br></br>{email}</p>
+                  </div>
+                  <div className="success-link">
+                    <a href="" onClick={() => {navigate("/login");}}>Login with your account</a>
+                  </div>
+                </div>)}
             </form>
           </div>
         </section>

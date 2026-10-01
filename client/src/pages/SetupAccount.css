@@ -78,3 +78,47 @@ body {
 .setup-form-card button:hover {
     background-color: #B58B0B;
 }
+
+.error-msg-div {
+    display: flex;
+    justify-content: center;
+    margin-top: 1%;
+}
+
+.error-msg-div p {
+    color: red;
+    font-size: 15px;
+}
+
+.success-msg-div {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2%;
+}
+
+.success-msg-div p {
+    color: green;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.success-msg-div a {
+    color: #1F2937;
+    font-size: 15px;
+}
+
+.success-msg-div a:hover {
+    color: #436391;
+    font-size: 15px;
+}
+
+.success-msg {
+    display: flex;
+    justify-content: center;
+}
+
+.success-link {
+    display: flex;
+    justify-content: center;
+}

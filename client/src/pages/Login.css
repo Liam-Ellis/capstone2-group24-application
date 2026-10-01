@@ -95,3 +95,12 @@ body {
 .form-card button:hover {
     background-color: #B58B0B;
 }
+
+.error-msg-div {
+    display: flex;
+    justify-content: center;
+}
+
+.error-msg-div p {
+    color: red;
+}

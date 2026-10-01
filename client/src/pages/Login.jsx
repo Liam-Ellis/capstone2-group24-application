@@ -6,14 +6,47 @@ import { useState } from "react";
 function LogIn() {
   const navigate = useNavigate();
 
+  const [error, setError] = useState("");
+
   const [userType, setUserType] = useState("Student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setError("");
 
+    const response = await fetch(
+      'http://localhost:3000/auth/login',
+      {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              username: email,
+              password: password,
+              type: userType.toLowerCase()
+          })
+      }
+    );
+
+    const responseMsg = await response.text();
+
+    if(!response.ok) {
+        setError(responseMsg);
+    }
+    else {
+        switch (userType) {
+          case 'Student':
+            navigate('/studentdashboard');
+            break;
+          case 'Staff':
+            navigate('/ucdashboard');
+            break;
+        }
+    }
   };
 
   return (
@@ -73,6 +106,11 @@ function LogIn() {
               >
                 Log In
               </button>
+
+              {error && (
+                <div className="error-msg-div">
+                  <p>{error}</p>
+                </div>)}
             </form>
           </div>
         </section>

@@ -5,8 +5,8 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 require("dotenv").config();
 
-//mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
-mongoose.connect(process.env.MONGODB_STRING, {dbName: 'ccp24'});
+mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
+//mongoose.connect(process.env.MONGODB_STRING, {dbName: 'ccp24'});
 
 app.use(express.json());
 app.use(cors());

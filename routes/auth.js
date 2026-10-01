@@ -18,7 +18,7 @@ const {
     ProjectApplication,
     Round,
     UCAccount
-} = require("../../models/index.js");
+} = require("../models/index.js");
 
 const createWebToken = async (username, userType) => {
     return jwt.sign({username, userType}, process.env.WEB_TOKEN_KEY, { expiresIn: 3 * 24 * 60 * 60});

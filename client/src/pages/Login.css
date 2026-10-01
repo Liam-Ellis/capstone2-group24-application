@@ -36,12 +36,14 @@ body {
     flex-direction: column;
     justify-content: center;
     align-content: center;
+    margin-top: 0.5%;
 }
 
 .links a {
     display: flex;
     justify-content: center;
     color: #1F2937;
+    margin-top: 0.1%;
 }
 
 .links a:hover {

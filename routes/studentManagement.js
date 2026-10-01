@@ -4,8 +4,8 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const CapstoneStudent = require("../../models/CapstoneStudent.js");
-const HCIStudent = require("../../models/HCIStudent.js");
+const CapstoneStudent = require("../models/CapstoneStudent.js");
+const HCIStudent = require("../models/HCIStudent.js");
 
 // The following enables Capstone Student Edits and Deletion
 

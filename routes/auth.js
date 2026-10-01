@@ -143,6 +143,14 @@ const validateParameters = (schema, property) => {
     };
 };
 
+router.get('/loggedInStudentStatus', verifyStudentSession, async (req, res) => {
+    res.sendStatus(200);
+});
+
+router.get('/loggedInStaffStatus', verifyStaffSession, async (req, res) => {
+    res.sendStatus(200);
+});
+
 router.post('/setup', validateParameters(validationSchemas.setupSchema), async (req, res) => {
     const { email, type } = req.body;
     

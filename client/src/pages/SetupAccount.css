@@ -58,7 +58,6 @@ body {
 
 .setup-form-card p {
     color: #6B7280;
-    margin-bottom: 25px;
     line-height: 1.5;
 }
 
@@ -101,6 +100,7 @@ body {
     font-size: 15px;
     display: flex;
     justify-content: center;
+    margin-bottom: 1%;
 }
 
 .success-msg-div a {

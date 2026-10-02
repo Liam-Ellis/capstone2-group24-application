@@ -38,7 +38,7 @@ function SetupAccount() {
       setError(responseMsg);
     }
     else {
-      setMessage('Your default password has been sent to');
+      setMessage('Your default password has been sent to your email');
     }
   };
 
@@ -96,7 +96,7 @@ function SetupAccount() {
               {message && (
                 <div className="success-msg-div">
                   <div className="success-msg">
-                    <p>{message}<br></br>{email}</p>
+                    <p>{message}</p>
                   </div>
                   <div className="success-link">
                     <a href="" onClick={() => {navigate("/login");}}>Login with your account</a>

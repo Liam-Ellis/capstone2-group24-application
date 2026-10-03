@@ -1,5 +1,8 @@
+//currently if you want to run this you can use the command
+//    node thisFile'sName
+//this program will not fully work without a mongodb to connect to
+
 const express = require("express")
-const ucBackend = express.Router();
 const mongoose = require("mongoose")
 const cors = require ("cors")
 const {CapstoneStudent, Group, ProjectApplication, Project} = require ("../models")
@@ -10,23 +13,33 @@ const { boolean } = require("joi")
 
 
 
-//const PORT = 50000    
+const app = express()
+const PORT = 50000    
 const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
 mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
 
+app.use(
+    cors({
+        origin: ["http://localhost:5173"],
+    })
+)
 
+app.use(express.json());
 
 //not fully sure how neccessary this is
-ucBackend.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.send("welcome to this webpage")
 });
 
+app.listen(PORT, () => {
+    console.log(`app is running on http://localhost:${PORT}`);
+});
 
 
 //1. this will not work without a mongodb database on your computer, in this case mine is localhosted with a db named test
 //2. currently this code just returns the UC's name, a proof of concept for any data that we may need to pull from the db.
 //3. this is not very secure as anybody requesting the right URI could trigger this. Security will need to be figured out later.
-ucBackend.get('/api/getUC', async (req, res) => {
+app.get('/api/getUC', async (req, res) => {
     const uc = await ucAccounts.findOne()
     res.send(uc.name)
 });
@@ -34,7 +47,7 @@ ucBackend.get('/api/getUC', async (req, res) => {
 
 //test for getting things from database. not for final product
 //http://localhost:50000/api/test_request_UCs
-ucBackend.get('/api/test_GET_UCs', async (req, res) => {
+app.get('/api/test_GET_UCs', async (req, res) => {
     
     const uc = await ucAccounts.find().lean()
     //convert the java object 'uc' into a JSON object, then send it to whoever called this.
@@ -42,7 +55,7 @@ ucBackend.get('/api/test_GET_UCs', async (req, res) => {
 });
 
 //
-ucBackend.post('/api/POST_student', async (req, res) => {
+app.post('/api/POST_student', async (req, res) => {
     console.log(req.body)
     //const StudentObject = JSON.parse(req.body)
     const StudentObject = req.body
@@ -81,19 +94,19 @@ ucBackend.post('/api/POST_student', async (req, res) => {
     
 });
 
-ucBackend.get('/api/requestAllStudents', async (req, res) => {
+app.get('/api/requestAllStudents', async (req, res) => {
     const students = await CapstoneStudent.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(students))
 });
 
-ucBackend.get('/api/requestAllGroups', async (req, res) =>{
+app.get('/api/requestAllGroups', async (req, res) =>{
     const groups = await Group.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))
 });
 
-ucBackend.get('/api/requestAllProjects', async (req, res) =>{
+app.get('/api/requestAllProjects', async (req, res) =>{
     const groups = await Project.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))
@@ -104,7 +117,7 @@ ucBackend.get('/api/requestAllProjects', async (req, res) =>{
 //but the only identifyer currently is the project's name. This means the UC could theoretically edit the name, which would make it impossible find 
 //the correct project to save over. 
 //the solution here is to add some form of ID that the UC can't edit, although that means changing the schema, which I need to discuss with the team.
-ucBackend.post('/api/SaveEditedProject', async (req, res) => {
+app.post('/api/SaveEditedProject', async (req, res) => {
     const inProject = req.body
     console.log("inbound project to edit: \n" + inProject + "\n")
     const projectToEdit = await Project.findOne({ ID: inProject.ID})
@@ -139,7 +152,7 @@ app.get('/api/requestStudentsApplyingForProject', async (req, res) =>{
 });
 */
 
-ucBackend.post('/api/SaveGroups', async (req, res) => {
+app.post('/api/SaveGroups', async (req, res) => {
     //this makes the assumption that the groups are sent as an array of JSONs
     const groups = JSON.parse(req.body)
     
@@ -162,7 +175,7 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
     
 });
 
-ucBackend.post('/api/SaveStudentGroups', async (req, res) => {
+app.post('/api/SaveStudentGroups', async (req, res) => {
     const students = JSON.parse(req.body)
     
     //loop through every student sent in by the frontend
@@ -228,7 +241,7 @@ function createValidStudent(inStudent)
 
 
 
-ucBackend.get('/api/getWorkProjectApplications', async (req, res) => {
+app.get('/api/getWorkProjectApplications', async (req, res) => {
     const project = JSON.parse(res.body)
 
     //grab all student applications for the project the frontend chooses
@@ -287,5 +300,3 @@ async function zipTheFile(filePathToZip){
     zip.writeZip(outputFile);
     console.log(`Created ${outputFile} successfully`);
 }
-
-module.exports = ucBackend;

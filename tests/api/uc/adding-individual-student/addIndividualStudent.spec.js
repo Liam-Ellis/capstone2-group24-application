@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 const mongoose = require("mongoose")
 const {CapstoneStudent} = require ("../../../../models")
 const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
-mongoose.connect(DATABASE_PATH, {dbName: 'test'});
+mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
 
 
 //testing for the different outcomes of posting an individual student
@@ -26,7 +26,7 @@ test.describe('Individual student POST', () => {
                 course: "doesn't matter",
                 unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -54,7 +54,7 @@ test.describe('Individual student POST', () => {
                 course: "doesn't matter",
                 unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -73,7 +73,7 @@ test.describe('Individual student POST', () => {
                 course: "doesn't matter",
                 unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -92,7 +92,7 @@ test.describe('Individual student POST', () => {
                 course: "doesn't matter",
                 unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

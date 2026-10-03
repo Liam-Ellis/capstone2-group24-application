@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 const mongoose = require("mongoose")
 const {Project} = require ("../../../../models")
 const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
-mongoose.connect(DATABASE_PATH, {dbName: 'test'});
+mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
 
 //testing for the different outcomes of posting an individual student
 
@@ -16,6 +16,10 @@ test.describe('Individual studont POST', () => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/editProj'});
     });
 
+
+
+
+
     test('valid API edit request',{lock: 'POST_valid_project_edit',}, async () => {
         const validProject = ({
                 ID: "-1",
@@ -27,7 +31,7 @@ test.describe('Individual studont POST', () => {
                 Description: "cool project",
                 IntendedSize: 6
             });
-        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
+        const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -66,7 +70,7 @@ test.describe('Individual studont POST', () => {
                 Description: "cool project",
                 IntendedSize: 6
             });
-        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
+        const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

@@ -3,7 +3,7 @@ import { useState } from "react";
 function EditProject() {
     const [ editExistingProject, setEditExistingProject] = useState(false);
     const [ projectDetails, setProjectDetails ] = useState({
-        ID: 1, //////  this ID should be the project ID of the chosen project to edit, i.e. when this page loads this ID needs to be set
+        ID: 1, ////// THIS NEEDS TO BE CHANGED!!! this ID should be the project ID of the chosen project to edit, i.e. when this page loads this ID needs to be set
         Type: [],
         Round: "",
         Name: "",
@@ -20,7 +20,7 @@ async function PostProjectChanges (){
         {
             console.log("posting changes")
             
-            const response = await fetch('http://localhost:3000/api/SaveEditedProject', {
+            const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

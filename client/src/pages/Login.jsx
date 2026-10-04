@@ -32,10 +32,16 @@ function LogIn() {
       }
     );
 
-    const responseMsg = await response.text();
+    let responseMsg = await response.text();
 
     if(!response.ok) {
-        setError(responseMsg);
+      if (responseMsg.includes("}") &&
+          responseMsg.includes("message")) {
+          const responseJSON = await response.json();
+          responseMsg = responseJSON.message;
+      }
+
+      setError(responseMsg);
     }
     else {
         switch (userType) {

@@ -35,12 +35,12 @@ function SetupAccount() {
     let responseMsg = await response.text();
 
     if(!response.ok) {
-      if (responseMsg.includes("}") &&
+      if (responseMsg.includes("{") &&
           responseMsg.includes("message")) {
-          const responseJSON = await response.json();
-          responseMsg = responseJSON.message;
+            setError(JSON.parse(responseMsg).message);
+      } else {
+        setError(responseMsg);
       }
-      setError(responseMsg);
     }
     else {
       setMessage('Your default password has been sent to your email');

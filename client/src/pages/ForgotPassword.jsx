@@ -6,12 +6,41 @@ import { useState } from "react";
 function ForgotPassword() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState("");
+  const [userType, setUserType] = useState("Student");
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const response = await fetch(
+      'http://localhost:3000/auth/forgotPassword',
+      {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              email: email,
+              type: userType.toLowerCase()
+          })
+      }
+    );
 
+    let responseMsg = await response.text();
+
+    if(!response.ok) {
+      if (responseMsg.includes("{") &&
+          responseMsg.includes("message")) {
+            setError(JSON.parse(responseMsg).message);
+      } else {
+        setError(responseMsg);
+      }
+    }
+    else {
+      // change to OTP entry page passing email and type parameters
+    }
   };
 
   return (
@@ -26,17 +55,28 @@ function ForgotPassword() {
           <div className="forgot-form-card">
               <form onSubmit={handleSubmit}>
                 <div className="form-section">
-                  <div className="email-label">
-                    <label>Account Email</label>
-                  </div>
-                  <input
+                  <label>
+                    Type
+                    <select
+                      value={userType}
+                      onChange={(event) =>
+                        setUserType(event.target.value)
+                      }
+                    >
+                      <option>Student</option>
+                      <option>Staff</option>
+                    </select>
+                  </label>
+                  <label>Account Email
+                    <input
                       type="text"
                       value={email}
                       onChange={(event) =>
                         setEmail(event.target.value)
                       }
                       required
-                  />
+                    />
+                  </label>
                 </div>
 
               <div className="verify-btn">
@@ -46,6 +86,11 @@ function ForgotPassword() {
                 Verify Details
                 </button>
               </div>
+
+              {error && (
+                <div className="error-msg-div">
+                  <p>{error}</p>
+                </div>)}
             </form>
           </div>
         </section>

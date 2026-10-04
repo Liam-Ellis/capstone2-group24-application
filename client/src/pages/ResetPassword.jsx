@@ -35,13 +35,12 @@ function ResetPassword({userType}) {
     let responseMsg = await response.text();
 
     if(!response.ok) {
-      if (responseMsg.includes("}") &&
+      if (responseMsg.includes("{") &&
           responseMsg.includes("message")) {
-          const responseJSON = await response.json();
-          responseMsg = responseJSON.message;
-      }
-      
-      setError(responseMsg);
+            setError(JSON.parse(responseMsg).message);
+      } else {
+        setError(responseMsg);
+      }      
     }
     else {
       setMessage('Your password has been successfully reset');

@@ -49,10 +49,10 @@ function ResetPassword({userType}) {
 
   const login = () => {
     switch (userType) {
-      case 'Student':
+      case 'student':
         navigate('/studentdashboard');
         break;
-      case 'Staff':
+      case 'staff':
         navigate('/ucdashboard');
         break;
     }

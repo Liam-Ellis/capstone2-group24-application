@@ -14,6 +14,8 @@ function ForgotPassword() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setError("");
+
     const response = await fetch(
       'http://localhost:3000/auth/forgotPassword',
       {

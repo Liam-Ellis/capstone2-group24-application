@@ -4,19 +4,58 @@ import { useState } from "react";
 import OtpInput from "react-otp-input";
 
 
-function OTPEntry({email}) {
+function OTPEntry({email, type}) {
   const navigate = useNavigate();
 
   if (!email) {
-    email = "test@gmail.com";
+    email = "some.guy@student.curtin.edu.au";
   }
+
+  if (!type) {
+    type = "student";
+  }
+
+  const [error, setError] = useState("");
 
   const [OTP, setOTP] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setError("");
 
+    if (OTP.length < 5) {
+      setError('Please enter OTP');
+    } else {
+      const response = await fetch(
+        'http://localhost:3000/auth/otp',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: email,
+                otp: OTP,
+                type: type
+            })
+        }
+      );
+
+      let responseMsg = await response.text();
+
+      if(!response.ok) {
+        if (responseMsg.includes("{") &&
+            responseMsg.includes("message")) {
+              setError(JSON.parse(responseMsg).message);
+        } else {
+          setError(responseMsg);
+        }
+      }
+      else {
+        // change to reset password page passing type parameter
+      }
+    }
   };
 
   return (
@@ -32,7 +71,7 @@ function OTPEntry({email}) {
               <form onSubmit={handleSubmit}>
 
                 <div className="otp-form-section">
-                  <p>Please enter the OTP sent to {email}</p>
+                  <p>Please enter the OTP sent to your email</p>
                   <OtpInput className="otp-input" value={OTP} onChange={setOTP} inputType="tel" numInputs={5} inputStyle="inputStyle" renderInput={(props) => <input {...props} />} />
                 </div>
 
@@ -43,6 +82,11 @@ function OTPEntry({email}) {
                   Submit
                 </button>
               </div>
+
+              {error && (
+                <div className="error-msg-div">
+                  <p>{error}</p>
+                </div>)}
             </form>
           </div>
         </section>

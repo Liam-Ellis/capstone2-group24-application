@@ -28,7 +28,8 @@ function SetupAccount() {
           body: JSON.stringify({
               email: email,
               type: userType.toLowerCase()
-          })
+          }),
+          credentials: "include"
       }
     );
 

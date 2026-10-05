@@ -28,7 +28,8 @@ function LogIn() {
               username: email,
               password: password,
               type: userType.toLowerCase()
-          })
+          }),
+          credentials: "include"
       }
     );
 

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import UC_Dashboard from './pages/UC_Dashboard'
 import WORK3008 from "./pages/WORK3008";
@@ -12,56 +11,46 @@ import LogIn from './pages/Login';
 import SetupAccount from './pages/SetupAccount';
 import ForgotPassword from './pages/ForgotPassword';
 
-import { Routes, Route, Link } from "react-router-dom"
+import { Routes, Route, useNavigate } from "react-router-dom"
 
 function Home() {
-  const [count, setCount] = useState(0)
+  const navigate = useNavigate();
 
-  return (
-    <>
-      <section id="center">
-        <div>
-          <h1>Homepage</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-      </section>
+  const loadPage = async () => {
+    const studentStatus = await fetch(
+      'http://localhost:3000/auth/loggedInStudentStatus',
+      {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          credentials: "include"
+      }
+    );
 
-      <div className="ticks"></div>
-      <section id="next-steps">
-        <div id="social">
-          <h2>Other pages</h2>
-          <ul>
-            <li>
-                <Link to="/ucdashboard">UC_Dashboard </Link>
-            </li>
-            <li>
-                <Link to="/login">LogIn </Link>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                Dashboard 2
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                Dashboard 3
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                Dashboard 4
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+    const staffStatus = await fetch(
+      'http://localhost:3000/auth/loggedInStaffStatus',
+      {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          credentials: "include"
+      }
+    );
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    if (studentStatus.ok) {
+      navigate('/studentdashboard');
+    }
+    else if (staffStatus.ok) {
+      navigate('/ucdashboard');
+    }
+    else {
+      navigate('/login');
+    }
+  };
+
+  loadPage();
 }
 
 function App() {

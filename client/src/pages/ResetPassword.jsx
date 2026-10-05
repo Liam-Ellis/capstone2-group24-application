@@ -28,7 +28,8 @@ function ResetPassword({userType}) {
           body: JSON.stringify({
               password: password,
               reconfirmPassword: confirmedPassword
-          })
+          }),
+          credentials: "include"
       }
     );
 
@@ -59,7 +60,6 @@ function ResetPassword({userType}) {
   };
 
   return (
-    <div>
       <main className="main-setup-content">
 
         <section className="reset-title">
@@ -115,15 +115,13 @@ function ResetPassword({userType}) {
                     <p>{message}</p>
                   </div>
                   <div className="success-link">
-                    <a href="" onClick={login}>Login</a>
+                    <a href="" onClick={login}>Go to Dashboard</a>
                   </div>
                 </div>)}
             </form>
           </div>
         </section>
       </main>
-
-    </div>
   );
 }
 

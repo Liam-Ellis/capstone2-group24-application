@@ -235,7 +235,7 @@ router.post('/login', validateParameters(validationSchemas.loginSchema), async (
 
         if (await argon2.verify(account.Password, saltedPassword)) {
             const token = await createWebToken(account.Username, type);
-            res.cookie("token", token, {withCredentials: true, httpOnly: false});
+            res.cookie("token", token, {withCredentials: true, httpOnly: true});
             res.sendStatus(200);
         } 
         else {
@@ -265,7 +265,7 @@ router.post('/otp', validateParameters(validationSchemas.otpSchema), async (req,
     {
         if (account.OTP === otp) {
             const token = await createWebToken(account.Username, type);
-            res.cookie("token", token, {withCredentials: true, httpOnly: false});
+            res.cookie("token", token, {withCredentials: true, httpOnly: true});
             res.sendStatus(200);
         } 
         else {

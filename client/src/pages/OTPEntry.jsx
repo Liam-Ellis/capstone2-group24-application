@@ -1,20 +1,9 @@
 import "./OTPEntry.css";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import OtpInput from "react-otp-input";
 
 
-function OTPEntry({email, type}) {
-  const navigate = useNavigate();
-
-  if (!email) {
-    email = "some.guy@student.curtin.edu.au";
-  }
-
-  if (!type) {
-    type = "student";
-  }
-
+function OTPEntry({email, type, nextStep}) {
   const [error, setError] = useState("");
 
   const [OTP, setOTP] = useState("");
@@ -38,7 +27,8 @@ function OTPEntry({email, type}) {
                 username: email,
                 otp: OTP,
                 type: type
-            })
+            }),
+            credentials: "include"
         }
       );
 
@@ -53,13 +43,12 @@ function OTPEntry({email, type}) {
         }
       }
       else {
-        // change to reset password page passing type parameter
+        nextStep();
       }
     }
   };
 
   return (
-    <div>
       <main className="main-otp-content">
 
         <section className="otp-title">
@@ -91,8 +80,6 @@ function OTPEntry({email, type}) {
           </div>
         </section>
       </main>
-
-    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 import "./OTPEntry.css";
 import { useState } from "react";
 import OtpInput from "react-otp-input";
-
+import backendURL from "../backendURL";
 
 function OTPEntry({email, type, nextStep}) {
   const [error, setError] = useState("");
@@ -17,7 +17,7 @@ function OTPEntry({email, type, nextStep}) {
       setError('Please enter OTP');
     } else {
       const response = await fetch(
-        'http://localhost:3000/auth/otp',
+        `${backendURL}/auth/otp`,
         {
             method: 'POST',
             headers: {

@@ -10,7 +10,7 @@ mongoose.connect(process.env.MONGODB_STRING, {dbName: 'ccp24'});
 
 app.use(express.json());
 app.use(cors({
-  origin : 'http://localhost:5173',
+  origin : ['http://localhost:5173', 'https://www.curtindashboard.tech'],
   credentials: true,
 }));
 app.use(express.urlencoded({ extended: true }));

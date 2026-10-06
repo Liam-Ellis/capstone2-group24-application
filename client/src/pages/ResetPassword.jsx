@@ -1,6 +1,7 @@
 import "./ResetPassword.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import backendURL from "../backendURL";
 
 
 function ResetPassword({userType}) {
@@ -19,7 +20,7 @@ function ResetPassword({userType}) {
     setMessage("");
 
     const response = await fetch(
-      'http://localhost:3000/auth/resetPassword',
+      `${backendURL}/auth/resetPassword`,
       {
           method: 'POST',
           headers: {

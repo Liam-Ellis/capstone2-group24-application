@@ -2,7 +2,7 @@ import "./ForgotPassword.css";
 import { useState } from "react";
 import OTPEntry from "./OTPEntry";
 import ResetPassword from "./ResetPassword";
-
+import backendURL from "../backendURL";
 
 function ForgotPassword() {
   const [error, setError] = useState("");
@@ -22,7 +22,7 @@ function ForgotPassword() {
     setError("");
 
     const response = await fetch(
-      'http://localhost:3000/auth/forgotPassword',
+      `${backendURL}/auth/forgotPassword`,
       {
           method: 'POST',
           headers: {

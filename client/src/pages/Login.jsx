@@ -1,6 +1,7 @@
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import backendURL from "../backendURL";
 
 
 function LogIn() {
@@ -18,7 +19,7 @@ function LogIn() {
     setError("");
 
     const response = await fetch(
-      'http://localhost:3000/auth/login',
+      `${backendURL}/auth/login`,
       {
           method: 'POST',
           headers: {

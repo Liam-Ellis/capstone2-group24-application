@@ -1,6 +1,7 @@
 import "./SetupAccount.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import backendURL from "../backendURL";
 
 
 function SetupAccount() {
@@ -19,7 +20,7 @@ function SetupAccount() {
     setMessage("");
 
     const response = await fetch(
-      'http://localhost:3000/auth/setup',
+      `${backendURL}/auth/setup`,
       {
           method: 'POST',
           headers: {

@@ -57,3 +57,7 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Plaintext
+
+environment.env

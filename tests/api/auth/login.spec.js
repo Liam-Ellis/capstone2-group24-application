@@ -35,14 +35,14 @@ test.describe('Verify login API', () => {
     });
 
     test('Invalid credentials - should return error code', async () => {
-        const credentials = { username: 'person@student.curtin.edu.au', password: '123', type: 'student' };
+        const credentials = { username: 'existing.person@student.curtin.edu.au', password: '123', type: 'student' };
         const apiCall = await apiContext.post('', {data: credentials});
         expect(apiCall.status()).toEqual(401);
         expect(await apiCall.text()).toEqual('Incorrect password');
     });
 
     test('Valid credentials - should return success code and store session cookie', async () => {
-        const credentials = { username: 'person@student.curtin.edu.au', password: 's3cureP@assword', type: 'student' };
+        const credentials = { username: 'existing.person@student.curtin.edu.au', password: 'n6fLmXiOdxWi', type: 'student' };
         
         const apiCall = await apiContext.post('', {data: credentials});
 

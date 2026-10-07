@@ -1,0 +1,165 @@
+.form-box label {
+  font-size: 16px;
+  color:black;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.form-box form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-box input {
+  width: 400px;
+  min-height: 20vh;
+  padding: 30px;
+  border: 1px solid;
+  border-color:black;
+  background-color: aliceblue;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: left;
+  font-family: Arial, sans-serif;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  border-radius: 8px;
+  width: 500px;
+  padding: 30px;
+  margin: 10px auto;
+  background-color:#f0f0f0;
+}
+
+.form-box button {
+  display: flex;
+  padding: 10px;
+  width: 200px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  min-height: 45px;
+  margin: 30px auto;
+  margin-bottom: 1px;
+}
+
+.project-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  border-radius: 8px;
+  width: 500px;
+  padding: 30px;
+  margin: 10px auto;
+  background-color:#f0f0f0;
+}
+
+.round-page {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  min-height: 20vh;
+  border-radius: 8px;
+  width: 500px;
+  padding: 30px;
+  margin: 10px auto;
+  background-color:#f0f0f0;
+  flex-wrap: wrap;
+}
+
+.round-container {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  width: 100%;
+}
+
+.round-container button {
+  display: center;
+  padding: 10px;
+  width: 130px;
+  background-color: #166235;
+  border: none;
+  border-radius: 20px;
+  text-align: center;
+  min-height: 45px;
+  margin-left: auto;
+}
+
+.pref-container {
+  display: flex;
+  align-items: left;
+  min-height: 20vh;
+  border-radius: 8px;
+  width: 50%;
+  padding: 30px;
+  margin: 20px auto;
+  background-color:#f0f0f0;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pref-container input {
+  width: 60%;
+  display: flex;
+  align-items: left;
+  padding: 10px;
+  border: 1px solid;
+  border-color:black;
+  background-color: aliceblue;
+  color: black;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: left;
+  font-family: Arial, sans-serif;
+}
+
+.pref-container label {
+  display: block;
+  font-size: 18px;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  color: black;
+}
+
+.pref-container button {
+  display: center;
+  padding: 10px;
+  width: 130px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 20px;
+  text-align: center;
+  min-height: 45px;
+  margin-left: auto;
+}
+
+.pref-container .radio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pref-container .radio-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-direction: row;
+  justify-content: flex-start;
+  white-space: nowrap;
+}

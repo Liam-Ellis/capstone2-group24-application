@@ -1,5 +1,14 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+const mongoose = require('mongoose');
+require("dotenv").config();
+
+// @ts-ignore
+mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
+
+const {
+    CapstoneStudent
+} = require("../../../models/index.js");
 
 /* 
 API: /auth/setup
@@ -48,11 +57,13 @@ test.describe('Verify Setup Account API', () => {
     });
 
     test('Valid details - should return success code and created account', async () => {
-        const credentials = { email: 'test.student@student.curtin.edu.au', type: 'student' };
+        const credentials = { email: '20216829@student.curtin.edu.au', type: 'student' };
         const apiCall = await apiContext.post('', {data: credentials});
         expect(apiCall.status()).toEqual(201);
 
         const account = await apiCall.json();
-        expect(account.Username).toEqual('test.student@student.curtin.edu.au');
+        expect(account.Username).toEqual('20216829@student.curtin.edu.au');
+
+        await CapstoneStudent.deleteOne({Username: credentials.email});
     });
 });

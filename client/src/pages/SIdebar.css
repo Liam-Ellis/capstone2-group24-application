@@ -1,0 +1,146 @@
+/* Main Page */
+
+.isad3000-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fa;
+    color: #1f2937;
+}
+
+/* Sidebar */
+
+.sidebar {
+    width: 220px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 28px 18px;
+    background: #000000;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    margin: 0 0 30px;
+    padding-left: 10px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.sidebar nav ul {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar nav li {
+    padding: 12px 10px;
+    border-radius: 6px;
+    color: #d1d5db;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar nav li:hover {
+    background: #1f1f1f;
+    color: #ffffff;
+}
+
+/* Logo */
+
+.top-logo {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    width: 50px;
+    height: auto;
+}
+
+/* Main Content */
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 40px;
+}
+
+/* Unit Header */
+
+.unit-name {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.unit-name h1 {
+    margin: 0 0 8px;
+    color: #111827;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.unit-name p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+    .sidebar {
+        width: 180px;
+        padding: 24px 12px;
+    }
+
+    .sidebar h2 {
+        font-size: 18px;
+    }
+
+    .sidebar nav li {
+        font-size: 13px;
+    }
+
+    .main-content {
+        padding: 28px;
+    }
+
+    .unit-name h1 {
+        font-size: 24px;
+    }
+
+    .top-logo {
+        right: 20px;
+        width: 45px;
+    }
+}
+
+@media (max-width: 600px) {
+    .isad3000-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+    }
+
+    .sidebar nav ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .main-content {
+        padding: 24px;
+    }
+
+    .top-logo {
+        top: 20px;
+        right: 20px;
+    }
+}
+

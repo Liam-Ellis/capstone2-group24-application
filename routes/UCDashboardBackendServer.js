@@ -15,38 +15,13 @@ const { boolean } = require("joi")
 
 
 //const PORT = 50000    
-const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
-mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
-
-ucBackend.use(
-    cors({
-        origin: ["http://localhost:5173"],
-    })
-)
-
-ucBackend.use(express.json());
-
-//not fully sure how neccessary this is
-ucBackend.get('/', (req, res) => {
-    res.send("welcome to this webpage")
-});
-
-ucBackend.listen(PORT, () => {
-    console.log(`app is running on http://localhost:${PORT}`);
-});
+//const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
+//mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
 
 
-//1. this will not work without a mongodb database on your computer, in this case mine is localhosted with a db named test
-//2. currently this code just returns the UC's name, a proof of concept for any data that we may need to pull from the db.
-//3. this is not very secure as anybody requesting the right URI could trigger this. Security will need to be figured out later.
-ucBackend.get('/api/getUC', async (req, res) => {
-    const uc = await ucAccounts.findOne()
-    res.send(uc.name)
-});
 
 
-//test for getting things from database. not for final product
-//http://localhost:50000/api/test_request_UCs
+
 ucBackend.get('/api/test_GET_UCs', async (req, res) => {
     
     const uc = await ucAccounts.find().lean()
@@ -87,15 +62,15 @@ ucBackend.post('/api/POST_student', async (req, res) => {
 
     const newStudent = new CapstoneStudent(studentDBModel)
     await newStudent.save()
-    console.log("yipee")
+    console.log("student saved")
     return res.status(200).json({ 
         message: "Data received successfully"
     }).end()
     
 });
 
-ucBackend.get('/api/requestAllStudents', async (req, res) => {
-    const students = await CapstoneStudent.find().lean()
+ucBackend.get('/api/requestAllCapstoneStudents', async (req, res) => {
+    const students = await CapstoneStudent.find({Unit: "ISAD3000"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(students))
 });
@@ -106,8 +81,8 @@ ucBackend.get('/api/requestAllGroups', async (req, res) =>{
     res.send(JSON.stringify(groups))
 });
 
-ucBackend.get('/api/requestAllProjects', async (req, res) =>{
-    const groups = await Project.find().lean()
+ucBackend.get('/api/requestAllGroupProjects', async (req, res) =>{
+    const groups = await Project.find({Type: "Group"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))
 });
@@ -154,7 +129,7 @@ app.get('/api/requestStudentsApplyingForProject', async (req, res) =>{
 
 ucBackend.post('/api/SaveGroups', async (req, res) => {
     //this makes the assumption that the groups are sent as an array of JSONs
-    const groups = JSON.parse(req.body)
+    const groups = req.body
     
     //loop through every group sent in by the frontend
     for (let i = 0; i < groups.length; i++) {

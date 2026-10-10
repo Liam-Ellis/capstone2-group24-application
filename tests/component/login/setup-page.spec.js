@@ -11,7 +11,7 @@ test.describe('Setup Account Page', () => {
 
         await expect(page.getByLabel('Type')).toBeVisible();
         await expect(page.getByLabel('Curtin Email')).toBeVisible();
-        await expect(page.getByRole('button')).toBeVisible();
+        await expect(page.getByRole('button', {name: 'Create Account'})).toBeVisible();
     });
 
     test('No error or success message when first loaded', async ({ page }) => {
@@ -41,6 +41,6 @@ test.describe('Setup Account Page', () => {
     test('Submit button works', async ({ page }) => {
         await page.goto('/setup');
 
-        await page.getByRole('button').click({ force: true });
+        await page.getByRole('button', {name: 'Create Account'}).click({ force: true });
     });
 });

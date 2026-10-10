@@ -86,6 +86,39 @@ ucBackend.get('/api/requestAllGroupProjects', async (req, res) =>{
     res.send(JSON.stringify(groups))
 });
 
+ucBackend.get('/api/requestAllProjects', async (req, res) =>{
+    const groups = await Project.find().lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(groups))
+});
+
+ucBackend.post('/api/SaveNewProject', async (req, res) => {
+    const inProject = req.body
+    console.log("saving new project: \n" + inProject + "\n")
+    const projectToEdit = await Project.findOne({ ID: inProject.ID})
+
+    if (projectToEdit != null) {
+        return res.status(400).json({
+            message: "project already exists"
+        }).end()
+        return
+    }
+
+    projectToEdit.Type =  inProject.Type
+    projectToEdit.Round =  inProject.Round
+    projectToEdit.Name =  inProject.Name
+    projectToEdit.Client = inProject.Client
+    projectToEdit.ClientEmail = inProject.ClientEmail
+    projectToEdit.Description =  inProject.Description
+    projectToEdit.IntendedSize =  inProject.IntendedSize
+    projectToEdit.save()
+
+    res.status(200).json({ 
+        message: "project saved successfully"
+    }).end()
+    
+});
+
 
 //saves any edits to projects. mostly commented out as this needs some changes, as to edit a project it needs an identifyer 
 //but the only identifyer currently is the project's name. This means the UC could theoretically edit the name, which would make it impossible find 
@@ -278,5 +311,9 @@ async function zipTheFile(filePathToZip){
     zip.writeZip(outputFile);
     console.log(`Created ${outputFile} successfully`);
 }
+
+
+
+
 
 module.exports = ucBackend;

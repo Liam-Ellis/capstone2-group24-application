@@ -24,7 +24,9 @@ test.describe('Individual student POST', () => {
                 firstName: "Valid",
                 email: "validStudent@testemail",
                 course: "doesn't matter",
-                unit: ["ISAD"]
+                unit: ["ISAD"],
+                Major: "Software Engineering",
+                CWA: 60.1
             });
         const response = await fetch('http://localhost:3000/UC/api/POST_student', {
                 method: 'POST',
@@ -52,7 +54,9 @@ test.describe('Individual student POST', () => {
                 firstName: "Valid",
                 email: "validStudent@testemail",
                 course: "doesn't matter",
-                unit: ["ISAD"]
+                unit: ["ISAD"],
+                Major: "Software Engineering",
+                CWA: 60.1
             });
         const response = await fetch('http://localhost:3000/UC/api/POST_student', {
                 method: 'POST',
@@ -71,7 +75,9 @@ test.describe('Individual student POST', () => {
                 firstName: "Valid",
                 email: "validStudentBadtestemail",
                 course: "doesn't matter",
-                unit: ["ISAD"]
+                unit: ["ISAD"],
+                Major: "Software Engineering",
+                CWA: 60.1
             });
         const response = await fetch('http://localhost:3000/UC/api/POST_student', {
                 method: 'POST',
@@ -90,7 +96,9 @@ test.describe('Individual student POST', () => {
                 firstName: "Valid",
                 email: "validStudentBadtestemail",
                 course: "doesn't matter",
-                unit: ["ISAD"]
+                unit: ["ISAD"],
+                Major: "Software Engineering",
+                CWA: 60.1
             });
         const response = await fetch('http://localhost:3000/UC/api/POST_student', {
                 method: 'POST',

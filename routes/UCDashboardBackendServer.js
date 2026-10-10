@@ -37,8 +37,7 @@ ucBackend.post('/api/POST_student', async (req, res) => {
     let studentDBModel = null;
     try
     {
-    //check to see if the student is valid
-    //theoretically this chould never occur as it would be nice to have validation on the frontend rather than the backend
+    //check to see if the student is valid and create the object required
         studentDBModel = createValidStudent(StudentObject)
         console.log(studentDBModel)
             
@@ -133,7 +132,7 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
     
     //loop through every group sent in by the frontend
     for (let i = 0; i < groups.length; i++) {
-
+        console.log("start of group " + i)
         //check to see if this group exists in the database already
         const groupToEdit = await Group.findOne({GroupNumber: groups[i].GroupNumber})
         //if this group doesn't exist in the database yet
@@ -141,13 +140,16 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
             const newGroup = new Group(groups[i])
             newGroup.save()
         } else {//if this group already exists in the database
-            groupToEdit.Confirmed = groups[1].Confirmed
-            groupToEdit.Project = groups[1].Project
-            groupToEdit.Reason = groups[1].Reason
-            groupToEdit.Students = groups[1].Students
+            groupToEdit.Confirmed = groups[i].Confirmed
+            groupToEdit.Project = groups[i].Project
+            groupToEdit.Reason = groups[i].Reason
+            groupToEdit.Students = groups[i].Students
+            groupToEdit.save()
         }
     };
-    
+    res.status(200).json({ 
+        message: "project edited successfully"
+    }).end()
 });
 
 ucBackend.post('/api/SaveStudentGroups', async (req, res) => {
@@ -207,7 +209,8 @@ function createValidStudent(inStudent)
         Password: 'Password1',//TODO: randomly generate passwords
         StudentID: inStudent.studentId,
         TermsAccepted: 0,
-        Unit: inStudent.unit[0], //the unit is a list, we don't need to fuck with that rn
+        Major: inStudent.unit[0], //the unit is a list, we don't need to fuck with that rn
+        CWA: inStudent.CWA,
         Username: inStudent.studentId, //the username needs to be unique. idk if using the student ID is good longterm, but it helps shortterm
         Salt: 'idk' //I dont understand the salt other than it helps keep passwords safe. we don't need to set it properly yet
     }

@@ -11,7 +11,7 @@ mongoose.connect(DATABASE_PATH, {dbName: 'test'});
 let apiContext;
 
 //make sure these tests run one at a time, otherwise the tests editing the db would run at the same time as the tests checking the db.
-test.describe.configure({ mode: 'default' }); 
+test.describe.configure({ mode: 'series' }); 
 
 test.describe('test Group allocation GET api', () => {
     test.beforeAll(async ({ playwright }) => {
@@ -28,7 +28,6 @@ test.describe('test Group allocation GET api', () => {
             });
             
         const groups = await response.json()
-        //console.log("\n\n\n\n\n" + JSON.stringify(groups) + "\n\n\n\n")
         expect(groups[0].GroupNumber).toEqual(3)
         expect(groups[1].GroupNumber).toEqual(2)
         });
@@ -44,7 +43,6 @@ test.describe('test Group allocation GET api', () => {
             });
             
         const students = await response.json()
-        //console.log("\n\n\n\n\n" + JSON.stringify(groups) + "\n\n\n\n")
         expect(students[0].StudentID).toEqual("00000000")
         expect(students[1].StudentID).toEqual("00000000")
         expect(students[2].StudentID).toEqual("00000000")
@@ -61,7 +59,6 @@ test.describe('test Group allocation GET api', () => {
             });
             
         const projects = await response.json()
-        //console.log("\n\n\n\n\n" + JSON.stringify(groups) + "\n\n\n\n")
         expect(projects[0].ID).toEqual("2")
         expect(projects[1].ID).toEqual("-1")
     });
@@ -72,13 +69,13 @@ test.describe('test Group allocation GET api', () => {
             apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/SaveGroups'});
     });
 
-
-    test('Save all Groups', {lock: 'GroupDB',}, async () => {
+    test('Save all Groups', async ({page, browserName}) => {
+        test.skip(browserName !== 'firefox', 'we only need to test on 1 browser, any more and there will be paralellism issues');
         const multipleGroups = 
             [
                 {
-                    Confirmed: NumberInt('1'),
-                    GroupNumber: NumberInt('3'),
+                    Confirmed: 1,
+                    GroupNumber: 3,
                     Project: '4',
                     Reason: 'Students were grouped based on their interest in accessibility and inclusive design.',
                     Students: [
@@ -87,8 +84,8 @@ test.describe('test Group allocation GET api', () => {
                     'Liam Thompson'
                     ]
                 },{
-                    Confirmed: NumberInt('1'),
-                    GroupNumber: NumberInt('4'),
+                    Confirmed: 1,
+                    GroupNumber: 4,
                     Project: '5',
                     Reason: 'I wanted to make this group',
                     Students: [
@@ -107,14 +104,15 @@ test.describe('test Group allocation GET api', () => {
             });
             expect(response.status).toEqual(200);
 
-            const dbGroups = await Group.find().lean()
+            var dbGroups = await Group.find({GroupNumber: '3'}).lean()
             expect(dbGroups[0].Project).toEqual('4')
-            expect(dbGroups[2].Project).toEqual('5')
+            dbGroups = await Group.find({GroupNumber: '4'}).lean()
+            expect(dbGroups[0].Project).toEqual('5')
 
 
             //cleanup
-            await CapstoneStudent.deleteOne({GroupNumber: "4"})
-            const cleanupGroup = await Group.findOne({GroupNumber: '3'}).lean()
+            await Group.deleteOne({GroupNumber: 4})
+            const cleanupGroup = await Group.findOne({GroupNumber: 3})
             cleanupGroup.Project = '2'
             cleanupGroup.save()
     });

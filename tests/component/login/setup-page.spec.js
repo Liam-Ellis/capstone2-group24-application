@@ -3,37 +3,33 @@ import { test, expect } from '@playwright/test';
 
 test.use({baseURL: 'http://localhost:5173'})
 
-test.describe('Login Page - UI components', () => {
+test.describe('Setup Account Page', () => {
     test('All elements are visible', async ({ page }) => {
-        await page.goto('/login');
+        await page.goto('/setup');
 
-        await expect(page.getByRole('heading', {name: 'Log In'})).toBeVisible();
+        await expect(page.getByRole('heading', {name: 'Create Account'})).toBeVisible();
 
         await expect(page.getByLabel('Type')).toBeVisible();
         await expect(page.getByLabel('Curtin Email')).toBeVisible();
-        await expect(page.getByLabel('Password')).toBeVisible();
         await expect(page.getByRole('button')).toBeVisible();
-
-        await expect(page.getByRole('link', {name: 'Create an account'})).toBeVisible();
-        await expect(page.getByRole('link', {name: 'Forgot password'})).toBeVisible();
     });
 
-    test('No error message when first loaded', async ({ page }) => {
+    test('No error or success message when first loaded', async ({ page }) => {
+        await page.goto('/setup');
+
         await expect(page.locator('css=error-msg-div')).toHaveCount(0);
+        await expect(page.locator('css=success-msg-div')).toHaveCount(0);
     });
 
-    test('Text fields work', async ({ page }) => {
-        await page.goto('/login');
+    test('Email field works', async ({ page }) => {
+        await page.goto('/setup');
 
         await page.getByLabel('Curtin Email').fill('test@curtin.edu.au');
         await expect(page.getByLabel('Curtin Email')).toHaveValue('test@curtin.edu.au');
-
-        await page.getByLabel('Password').fill('password123');
-        await expect(page.getByLabel('Password')).toHaveValue('password123');
     });
 
     test('Option dropdown works and has 2 options - Staff and Student', async ({ page }) => {
-        await page.goto('/login');
+        await page.goto('/setup');
 
         await page.getByLabel('Type').selectOption('Staff');
         await expect(page.getByLabel('Type')).toHaveValue('Staff');
@@ -43,7 +39,7 @@ test.describe('Login Page - UI components', () => {
     });
 
     test('Submit button works', async ({ page }) => {
-        await page.goto('/login');
+        await page.goto('/setup');
 
         await page.getByRole('button').click({ force: true });
     });

@@ -18,18 +18,33 @@ test.describe('Login Page - UI components', () => {
         await expect(page.getByRole('link', {name: 'Forgot password'})).toBeVisible();
     });
 
-    test.fixme('Text fields work', async ({ page }) => {
+    test('No error message when first loaded', async ({ page }) => {
+        await expect(page.locator('css=error-msg-div')).toHaveCount(0);
     });
 
-    test.fixme('Password field text is hidden', async ({ page }) => {
+    test('Text fields work', async ({ page }) => {
+        await page.goto('/login');
+
+        await page.getByLabel('Curtin Email').fill('test@curtin.edu.au');
+        await expect(page.getByLabel('Curtin Email')).toHaveValue('test@curtin.edu.au');
+
+        await page.getByLabel('Password').fill('password123');
+        await expect(page.getByLabel('Password')).toHaveValue('password123');
     });
 
-    test.fixme('Option dropdown works and has 2 options - staff and student', async ({ page }) => {
+    test('Option dropdown works and has 2 options - Staff and Student', async ({ page }) => {
+        await page.goto('/login');
+
+        await page.getByLabel('Type').selectOption('Staff');
+        await expect(page.getByLabel('Type')).toHaveValue('Staff');
+
+        await page.getByLabel('Type').selectOption('Student');
+        await expect(page.getByLabel('Type')).toHaveValue('Student');
     });
 
-    test.fixme('Submit button works', async ({ page }) => {
-    });
+    test('Submit button works', async ({ page }) => {
+        await page.goto('/login');
 
-    test.fixme('No error or success message when first loaded', async ({ page }) => {
+        await page.getByRole('button').click({ force: true });
     });
 });

@@ -68,7 +68,20 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
 });
 
 function transformRow(row, type) {
+
     if (type === 'capstone') {
+
+        row.StudentID = row.STU_ID;
+        row.Name = row.STU_GVN_NM + ' ' + row.STU_FAMILY_NM;
+        row.Major = row.AWARD_ON_SSP_1;
+        row.CWA = Number(row.CWA);
+        row.Username = row.STU_ID;
+        row.Password = 'dummyPassword';
+        row.Salt = 'dummySalt';
+        row.Email = row.STU_ID + '@dummymail.com';
+        row.Unit = 'dummyUnit';
+        row.TermsAccepted = 0;
+
         if (row.Group) row.Group = Number(row.Group);
         if (row.TermsAccepted) row.TermsAccepted = Number(row.TermsAccepted);
         if (typeof row.PreferenceFor == 'string') {

@@ -95,23 +95,18 @@ ucBackend.get('/api/requestAllProjects', async (req, res) =>{
 ucBackend.post('/api/SaveNewProject', async (req, res) => {
     const inProject = req.body
     console.log("saving new project: \n" + inProject + "\n")
-    const projectToEdit = await Project.findOne({ ID: inProject.ID})
+    const checkForExistingProject = await Project.findOne({ ID: inProject.ID})
 
-    if (projectToEdit != null) {
+    if (checkForExistingProject != null) {
         return res.status(400).json({
             message: "project already exists"
         }).end()
         return
     }
 
-    projectToEdit.Type =  inProject.Type
-    projectToEdit.Round =  inProject.Round
-    projectToEdit.Name =  inProject.Name
-    projectToEdit.Client = inProject.Client
-    projectToEdit.ClientEmail = inProject.ClientEmail
-    projectToEdit.Description =  inProject.Description
-    projectToEdit.IntendedSize =  inProject.IntendedSize
-    projectToEdit.save()
+    
+    const newProject = new Project(inProject)
+    newProject.save()
 
     res.status(200).json({ 
         message: "project saved successfully"
@@ -230,6 +225,11 @@ function createValidStudent(inStudent)
         console.log("invalid id")
         throw TypeError
     }
+    if (inStudent.unit == [])
+    {
+        console.log("no unit selected")
+        throw TypeError
+    }
     //console.log(Object.values(inStudent))
     //console.log(Object.keys(inStudent))
     //console.log(Object.hasOwn(inStudent, "email"));
@@ -242,7 +242,8 @@ function createValidStudent(inStudent)
         Password: 'Password1',//TODO: randomly generate passwords
         StudentID: inStudent.studentId,
         TermsAccepted: 0,
-        Major: inStudent.unit[0], //the unit is a list, we don't need to fuck with that rn
+        Unit: inStudent.unit[0], //the unit is given as a list, but we don't need a list, just 1 unit
+        Major: inStudent.unit[0], 
         CWA: inStudent.CWA,
         Username: inStudent.studentId, //the username needs to be unique. idk if using the student ID is good longterm, but it helps shortterm
         Salt: 'idk' //I dont understand the salt other than it helps keep passwords safe. we don't need to set it properly yet

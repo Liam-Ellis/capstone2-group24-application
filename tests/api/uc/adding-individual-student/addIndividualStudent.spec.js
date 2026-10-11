@@ -17,7 +17,8 @@ test.describe('Individual student POST', () => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/addIndv'});
     });
 
-    test('valid API Post request',{lock: 'POST_valid_indivdual_student',}, async () => {
+    test('valid API Post request',{lock: 'Student_db',}, async ({page, browserName}) => {
+        test.skip(browserName !== 'firefox', 'only 1 of this test should run at a time. Locks dont actually fix this issue, so this is how im handling it');
         const validStudent = ({
                 studentId: "12341234",
                 lastName: "Student",

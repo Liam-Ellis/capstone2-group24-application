@@ -16,7 +16,8 @@ test.describe('Post new project', () => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/addProj'});
     });
 
-    test('valid API add request',{lock: 'project_db',}, async () => {
+    test('valid API add request',{lock: 'project_db',}, async ({page, browserName}) => {
+        test.skip(browserName !== 'firefox', 'only 1 of this test should run at a time and since this is backend it doesnt need to be tested on every browser. Locks dont actually fix this issue, so this is how im handling it');
         const validProject = ({
                 ID: "-2",
                 Type: "WORK",

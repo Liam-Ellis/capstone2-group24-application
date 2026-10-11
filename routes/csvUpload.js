@@ -99,6 +99,21 @@ function transformRow(row, type) {
     return row;
 }
 
+router.use((error, req, res, next) => {
+    if (res.headersSent) return next(error);
+
+    if (error.code == "UNSUPPORTED_FILE_TYPE") {
+        return res.status(415).json({message: 'Sorry, only CSV files are accepted.'});
+    }
+    if (error instanceof multer.MulterError) {
+        const status = error.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+        return res.status(status).json({message: 'Upload rejected.'});
+    }
+    console.error('CSV processing failed:', error);
+    res.status(500).json({message: 'Unable to process the upload.'});
+
+});
+
 
 module.exports = router;
 

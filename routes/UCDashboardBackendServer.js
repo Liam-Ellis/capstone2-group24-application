@@ -91,7 +91,7 @@ ucBackend.post('/api/SaveNewProject', async (req, res) => {
 
     
     const newProject = new Project(inProject)
-    newProject.save()
+    await newProject.save()
 
     res.status(200).json({ 
         message: "project saved successfully"
@@ -123,7 +123,7 @@ ucBackend.post('/api/SaveEditedProject', async (req, res) => {
     projectToEdit.ClientEmail = inProject.ClientEmail
     projectToEdit.Description =  inProject.Description
     projectToEdit.IntendedSize =  inProject.IntendedSize
-    projectToEdit.save()
+    await projectToEdit.save()
 
     res.status(200).json({ 
         message: "project edited successfully"
@@ -151,13 +151,13 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
         //if this group doesn't exist in the database yet
         if (groupToEdit == null){
             const newGroup = new Group(groups[i])
-            newGroup.save()
+            await newGroup.save()
         } else {//if this group already exists in the database
             groupToEdit.Confirmed = groups[i].Confirmed
             groupToEdit.Project = groups[i].Project
             groupToEdit.Reason = groups[i].Reason
             groupToEdit.Students = groups[i].Students
-            groupToEdit.save()
+            await groupToEdit.save()
         }
     };
     res.status(200).json({ 

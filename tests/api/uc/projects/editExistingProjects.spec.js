@@ -11,12 +11,13 @@ mongoose.connect(DATABASE_PATH, {dbName: 'test'});
  */
 let apiContext;
 
-test.describe('Individual studont POST', () => {
+test.describe('Edit existing Project', () => {
     test.beforeAll(async ({ playwright }) => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/editProj'});
     });
 
-    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async () => {
+    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async ({page, browserName}) => {
+        test.skip(browserName !== 'firefox', 'only 1 of this test should run at a time and since this is backend it doesnt need to be tested on every browser. Locks dont actually fix this issue, so this is how im handling it');
         const validProject = ({
                 ID: "-1",
                 Type: "WORK",

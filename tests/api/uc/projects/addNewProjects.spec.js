@@ -11,6 +11,7 @@ mongoose.connect(DATABASE_PATH, {dbName: 'test'});
  */
 let apiContext;
 
+
 test.describe('Post new project', () => {
     test.beforeAll(async ({ playwright }) => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/addProj'});
@@ -18,6 +19,9 @@ test.describe('Post new project', () => {
 
     test('valid API add request',{lock: 'project_db',}, async ({page, browserName}) => {
         test.skip(browserName !== 'firefox', 'only 1 of this test should run at a time and since this is backend it doesnt need to be tested on every browser. Locks dont actually fix this issue, so this is how im handling it');
+        //sometimes if the tests don't end properly they dont clean up, so this test cleans up beforehand instead of afterwards
+        await Project.deleteOne({ID: "-2"})
+
         const validProject = ({
                 ID: "-2",
                 Type: "WORK",
@@ -37,7 +41,7 @@ test.describe('Post new project', () => {
             });
             expect(response.status).toEqual(200);
 
-            const projectToEdit = await Project.findOne({ ID: -2})
+            const projectToEdit = await Project.findOne({ ID: "-2"})
 
             expect(projectToEdit.Type).toEqual("WORK")
             expect(projectToEdit.Round).toEqual(2)
@@ -46,8 +50,7 @@ test.describe('Post new project', () => {
             expect(projectToEdit.IntendedSize).toEqual(6)
 
 
-            //cleanup
-            Project.deleteOne({ID: "-2"})
+            //cleanup is done at the start of this file instead of the end
     });
 });
 

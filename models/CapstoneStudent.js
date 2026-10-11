@@ -50,10 +50,35 @@ const CapstoneStudentSchema = new mongoose.Schema({
         required: true,
     },
 
+    Major: {
+        type: String,
+        required: true,
+    },
+
+    CWA: {
+        type: Number,
+        required: true,
+    },
+
     Username: {
         type: String,
         required: true,
     },
+
+    Salt: {
+        type: String,
+        required: true,
+    },
+
+    OTP: {
+        type: String,
+        required: false,
+    },
+
+    emailVerified: {
+        type: Boolean,
+        required: false,
+    }
 }, { timestamps: true });
 
 const CapstoneStudent = mongoose.model("capstone_student", CapstoneStudentSchema);

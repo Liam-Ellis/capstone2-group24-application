@@ -14,21 +14,6 @@ const { boolean } = require("joi")
 
 
 
-//const PORT = 50000    
-//const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
-//mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
-
-
-
-
-
-ucBackend.get('/api/test_GET_UCs', async (req, res) => {
-    
-    const uc = await ucAccounts.find().lean()
-    //convert the java object 'uc' into a JSON object, then send it to whoever called this.
-    res.send(JSON.stringify(uc))
-});
-
 //
 ucBackend.post('/api/POST_student', async (req, res) => {
     console.log(req.body)

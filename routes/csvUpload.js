@@ -43,17 +43,21 @@ async function parseCSV(filepath) {
 }
 
 const modelsByType = {
-    capstone: CapstoneStudent
+    capstone: CapstoneStudent,
     hci: HCIStudent
 };
 
-router.post('/upload:type', upload.single('document'), (req, res) => {
+router.post('/upload/:type', upload.single('document'), async (req, res) => {
     const Model = modelsByType[req.params.type];
 
     if (!Model) {
-        return res.status(400).json({Error: "Uknown Student Type."});
+        return res.status(400).json({message: "Unknown Student Type."});
     }
 
+const rows = await parseCSV(req.file.path);
+
+const transformedRows = rows.map(row => transformRow(row, req.params.type));
+await Model.insertMany(transformedRows, {ordered: false });
     res.json({message: "Success: File Uploaded."});
 
 });

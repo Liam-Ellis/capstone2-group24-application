@@ -58,8 +58,13 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
 
         const rows = await parseCSV(req.file.path);
         const transformedRows = rows.map(row => transformRow(row, req.params.type));
-        await Model.insertMany(transformedRows, {ordered: false });
-        res.json({message: "Success: File Uploaded."});
+        const saved = await Model.insertMany(transformedRows, {ordered: false });
+        res.json({
+            message: "File Uploaded.",
+            recordsSaved: saved.length,
+            recordsFailed: transformedRows.length - saved.length
+        
+        });
 
     } catch (error) {
         next(error);

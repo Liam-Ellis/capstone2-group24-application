@@ -150,6 +150,7 @@ function AddRound({
             </div>
           </div>
 
+          {/*
           <div className="form-section">
             <h3>Application Settings</h3>
 
@@ -167,6 +168,8 @@ function AddRound({
               />
             </label>
           </div>
+
+          */}
 
           <div className="form-buttons">
 

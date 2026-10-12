@@ -50,6 +50,7 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+*.pdf
 
 # Playwright
 /test-results/
@@ -57,3 +58,8 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+*run.json
+
+# Plaintext
+
+environment.env

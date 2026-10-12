@@ -1,6 +1,6 @@
 import './App.css'
 import UC_Dashboard from './pages/UC_Dashboard'
-import WORK3008 from "./pages/WORK3008";
+import Rounds from "./pages/Rounds";
 import ISAD3000 from "./pages/ISAD3000";
 import StudentList  from './pages/StudentList';
 import DownloadApplications from './pages/DownloadApplications'
@@ -10,6 +10,7 @@ import GroupAllocation from './pages/GroupAllocation';
 import LogIn from './pages/Login';
 import SetupAccount from './pages/SetupAccount';
 import ForgotPassword from './pages/ForgotPassword';
+import ICTE3002 from './pages/ICTE3002';
 
 import { Routes, Route, useNavigate } from "react-router-dom"
 
@@ -64,11 +65,14 @@ function App() {
       <Route path="/ucdashboard/isad3000/students" element={<StudentList />} />
       <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents />} />
       <Route path="/ucdashboard/isad3000/addstudent" element={<AddStudent />} />
-      <Route path="/ucdashboard/work3008" element={<WORK3008 />} />
-      <Route path="/ucdashboard/work3008/applications" element={<DownloadApplications />} />
+      <Route path="/ucdashboard/icte3002/students" element={<StudentList />} />
+      <Route path="/ucdashboard/icte3002/addstudents" element={<AddStudents />} />
+      <Route path="/ucdashboard/icte3002/addstudent" element={<AddStudent />} />
+      <Route path="/ucdashboard/rounds" element={<Rounds />} />
+      <Route path="/ucdashboard/rounds/applications" element={<DownloadApplications />} />
       <Route path="/ucdashboard/isad3000" element={<ISAD3000 />} />
-      <Route path="/ucdashboard/isad3000" element={<ISAD3000 />} />
-      <Route path="/ucdashboard/isad3000/groups" element={<GroupAllocation />} />
+      <Route path="/ucdashboard/icte3002" element={<ICTE3002 />} />
+      <Route path="/ucdashboard/groups" element={<GroupAllocation />} />
     </Routes>
   );
 } 

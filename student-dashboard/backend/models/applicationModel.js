@@ -1,17 +1,20 @@
 const mongoose = require("mongoose");
 
 const applicationSchema = new mongoose.Schema({
-    fileName: {
+    document: {
         type: String,
         required: true
-    }, 
-    filePath: {
+    },
+    status: {
         type: String,
-        required: true
+        enum: [
+            "NOT_APPLIED",
+            "APPLIED",
+            "SUCCESSFUL",
+            "UNSUCCESSFUL"
+        ],
+        default: "NOT_APPLIED"
     }
-},
-{
-    timestamps: true
 });
 
 module.exports = mongoose.model('Application', applicationSchema);

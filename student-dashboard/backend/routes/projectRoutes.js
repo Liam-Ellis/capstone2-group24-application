@@ -11,4 +11,4 @@ router.get("/round/:roundId", getProjectsByRound);
 // get project by id
 router.get("/:projectId", getSelectedProject);
 
-module.exports = router;
+module.exports = router; 

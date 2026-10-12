@@ -536,6 +536,21 @@
     background: #f3f4f6;
 }
 
+.save-button {
+    padding: 9px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    background: #118415;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.save-button:hover {
+    background: #34f377;
+}
+
 /* Responsive */
 
 @media (max-width: 1100px) {

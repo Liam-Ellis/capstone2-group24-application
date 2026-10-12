@@ -2,93 +2,21 @@ import { useState } from "react";
 import "./GroupAllocation.css";
 import Sidebar from "./Sidebar";
 
-const studentResponse = await fetch('http://localhost:3000/UC/api/requestAllCapstoneStudents', {
-            method: 'GET',
-            headers: {
-            'Content-Type': 'application/json', // Tells backend to parse as JSON
-            }
-            });
-            
-        
-
-const initialStudents = await studentResponse.json()
-/* here's what a student looks like:
-{
-  _id: ObjectId('6aa7f5cb71fa1200412a2b34'),
-  Email: 'RealStudent@testingemails.com',
-  Group: NumberInt('0'),
-  Name: 'Real Student',
-  Password: 'Password1',
-  PreferenceAgainst: [],
-  PreferenceFor: [],
-  StudentID: '00000000',
-  TermsAccepted: NumberInt('0'),
-  Unit: 'ISAD3000',
-  Username: '00000000',
-  Salt: 'idk',
-  createdAt: ISODate('2026-09-14T13:25:31.338Z'),
-  updatedAt: ISODate('2026-09-14T13:25:31.338Z'),
-  __v: NumberInt('0')
-}
 
 
-    //old placeholder values
-    /*{
-        id: "21433273",
-        firstName: "Jeffrey",
-        familyName: "Hale",
-        cwa: 67.905,
-        major: "Computer Science"
-    },
-    {
-        id: "21425286",
-        firstName: "Santiago",
-        familyName: "Rice",
-        cwa: 65.579,
-        major: "Software Engineering"
-    },
-    {
-        id: "21983473",
-        firstName: "Sondra",
-        familyName: "Esparza",
-        cwa: 72.625,
-        major: "Cyber Security"
-    },
-    {
-        id: "21093723",
-        firstName: "Coleen",
-        familyName: "Park",
-        cwa: 66.867,
-        major: "Information Technology"
-    },
-    {
-        id: "21493023",
-        firstName: "Carla",
-        familyName: "Lutz",
-        cwa: 86.208,
-        major: "Information Technology"
-    },
-    {
-        id: "19883023",
-        firstName: "Cory",
-        familyName: "Hall",
-        cwa: 59.294,
-        major: "Software Engineering"
-    },
-    {
-        id: "19799999",
-        firstName: "Beverly",
-        familyName: "Ellis",
-        cwa: 75.714,
-        major: "Information Technology"
-    },
-    {
-        id: "19789783",
-        firstName: "Lawrence",
-        familyName: "Watts",
-        cwa: 50.3,
-        major: "Cyber Security"
-    }*/
+function GroupAllocation() {
+    let studentResponse = null;
+    let initialStudents = null;
+
+    let groupResponse = null;
+    let initialGroups = null;
+
+    const majors = [
+        "Computer Science",
+        "Software Engineering",
+        "Cyber Security",
+        "Information Technology"
+    ];
 
     const GROUPS_STORAGE_KEY = "groupAllocationGroups";
 
@@ -101,56 +29,145 @@ const initialStudents = await studentResponse.json()
             return [];
         }
     }
-
-const majors = [
-    "Computer Science",
-    "Software Engineering",
-    "Cyber Security",
-    "Information Technology"
-];
-
-const groupResponse = await fetch('http://localhost:3000/UC/api/requestAllGroups', {
-            method: 'GET',
-            headers: {
-            'Content-Type': 'application/json', // Tells backend to parse as JSON
-            }
-            });
-            
-const initialGroups = await groupResponse.json()
-/* here's what a group looks like:
-{
-  _id: ObjectId('6a8f0aea0b0ff87d37724f4f'),
-  Confirmed: NumberInt('1'),
-  GroupNumber: NumberInt('3'),
-  Project: '2',
-  Reason: 'Students were grouped based on their interest in accessibility and inclusive design.',
-  Students: [
-    'James Anderson',
-    'Olivia Martin',
-    'Liam Thompson'
-  ],
-  createdAt: ISODate('2026-08-26T15:48:58.064Z'),
-  updatedAt: ISODate('2026-10-08T16:23:30.307Z'),
-  __v: NumberInt('2')
-}*/
-initialGroups.forEach(addRelevantStudents)
-
-function addRelevantStudents(initialGroup)
-{
-    initialGroup.StudentObjects = []
-    for(let i = 0; i < initialStudents.length; i++)
+    
+    function addRelevantStudents(initialGroup)
     {
-        for(let x = 0; x < initialGroup.Students.length; x++)
+        initialGroup.StudentObjects = []
+        for(let i = 0; i < initialStudents.length; i++)
         {
-            if (initialStudents[i].Name === initialGroup.Students[x])
+            for(let x = 0; x < initialGroup.Students.length; x++)
             {
-                initialGroup.StudentObjects.push(initialStudents[i])
+                if (initialStudents[i].Name === initialGroup.Students[x])
+                {
+                    initialGroup.StudentObjects.push(initialStudents[i])
+                }
             }
         }
     }
-}
 
-function GroupAllocation() {
+    const startUp = async () => {
+        studentResponse = await fetch('http://localhost:3000/UC/api/requestAllCapstoneStudents', {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                }
+        });
+                    
+
+        initialStudents = await studentResponse.json()
+        /* here's what a student looks like:
+        {
+        _id: ObjectId('6aa7f5cb71fa1200412a2b34'),
+        Email: 'RealStudent@testingemails.com',
+        Group: NumberInt('0'),
+        Name: 'Real Student',
+        Password: 'Password1',
+        PreferenceAgainst: [],
+        PreferenceFor: [],
+        StudentID: '00000000',
+        TermsAccepted: NumberInt('0'),
+        Unit: 'ISAD3000',
+        Username: '00000000',
+        Salt: 'idk',
+        createdAt: ISODate('2026-09-14T13:25:31.338Z'),
+        updatedAt: ISODate('2026-09-14T13:25:31.338Z'),
+        __v: NumberInt('0')
+        }
+
+
+            //old placeholder values
+            /*{
+                id: "21433273",
+                firstName: "Jeffrey",
+                familyName: "Hale",
+                cwa: 67.905,
+                major: "Computer Science"
+            },
+            {
+                id: "21425286",
+                firstName: "Santiago",
+                familyName: "Rice",
+                cwa: 65.579,
+                major: "Software Engineering"
+            },
+            {
+                id: "21983473",
+                firstName: "Sondra",
+                familyName: "Esparza",
+                cwa: 72.625,
+                major: "Cyber Security"
+            },
+            {
+                id: "21093723",
+                firstName: "Coleen",
+                familyName: "Park",
+                cwa: 66.867,
+                major: "Information Technology"
+            },
+            {
+                id: "21493023",
+                firstName: "Carla",
+                familyName: "Lutz",
+                cwa: 86.208,
+                major: "Information Technology"
+            },
+            {
+                id: "19883023",
+                firstName: "Cory",
+                familyName: "Hall",
+                cwa: 59.294,
+                major: "Software Engineering"
+            },
+            {
+                id: "19799999",
+                firstName: "Beverly",
+                familyName: "Ellis",
+                cwa: 75.714,
+                major: "Information Technology"
+            },
+            {
+                id: "19789783",
+                firstName: "Lawrence",
+                familyName: "Watts",
+                cwa: 50.3,
+                major: "Cyber Security"
+            }*/
+
+
+
+
+
+        groupResponse = await fetch('http://localhost:3000/UC/api/requestAllGroups', {
+                    method: 'GET',
+                    headers: {
+                    'Content-Type': 'application/json', // Tells backend to parse as JSON
+                    }
+                    });
+                    
+        initialGroups = await groupResponse.json()
+        /* here's what a group looks like:
+        {
+        _id: ObjectId('6a8f0aea0b0ff87d37724f4f'),
+        Confirmed: NumberInt('1'),
+        GroupNumber: NumberInt('3'),
+        Project: '2',
+        Reason: 'Students were grouped based on their interest in accessibility and inclusive design.',
+        Students: [
+            'James Anderson',
+            'Olivia Martin',
+            'Liam Thompson'
+        ],
+        createdAt: ISODate('2026-08-26T15:48:58.064Z'),
+        updatedAt: ISODate('2026-10-08T16:23:30.307Z'),
+        __v: NumberInt('2')
+        }*/
+        initialGroups.forEach(addRelevantStudents)
+
+
+    }
+
+    startUp();
+
     const [students] = useState(initialStudents);
     const [groups, setGroups] = useState(initialGroups);
     const [selectedStudents, setSelectedStudents] = useState([]);

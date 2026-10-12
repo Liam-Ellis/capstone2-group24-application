@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import UC_Dashboard from './pages/UC_Dashboard'
-import Rounds from "./pages/WORK3008";
+import Rounds from "./pages/Rounds";
 import ISAD3000 from "./pages/ISAD3000";
 import StudentList  from './pages/StudentList';
 import DownloadApplications from './pages/DownloadApplications'

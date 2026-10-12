@@ -1,11 +1,11 @@
-import "./WORK3008.css";
+import "./Rounds.css";
 import Projects from "./Projects";
 import "./Projects.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AddRound from "./AddRound";
 
-function WORK3008() {
+function Rounds() {
   const navigate = useNavigate();
 
   const sidebar = [
@@ -213,4 +213,4 @@ function WORK3008() {
   );
 }
 
-export default WORK3008;
+export default Rounds;

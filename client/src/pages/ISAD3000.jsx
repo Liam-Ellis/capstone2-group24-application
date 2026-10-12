@@ -1,5 +1,4 @@
 import "./ISAD3000.css";
-import Dropdown from "./Dropdown";
 import "./Projects.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";

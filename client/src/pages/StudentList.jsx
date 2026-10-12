@@ -1,5 +1,4 @@
 import "./StudentList.css";
-import logo from "./logo.webp";
 import Dropdown from "./Dropdown";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";

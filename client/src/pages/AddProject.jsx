@@ -6,11 +6,13 @@ function AddProject({
   onEditProject,
   onCancel,
   existingProject
- }) {
+}) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [client, setClient] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [projectType, setProjectType] = useState("");
+  const [intendedGroupSize, setIntendedGroupSize] = useState("");
 
   useEffect(() => {
     if (existingProject) {
@@ -18,11 +20,15 @@ function AddProject({
       setDescription(existingProject.description || "");
       setClient(existingProject.client || "");
       setClientEmail(existingProject.clientEmail || "");
+      setProjectType(existingProject.projectType || "");
+      setIntendedGroupSize(existingProject.intendedGroupSize || "");
     } else {
       setProjectName("");
       setDescription("");
       setClient("");
       setClientEmail("");
+      setProjectType("");
+      setIntendedGroupSize("");
     }
   }, [existingProject]);
 
@@ -34,7 +40,9 @@ function AddProject({
       name: projectName,
       description: description,
       client: client,
-      clientEmail: clientEmail
+      clientEmail: clientEmail,
+      projectType: projectType,
+      intendedGroupSize: intendedGroupSize
     };
 
     if (existingProject) {
@@ -104,6 +112,29 @@ function AddProject({
                 required
               />
             </label>
+
+            <label>
+              Project Type
+              <input
+                type="text"
+                value={projectType}
+                onChange={(event) => setProjectType(event.target.value)}
+                placeholder="Project Type"
+                required
+              />
+            </label>
+
+            <label>
+              Intended Group Size
+              <input
+                type="number"
+                min="1"
+                value={intendedGroupSize}
+                onChange={(event) => setIntendedGroupSize(event.target.value)}
+                placeholder="Group Size"
+                required
+              />
+            </label>
           </div>
 
           <div className="form-buttons">
@@ -130,4 +161,3 @@ function AddProject({
 }
 
 export default AddProject;
-

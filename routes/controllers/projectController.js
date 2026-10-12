@@ -1,11 +1,13 @@
-const Project = require("../models/ProjectModel.js");
+const {Project} = require("../../models");
 
 // get projects for a specific round
+// roundID needs to be in the http params and needs to be a number
 const getProjectsByRound = async (req, res) => {
     try {
         const { roundId } = req.params;
         const project = await Project.find({
-            round: roundId
+            //there's a decent chance that roundId is a number here and doesn't work
+            RoundNumber: roundId
         });
 
         res.status(200).json(project);
@@ -20,7 +22,7 @@ const getProjectsByRound = async (req, res) => {
 const getSelectedProject = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const project = await Project.findById(projectId);
+        const project = await Project.findOne({ID: projectId}).lean();
 
         res.status(200).json(project);
     }

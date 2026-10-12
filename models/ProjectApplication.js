@@ -6,6 +6,7 @@ const ProjectApplicationSchema = new mongoose.Schema({
     required: true,
   },
 
+  //ID of the project
   Project: {
     type: String,
     required: true,

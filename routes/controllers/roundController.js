@@ -1,9 +1,14 @@
-const Round = require("../models/RoundModel.js");
+const {Round} = require("../../models")
 
 // get all rounds
 const getRounds = async (req, res) => {
     try {
-        const rounds = await Round.find().sort({ startDate: 1 });
+        const currentDate = new Date()
+        const rounds = await Round.find({
+            StartDate: { $lt: currentDate},
+            EndDate: { $gte: currentDate}
+            })
+            .sort({ startDate: 1 });
         res.status(200).json(rounds);
     }
     catch (err) {

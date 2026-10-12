@@ -1,5 +1,6 @@
 const {CapstoneStudent, Round, ProjectApplication} = require ("../../models")
 
+//the body of this needs the coverletter, the project type, the project ID and the student ID
 const uploadApplication = async (req, res) => {
     try {
         if (!req.file) {
@@ -15,19 +16,18 @@ const uploadApplication = async (req, res) => {
         if (student == null)
         {
             res.status(401).json({
-            message: "student doesn't exist in db",
-            status: application.status
-        });
+                message: "student doesn't exist in db",
+                status: application.status
+            });
         }
-
         
 
         const application = await Application.create({
-            CoverLetter: req.file,
-            Type: req.Type,
+            CoverLetter: req.body.file,
+            Type: req.body.Type,
             //students ID
-            Student: req.Student,
-            Project: req.ProjectName,
+            Student: req.body.Student,
+            Project: req.body.ID,
             Resume: student.Resume
         });
 
@@ -45,28 +45,20 @@ const uploadApplication = async (req, res) => {
 }
 
 
-//needs a studentID in the body
-//major reqork, Amelia had assumed that you apply to rounds and not projects
+//needs a studentID and the id of the project the application is applying to in the body
+//majorly reworked this one, it used to check the Round Model amelia made and see if the round had been applied to at all
 const getApplicationStatus = async (req, res) => {
     try {
-        const studentID = req.body
+        
 
 
-        const currentDate = new Date()
-        // find if round is open
-        const round = await Round.findOne({
-            StartDate: { $lt: currentDate},
-            EndDate: { $gte: currentDate}
+        
+
+
+        const application = await ProjectApplication.findOne({
+            Student: req.body.ID,
+            Project: req.body.Project 
         });
-
-        //if we couldn't find one then no round is open
-        if (!round) {
-            return res.json({
-                status: "CLOSED"
-            });
-        }
-
-        const application = await Application.findOne();
 
         // round opened but student has not applied
         if (!application) {
@@ -77,7 +69,7 @@ const getApplicationStatus = async (req, res) => {
 
         // student has applied
         return res.json({
-            status: application.status
+            status: "ALREADY_APPLIED"
         });
     }
     catch (error) {

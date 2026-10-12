@@ -1,0 +1,109 @@
+
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+U:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "M PLUS U", sans-serif;
+    background-color: #F5F7FA;
+}
+
+.main-login-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+
+.title {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2%;
+}
+
+.title h1 {
+    font-size: 32px;
+    color: #1F2937;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-top: 0.5%;
+}
+
+.links a {
+    display: flex;
+    justify-content: center;
+    color: #1F2937;
+    margin-top: 0.1%;
+}
+
+.links a:hover {
+    color: #436391;
+}
+
+
+.login-form-container  {
+    display: flex;
+    justify-content: center;
+}
+
+.login-form-container h2 {
+    color: #1F2937;
+}
+
+
+.form-card {
+    background: white;
+    border-radius: 12px;
+    width: 40%;
+    padding: 2%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-card h3 {
+    font-size: 22px;
+    color: #B58B0B;
+    margin-bottom: 10px;
+}
+
+.form-card p {
+    color: #6B7280;
+    line-height: 1.5;
+}
+
+/* Button */
+
+.form-card button {
+    background-color: #B58B0B;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.2s ease;
+}
+
+.form-card button:hover {
+    background-color: #B58B0B;
+}
+
+.error-msg-div {
+    display: flex;
+    justify-content: center;
+    margin-top: 1%;
+}
+
+.error-msg-div p {
+    color: red;
+    font-size: 15px;
+}

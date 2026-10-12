@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import UC_Dashboard from './pages/UC_Dashboard'
 import Rounds from "./pages/Rounds";
@@ -8,55 +7,65 @@ import DownloadApplications from './pages/DownloadApplications'
 import AddStudents  from './pages/AddStudents';
 import AddStudent  from './pages/AddStudent';
 import GroupAllocation from './pages/GroupAllocation';
+import LogIn from './pages/Login';
+import SetupAccount from './pages/SetupAccount';
+import ForgotPassword from './pages/ForgotPassword';
 import ICTE3002 from './pages/ICTE3002';
-import { Routes, Route, Link } from "react-router-dom"
 import StudentUnitPage from './components/StudentUnitPage';
 import Student_ISAD3000 from './components/Student_ISAD3000';
 import Student_ICTE3002 from './components/Student_ICTE3002';
 import Student_WORK3008 from './components/Student_WORK3008';
 import ApplicationPage from './components/ApplicationPage';
 
+import { Routes, Route, useNavigate } from "react-router-dom"
+
 function Home() {
-  const [count, setCount] = useState(0)
+  const navigate = useNavigate();
 
-  return (
-    <>
-      <section id="center">
-        <div>
-          <h1>Homepage</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-      </section>
+  const loadPage = async () => {
+    const studentStatus = await fetch(
+      'http://localhost:3000/auth/loggedInStudentStatus',
+      {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          credentials: "include"
+      }
+    );
 
-      <div className="ticks"></div>
-      <section id="next-steps">
-        <div id="social">
-          <h2>Other pages</h2>
-          <ul>
-            <li>
-                <Link to="/ucdashboard">UC_Dashboard </Link>
-            </li>
-            <li>
-              <a href="https://google.com/" target="_blank">
-                Student dashboard. Not yet available
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+    const staffStatus = await fetch(
+      'http://localhost:3000/auth/loggedInStaffStatus',
+      {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          credentials: "include"
+      }
+    );
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    if (studentStatus.ok) {
+      navigate('/studentdashboard');
+    }
+    else if (staffStatus.ok) {
+      navigate('/ucdashboard');
+    }
+    else {
+      navigate('/login');
+    }
+  };
+
+  loadPage();
 }
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LogIn />} />
+      <Route path="/setup" element={<SetupAccount />} />
+      <Route path="/forgot" element={<ForgotPassword />} />
       <Route path="/ucdashboard" element={<UC_Dashboard />} />
       <Route path="/ucdashboard/isad3000/students" element={<StudentList />} />
       <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents />} />

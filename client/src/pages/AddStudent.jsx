@@ -18,12 +18,13 @@ function AddStudent() {
     async function PostStudent (){
         try 
         {
-            const response = await fetch('http://localhost:50000/api/POST_student', {
+            const response = await fetch('http://localhost:3000/UC/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
                 },
                 body: JSON.stringify(studentDetails), // Converts JS object to JSON string
+                credentials: "include"
             });
 
             if (response.status == 200)

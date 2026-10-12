@@ -90,6 +90,18 @@ const initialStudents = await studentResponse.json()
         major: "Cyber Security"
     }*/
 
+    const GROUPS_STORAGE_KEY = "groupAllocationGroups";
+
+    function loadSavedGroups() {
+        try {
+            const savedGroups = localStorage.getItem(GROUPS_STORAGE_KEY);
+            return savedGroups ? JSON.parse(savedGroups) : [];
+        } catch (error) {
+            console.error("Failed to load saved groups:", error);
+            return [];
+        }
+    }
+
 const majors = [
     "Computer Science",
     "Software Engineering",
@@ -144,6 +156,17 @@ function GroupAllocation() {
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [majorFilter, setMajorFilter] = useState("All");
+    const [saveMessage, setSaveMessage] = useState("");
+
+    const handleSaveChanges = () => {
+    try {
+        localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+        setSaveMessage("Changes saved successfully.");
+    } catch (error) {
+        console.error("Failed to save groups:", error);
+        setSaveMessage("Failed to save changes. Please try again.");
+    }
+    };
     
     const [allocationFilter, setAllocationFilter] = useState("unallocated");
 
@@ -259,6 +282,8 @@ function GroupAllocation() {
         setSelectedStudents([]);
     };
 
+
+
     return (
     <div className="group-allocation-layout">
         <Sidebar />    
@@ -270,12 +295,23 @@ function GroupAllocation() {
                 </div>
 
                 {groups.length > 0 && (
-                    <button
-                        className="reset-button"
-                        onClick={resetAllocation}
-                    >
-                        Reset Allocation
-                    </button>
+                    <div className="header-buttons">
+                        <button
+                            className="reset-button"
+                            onClick={resetAllocation}
+                        >
+                            Reset Allocation
+                        </button>
+
+                        <button className="save-button" onClick={handleSaveChanges}>
+                        Save Changes
+                        </button>
+                        {saveMessage && (
+                        <p role="status" aria-live="polite">
+                            {saveMessage}
+                        </p>
+                        )}
+                    </div>
                 )}
             </div>
 

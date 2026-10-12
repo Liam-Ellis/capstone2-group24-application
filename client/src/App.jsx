@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import './App.css'
 import UC_Dashboard from './pages/UC_Dashboard'
-import WORK3008 from "./pages/WORK3008";
+import Rounds from "./pages/Rounds";
 import ISAD3000 from "./pages/ISAD3000";
 import StudentList  from './pages/StudentList';
 import DownloadApplications from './pages/DownloadApplications'
 import AddStudents  from './pages/AddStudents';
 import AddStudent  from './pages/AddStudent';
 import GroupAllocation from './pages/GroupAllocation';
-
+import ICTE3002 from './pages/ICTE3002';
 import { Routes, Route, Link } from "react-router-dom"
 
 function Home() {
@@ -34,18 +34,8 @@ function Home() {
                 <Link to="/ucdashboard">UC_Dashboard </Link>
             </li>
             <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                Dashboard 2
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                Dashboard 3
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                Dashboard 4
+              <a href="https://google.com/" target="_blank">
+                Student dashboard. Not yet available
               </a>
             </li>
           </ul>
@@ -66,11 +56,14 @@ function App() {
       <Route path="/ucdashboard/isad3000/students" element={<StudentList />} />
       <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents />} />
       <Route path="/ucdashboard/isad3000/addstudent" element={<AddStudent />} />
-      <Route path="/ucdashboard/work3008" element={<WORK3008 />} />
-      <Route path="/ucdashboard/work3008/applications" element={<DownloadApplications />} />
+      <Route path="/ucdashboard/icte3002/students" element={<StudentList />} />
+      <Route path="/ucdashboard/icte3002/addstudents" element={<AddStudents />} />
+      <Route path="/ucdashboard/icte3002/addstudent" element={<AddStudent />} />
+      <Route path="/ucdashboard/rounds" element={<Rounds />} />
+      <Route path="/ucdashboard/rounds/applications" element={<DownloadApplications />} />
       <Route path="/ucdashboard/isad3000" element={<ISAD3000 />} />
-      <Route path="/ucdashboard/isad3000" element={<ISAD3000 />} />
-      <Route path="/ucdashboard/isad3000/groups" element={<GroupAllocation />} />
+      <Route path="/ucdashboard/icte3002" element={<ICTE3002 />} />
+      <Route path="/ucdashboard/groups" element={<GroupAllocation />} />
     </Routes>
   );
 } 

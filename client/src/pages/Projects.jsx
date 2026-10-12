@@ -100,51 +100,58 @@ function Projects() {
             </div>
           </div>
 
-          <div className="project-details">
+        <div className="project-details">
             <h3>Details</h3>
 
             {selectedProject ? (
-              <>
-                <p><strong>Description: </strong>{selectedProject.description}</p>
-              </>
-            ) : (
-              <p>Select a project to view details.</p>
-            )}
+                <>
+                    <p>
+                        <strong>Description: </strong>
+                        {selectedProject.description}
+                    </p>
 
-            {selectedProject ? (
-              <>
-                <p><strong>Client: </strong>{selectedProject.client}</p>
-              </>
-            ) : (
-              <p></p>
-            )}
+                    <p>
+                        <strong>Client: </strong>
+                        {selectedProject.client}
+                    </p>
 
-            {selectedProject ? (
-              <>
-                <p><strong>Contact: </strong>{selectedProject.clientEmail}</p>
-              </>
+                    <p>
+                        <strong>Contact: </strong>
+                        {selectedProject.clientEmail}
+                    </p>
+
+                    <p>
+                        <strong>Project Type: </strong>
+                        {selectedProject.projectType}
+                    </p>
+
+                    <p>
+                        <strong>Intended Group Size: </strong>
+                        {selectedProject.intendedGroupSize}
+                    </p>
+                </>
             ) : (
-              <p></p>
+                <p>Select a project to view details.</p>
             )}
 
             {selectedProject && (
-              <div className="project-buttons">
-                <button
-                  className="delete-project-btn"
-                  onClick={() => deleteProject(selectedProject)}
-                >
-                  Delete Project
-                </button>
+                <div className="project-buttons">
+                    <button
+                        className="delete-project-btn"
+                        onClick={() => deleteProject(selectedProject)}
+                    >
+                        Delete Project
+                    </button>
 
-                <button
-                  className="edit-project-btn"
-                  onClick={() => openEditProject(selectedProject)}
-                >
-                  Edit Project
-                </button>
-              </div>
+                    <button
+                        className="edit-project-btn"
+                        onClick={() => openEditProject(selectedProject)}
+                    >
+                        Edit Project
+                    </button>
+                </div>
             )}
-          </div>
+        </div>
 
         </div>
 

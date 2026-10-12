@@ -5,16 +5,17 @@ function Sidebar() {
 
     const sidebar = [
         {
-            name: "Institution Page",
-            path: "/ucdashboard/institution"
-        },
-        {
             name: "Units",
             path: "/ucdashboard"
         },
         {
-            name: "Settings",
-            path: "/ucdashboard/settings"
+            name: "Rounds",
+            path: "/ucdashboard/rounds",
+
+        },
+        {
+            name: "Group Allocation",
+            path: "/ucdashboard/groups"
         }
     ];
 
@@ -22,34 +23,30 @@ function Sidebar() {
         <aside className="sidebar">
             <h2>UC Dashboard</h2>
 
-            <nav>
-                <ul>
-                    {sidebar.map((item) => (
-                        <li
-                            key={item.name}
-                            onClick={() => navigate(item.path)}
-                        >
-                            {item.name}
-                        </li>
-                    ))}
+                <nav>
+                    <ul>
+                        {sidebar.map((item) => (
+                            <li key={item.name}>
+                                <div onClick={() => navigate(item.path)}>
+                                    {item.name}
+                                </div>
 
-                    <li
-                        onClick={() =>
-                            navigate("/ucdashboard/isad3000/students")
-                        }
-                    >
-                        Student List
-                    </li>
-
-                    <li
-                        onClick={() =>
-                            navigate("/ucdashboard/isad3000/groups")
-                        }
-                    >
-                        Group Allocation
-                    </li>
-                </ul>
-            </nav>
+                                {item.children && (
+                                    <ul className="sidebar-submenu">
+                                        {item.children.map((child) => (
+                                            <li
+                                                key={child.name}
+                                                onClick={() => navigate(child.path)}
+                                            >
+                                                {child.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
         </aside>
     );
 }

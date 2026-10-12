@@ -1,4 +1,4 @@
-const Project = require("../models/projectModel.js");
+const Project = require("../models/ProjectModel.js");
 
 // get projects for a specific round
 const getProjectsByRound = async (req, res) => {

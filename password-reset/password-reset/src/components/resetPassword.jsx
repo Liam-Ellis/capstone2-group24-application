@@ -16,7 +16,7 @@ function ResetPassword() {
         setMessage("");
 
         const response = await fetch(
-            'http://localhost:3000/auth/resetPassword',
+            'https://dashboard-web-backend-hrqb.onrender.com/auth/resetPassword',
             {
                 method: 'POST',
                 headers: {

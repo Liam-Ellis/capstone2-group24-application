@@ -24,6 +24,7 @@ function AddStudent() {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
                 },
                 body: JSON.stringify(studentDetails), // Converts JS object to JSON string
+                credentials: "include"
             });
 
             if (response.status == 200)

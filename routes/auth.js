@@ -143,6 +143,14 @@ const validateParameters = (schema, property) => {
     };
 };
 
+router.get('/loggedInStudentStatus', verifyStudentSession, async (req, res) => {
+    res.sendStatus(200);
+});
+
+router.get('/loggedInStaffStatus', verifyStaffSession, async (req, res) => {
+    res.sendStatus(200);
+});
+
 router.post('/setup', validateParameters(validationSchemas.setupSchema), async (req, res) => {
     const { email, type } = req.body;
     
@@ -227,7 +235,7 @@ router.post('/login', validateParameters(validationSchemas.loginSchema), async (
 
         if (await argon2.verify(account.Password, saltedPassword)) {
             const token = await createWebToken(account.Username, type);
-            res.cookie("token", token, {withCredentials: true, httpOnly: false});
+            res.cookie("token", token, {withCredentials: true, httpOnly: true});
             res.sendStatus(200);
         } 
         else {
@@ -257,7 +265,7 @@ router.post('/otp', validateParameters(validationSchemas.otpSchema), async (req,
     {
         if (account.OTP === otp) {
             const token = await createWebToken(account.Username, type);
-            res.cookie("token", token, {withCredentials: true, httpOnly: false});
+            res.cookie("token", token, {withCredentials: true, httpOnly: true});
             res.sendStatus(200);
         } 
         else {

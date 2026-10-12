@@ -1,0 +1,26 @@
+.radio-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.preference-submit {
+  background-color: #B58B0B;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.preference-submit:hover {
+  background-color: #4f3e00;
+}
+
+.preferences input{
+    position: relative;
+    left: 5%;
+    padding: 1%; 
+}

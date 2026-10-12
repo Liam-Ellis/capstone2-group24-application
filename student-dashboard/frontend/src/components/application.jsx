@@ -1,6 +1,8 @@
 /* View Application Status */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Projects from './Projects';
+import "./Rounds.css";
 
 function RoundPage() {
     const [rounds, setRounds] = useState([]);
@@ -34,103 +36,105 @@ function RoundPage() {
         return <p>{error}</p>
     }
 
+    const anyOpenRound = (rounds) => {
+        if (rounds.length === 0) {
+            return false;
+        }
+
+        let currentDate = new Date().getTime();
+
+        rounds.forEach(round => {
+            let roundStartDate = new Date(round.StartDate).getTime();
+            let roundEndDate = new Date(round.EndDate).getTime();
+    
+            if (!(currentDate >= roundStartDate &&
+                currentDate < roundEndDate)) {
+                return false;
+            }
+        });
+
+        return true;
+    };
+
+    const anyOpenRounds = anyOpenRound(rounds);
+
     return (
         <>
             <h1> Application Rounds </h1>
             <div className="round-page">
-                {rounds.length === 0 ? (
-                    <p> No application rounds </p>
+                <div className="round-box">
+                {!anyOpenRounds ? (
+                    <p> No open application rounds </p>
                 ) : (
-                    rounds.slice(0,3).map((round) => (
+                    rounds.map((round) => (
                         <Round 
                             key={round._id}
                             round={round}
                         />
-                            
                     ))
                 )}
+                </div>
             </div>
         </>
     );
 }
 
 function Round({ round }) {
-    const [projects, setProjects] = useState([]);
-    const [showProject, setShowProject] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [showProjects, setShowProjects] = useState(false);
     
-    const navigate = useNavigate();
-
-    const handleViewProjects = async () => {
-        setShowProject(true);
-        setLoading(true);
-
-        try {
-            const response = await fetch(
-                `http://localhost:3000/api/project/round/${round._id}`
-            );
-
-            const data = await response.json();
-            if(!response.ok) {
-                throw new Error(data.message);
-            }
-            setProjects(data);
-            
-        }
-        catch (err) {
-            console.error("Unable to get project: ", err);
-        } 
-        finally {
-            setLoading(false);
+    const viewProjects = () => {
+        if (showProjects) {
+            setShowProjects(false);
+        } else {
+            setShowProjects(true);
         }
     };
 
-    const handleViewProject = (project) => {
-        navigate(`/project/${project._id}`);
-    };
-
-    let displayStatus;
-
-    if (round.status === "CLOSED") {
-        displayStatus = "CLOSED";
-    }
-    else if (round.status === "OPEN") {
-        displayStatus = applicationStatus || "NOT_APPLIED";
+    let displayStatus = "CLOSED";
+    let roundStartDate = new Date(round.StartDate).getTime();
+    let roundEndDate = new Date(round.EndDate).getTime();
+    let currentDate = new Date().getTime();
+    
+    if (currentDate >= roundStartDate &&
+        currentDate < roundEndDate) {
+        displayStatus = "OPEN";
     }
 
     return (
-        <div className="round-container">
-            <h3> {round.name} </h3>
-            <p> Status: <strong>{round.status} </strong></p>
+       <div className="round-content">
+              <div
+                className="round-card"
+              >
 
-            {round.status === "OPEN" ? (
-                <button onClick={handleViewProjects}>
-                    View Project
-                </button>
-            ) : (
-                <p> This round is closed. </p>
-            )}
+                <h3>Round {round.RoundNumber}</h3>
 
-            {showProject && (
-                <div className="project-list">
-                    {loading && <p> Loading projects... </p>}
-                    {!loading && projects.length === 0 && <p> No project available </p>}
-                 
-                    {projects.map((project) => (
-                        <div className="project-container"
-                        key={project._id}
+                <p>
+                  Status: {displayStatus}
+                </p>
+
+
+                <div className="round-buttons">
+                  {displayStatus === "OPEN" && (
+                      <div className="round-buttons">
+
+                        <button
+                          className="view-projects-btn"
+                          onClick={() => viewProjects()}
                         >
-                            <h4> {project.title} </h4>
-                            <p> {project.description} </p>
-                            <button onClick={() => handleViewProject(project)}>
-                                View Project
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
+                          {showProjects ? "Hide Projects" : "View Projects"}
+                        </button>
 
-        </div>
+                      </div>
+                  )}
+
+                </div>
+                
+
+                {showProjects && (
+                <Projects round={round.RoundNumber} />)}
+
+              </div>
+          </div>
     );
 }
 

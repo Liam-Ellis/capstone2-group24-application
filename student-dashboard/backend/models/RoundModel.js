@@ -1,20 +1,15 @@
 const mongoose = require("mongoose");
 
 const roundSchema = new mongoose.Schema({
-    name: {
+    RoundNumber: {
         type: Number,
-        required: true
+        required: true,
     },
-    status: {
-        type: String,
-        enum: ["OPEN","CLOSED"],
-        required: true
-    },
-    startDate: {
+    StartDate: {
         type: Date,
         required: true
     },
-    endDate: {
+    EndDate: {
         type: Date,
         required: true
     }
@@ -23,4 +18,4 @@ const roundSchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('Round', roundSchema);
+module.exports = mongoose.model('round', roundSchema);

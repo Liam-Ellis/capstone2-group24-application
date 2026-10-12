@@ -5,7 +5,7 @@ const getProjectsByRound = async (req, res) => {
     try {
         const { roundId } = req.params;
         const project = await Project.find({
-            round: roundId
+            Round: parseInt(roundId)
         });
 
         res.status(200).json(project);

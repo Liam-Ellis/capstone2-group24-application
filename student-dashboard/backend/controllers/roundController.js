@@ -3,7 +3,8 @@ const Round = require("../models/RoundModel.js");
 // get all rounds
 const getRounds = async (req, res) => {
     try {
-        const rounds = await Round.find().sort({ startDate: 1 });
+        const rounds = await Round.find().sort({ StartDate: 1 });
+        console.log(rounds);
         res.status(200).json(rounds);
     }
     catch (err) {

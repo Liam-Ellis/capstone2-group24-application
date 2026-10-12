@@ -1,0 +1,120 @@
+
+.dashboard {
+
+    display: flex;
+    min-height: 100vh;
+}
+
+.content {
+
+        flex: 1;
+        background-color: white;
+}
+
+.header {
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 90px;
+        padding: 0 24px;
+        border-bottom: 4px solid #b2abab;
+
+        
+}
+
+.dashboard-title {
+
+        color: white;
+        margin: 0;
+        padding: 0 24px 0 56px;
+        font-size: 28px;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        border-bottom: 4px solid #b2abab;
+
+}
+
+.sidebar {
+
+        display: flex;
+        flex-direction: column;
+        background-color: #3E3E3E;
+        width: 252px;
+        border-right: 4px solid #b2abab;
+        box-shadow: -4px 0 0 black, 4px 0 0 black;
+}
+
+.page-title {
+
+    font-size: 28px;
+    font-weight: bold;
+    color: black;
+}
+
+.link {
+
+        background: none;
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+}
+
+.link:hover {
+
+        background-color: #555555;
+        text-decoration: underline;
+}
+
+.grid {
+
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 24px;
+}
+
+.grid-box {
+
+        aspect-ratio: 1 / 1;
+        font-size: 15px;
+        cursor: pointer;
+        text-align: left;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+}
+
+.grid-box:hover {
+
+        text-decoration: underline;
+}
+
+.curtinlogo {
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+}
+
+.curtinlogoimg {
+
+    height: 40px;
+    width: auto;
+}
+
+.notiflogoimg {
+
+    height: 30px; 
+    width: auto
+}
+
+.notiflogoimg:hover {
+
+    text-decoration: double;
+}

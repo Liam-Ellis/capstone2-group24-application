@@ -46,14 +46,11 @@ body {
     background-color: #374151;
 }
 
-/* Main Content */
-
 .main-content {
     flex: 1;
     padding: 40px;
 }
 
-/* Greeting */
 
 .greeting {
     margin-bottom: 40px;
@@ -128,7 +125,7 @@ body {
 }
 
 .top-logo {
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 30px;
     height: 60px;

@@ -1,0 +1,57 @@
+.notification-card {
+    text-align: left;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notification-card h4 {
+    text-align: left;
+    margin: 8px 0;
+}
+
+.notification-card p {
+    text-align: left;
+    margin: 4px 0;
+}
+
+.notification-card hr {
+    text-align: left;
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
+}
+
+li {
+    text-align: left;
+    margin: 4px 0;
+}
+
+ul {
+  text-align: left;
+  background: white;
+}
+
+.app-container img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 5vh;
+}
+
+.notification {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 90%;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+}

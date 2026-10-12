@@ -1,24 +1,33 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Dropdown.css";
 
-function Dropdown() {
+function Dropdown({ unitName, items }) {
   const [open, setOpen] = useState(true);
+  const navigate = useNavigate();
 
   return (
-    <div className="dropdown">
-      <button onClick={() => setOpen(!open)}>
-        WORK3008
+    <li className="dropdown">
+      <button
+        className="dropdown-button"
+        onClick={() => setOpen(!open)}
+      >
+        {unitName}
       </button>
 
       {open && (
-        <div className="dropdown-content">
-          <a href="#">Announcements</a>
-          <a href="#">Class-List</a>
-          <a href="#">Group Allocation</a>
-          <a href="#">Supervisors</a>
-        </div>
+        <ul className="dropdown-content">
+          {items.map((item) => (
+            <li
+              key={item.name}
+              onClick={() => navigate(item.path)}
+            >
+              {item.name}
+            </li>
+          ))}
+        </ul>
       )}
-    </div>
+    </li>
   );
 }
 

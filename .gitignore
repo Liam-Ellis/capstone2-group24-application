@@ -3,6 +3,9 @@
 # Learn more about .gitignore:
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
+# Secret files
+.env
+
 # Node artifact files
 node_modules/
 dist/
@@ -47,6 +50,7 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+*.pdf
 
 # Playwright
 /test-results/
@@ -54,6 +58,7 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+*run.json
 
 # Plaintext
 

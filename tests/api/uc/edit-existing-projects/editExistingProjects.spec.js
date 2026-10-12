@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 const mongoose = require("mongoose")
 const {Project} = require ("../../../../models")
 const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
-mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
+mongoose.connect(DATABASE_PATH, {dbName: 'test'});
 
 //testing for the different outcomes of posting an individual student
 
@@ -11,16 +11,13 @@ mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
  */
 let apiContext;
 
-test.describe('Individual studont POST', () => {
+test.describe('Edit existing projects', () => {
     test.beforeAll(async ({ playwright }) => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/editProj'});
     });
 
-
-
-
-
-    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async () => {
+    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async ({page, browserName}) => {
+        test.skip(browserName !== 'firefox', 'I need only 1 version of this test to run, the locks just dont work and this test refuses to not run in parralel with other tests');
         const validProject = ({
                 ID: "-1",
                 Type: "WORK",
@@ -31,7 +28,7 @@ test.describe('Individual studont POST', () => {
                 Description: "cool project",
                 IntendedSize: 6
             });
-        const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
+        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -70,7 +67,7 @@ test.describe('Individual studont POST', () => {
                 Description: "cool project",
                 IntendedSize: 6
             });
-        const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
+        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

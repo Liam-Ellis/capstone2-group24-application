@@ -46,9 +46,11 @@ const uploadApplication = async (req, res) => {
 
 
 //needs a studentID in the body
+//major reqork, Amelia had assumed that you apply to rounds and not projects
 const getApplicationStatus = async (req, res) => {
     try {
         const studentID = req.body
+
 
         const currentDate = new Date()
         // find if round is open
@@ -57,6 +59,7 @@ const getApplicationStatus = async (req, res) => {
             EndDate: { $gte: currentDate}
         });
 
+        //if we couldn't find one then no round is open
         if (!round) {
             return res.json({
                 status: "CLOSED"

@@ -10,6 +10,8 @@ import AddStudent  from './pages/AddStudent';
 import GroupAllocation from './pages/GroupAllocation';
 import ICTE3002 from './pages/ICTE3002';
 import { Routes, Route, Link } from "react-router-dom"
+import StudentUnitPage from './components/StudentUnitPage';
+import StudentUnitMenu from './components/StudentUnitMenu';
 
 function Home() {
   const [count, setCount] = useState(0)
@@ -64,6 +66,8 @@ function App() {
       <Route path="/ucdashboard/isad3000" element={<ISAD3000 />} />
       <Route path="/ucdashboard/icte3002" element={<ICTE3002 />} />
       <Route path="/ucdashboard/groups" element={<GroupAllocation />} />
+      <Route path="/studentdashboard" element={<StudentUnitPage />} />
+      <Route path="/studentdashboard/unit" element={<StudentUnitMenu />} />
     </Routes>
   );
 } 

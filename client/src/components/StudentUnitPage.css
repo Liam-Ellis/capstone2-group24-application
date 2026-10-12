@@ -24,14 +24,11 @@
 }
 
 .dashboard-title {
-
-        color: white;
-        margin: 0;
-        padding: 0 24px 0 56px;
-        font-size: 28px;
-        height: 90px;
         display: flex;
-        align-items: center;
+        justify-content: center;
+        color: white;
+        padding-bottom: 5%;
+        font-size: 28px;
         border-bottom: 4px solid #b2abab;
 
 }

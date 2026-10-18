@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UploadResume from './uploadResume';
+import UploadResume from './UploadResume';
 
 import notification from '../assets/notification.png'
 

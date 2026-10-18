@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './preferencePage.css'
+import './PreferencePage.css'
 
 function PreferencePage() {
     const [studentDetails, setStudentDetails] = useState({
@@ -76,29 +76,7 @@ function PreferencePage() {
 
     return (
                 <form className="pref-container" onSubmit={handleSubmit}>
-                    <div className="radio-container">
-                        <label> Email Notifications </label>
-                        <label className="radio-opt">
-                            <input
-                                type="radio"
-                                name="emailNotifications"
-                                value="Yes"
-                                onChange={inputChanges}
-                            />
-                            Yes, send me emails
-                        </label>
-
-                        <label className="radio-opt">
-                            <input
-                                type="radio"
-                                name="emailNotifications"
-                                value="No"
-                                onChange={inputChanges}
-                            />
-                            No, opt out of emails
-                        </label>
-                    </div>
-
+                    <div className="pref-form-section">
                     <p>Students you want <em>included</em> in your group</p>
                     {[1, 2, 3, 4, 5].map((n) => (
                         <div className="preferences" key={`pref${n}`}>
@@ -140,7 +118,7 @@ function PreferencePage() {
                     <button className="preference-submit" type="submit">
                         Submit
                     </button>
-
+                    </div>
                 </form>
     )
 }

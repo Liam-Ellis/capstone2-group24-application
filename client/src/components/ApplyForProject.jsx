@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./ApplyForProject.css";
-import UploadResume from "./uploadResume";
+import UploadCoverLeter from "./UploadCoverLetter";
 import PreferencePage from "./preferencePage";
 
 function ApplyForProject({ 
@@ -25,7 +25,7 @@ function ApplyForProject({
         </div>
 
         {project.Type.toLowerCase() === 'work' && (
-          <UploadResume />
+          <UploadCoverLeter />
         )}
 
         {project.Type.toLowerCase() === 'group' && (

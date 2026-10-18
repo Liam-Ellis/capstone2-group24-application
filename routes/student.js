@@ -148,20 +148,24 @@ student.get('/group', verifyStudentSession, async (req, res) => {
         group = await Group.findOne({ GroupNumber: user.Group }).lean();
 
         if (group !== null) {
-            let project = await Project.findOne({ ID: group.Project}).lean();
+            if (group.Confirmed === 1) {
+                let project = await Project.findOne({ ID: group.Project}).lean();
 
-            if (project !== null) {
-                delete project['IntendedSize'];
-                delete project['ID'];
-                delete project['Round'];
-                group['Project'] = project;
+                if (project !== null) {
+                    delete project['IntendedSize'];
+                    delete project['ID'];
+                    delete project['Round'];
+                    group['Project'] = project;
 
-                delete group['Confirmed'];
-                delete group['Reason'];
+                    delete group['Confirmed'];
+                    delete group['Reason'];
 
-                res.status(200).json(group);
+                    res.status(200).json(group);
+                } else {
+                    res.sendStatus(500);
+                }
             } else {
-                res.sendStatus(500);
+                res.status(400).send('Student is not allocated to a group');
             }
         } else {
             res.sendStatus(500);

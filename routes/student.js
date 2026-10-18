@@ -137,4 +137,38 @@ student.get('/projects/:round', validateParameters(validationSchemas.getProjects
     }
 });
 
+student.get('/group', verifyStudentSession, async (req, res) => {
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const user = await CapstoneStudent.findOne({Username: username}).lean();
+
+    let group;
+
+    if (user.Group !== 0) {
+        group = await Group.findOne({ GroupNumber: user.Group }).lean();
+
+        if (group !== null) {
+            let project = await Project.findOne({ ID: group.Project}).lean();
+
+            if (project !== null) {
+                delete project['IntendedSize'];
+                delete project['ID'];
+                delete project['Round'];
+                group['Project'] = project;
+
+                delete group['Confirmed'];
+                delete group['Reason'];
+
+                res.status(200).json(group);
+            } else {
+                res.sendStatus(500);
+            }
+        } else {
+            res.sendStatus(500);
+        }
+    } else {
+        res.status(400).send('Student is not allocated to a group');
+    }
+});
+
 module.exports = student;

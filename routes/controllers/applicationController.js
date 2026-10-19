@@ -1,6 +1,8 @@
 const {CapstoneStudent, Round, ProjectApplication} = require ("../../models")
 
-//the body of this needs the coverletter, the project type, the project ID and the student ID
+const jwt = require('jsonwebtoken');
+
+//the body of this needs the coverletter, the project type and the project ID
 const uploadApplication = async (req, res) => {
     try {
         if (!req.file) {
@@ -9,31 +11,37 @@ const uploadApplication = async (req, res) => {
             });
         }
         
+        const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+        const username = decodedToken.username;
+
         //currently working off ID, maybe should work off name
-        const student = await CapstoneStudent.find({ID: req.Student}).lean()
+        const student = await CapstoneStudent.findOne({Username: username}).lean();
         
         //theoretically we should never get here, the frontend should be logged in as a student and if this is null that means the student logged in doesn't exist
-        if (student == null)
+        if (student === null)
         {
             res.status(401).json({
                 message: "student doesn't exist in db",
-                status: application.status
             });
         }
         
+        if (req.body.Type.toUpperCase() === 'WORK' &&
+            (!req.body.file || !student.Resume)) {
+            return res.status(400).json({
+                message: "No file uploaded"
+            });
+        }
 
-        const application = await Application.create({
+        const application = await ProjectApplication.create({
             CoverLetter: req.body.file,
             Type: req.body.Type,
-            //students ID
-            Student: req.body.Student,
+            Student: student.ID,
             Project: req.body.ID,
             Resume: student.Resume
         });
 
         res.status(201).json({
             message: "Application submitted successfully!",
-            status: application.status
         });
     }
     catch (err) {

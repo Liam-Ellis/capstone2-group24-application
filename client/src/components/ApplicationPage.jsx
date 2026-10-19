@@ -15,7 +15,14 @@ function ApplicationPage() {
             const fetchRounds = async () => {
                 try {
                     const response = await fetch(
-                        "http://localhost:3000/api/round"
+                        "http://localhost:3000/student/round",
+                        {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include'
+                        }
                     );
     
                     const data = await response.json();
@@ -34,10 +41,6 @@ function ApplicationPage() {
     
             fetchRounds();
         },[]);
-    
-        if (error) {
-            return <p>{error}</p>
-        }
     
         const anyOpenRound = (rounds) => {
             if (rounds.length === 0) {

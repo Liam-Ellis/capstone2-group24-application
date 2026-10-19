@@ -10,7 +10,14 @@ function ApplicationProjects({round}) {
   const getProjects = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3000/api/project/round/${round}`
+                `http://localhost:3000/student/projects/${round}`,
+                {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+                }
             );
 
             const data = await response.json();

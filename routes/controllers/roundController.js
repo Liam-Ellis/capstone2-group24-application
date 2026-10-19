@@ -5,7 +5,7 @@ const getRounds = async (req, res) => {
     try {
         const currentDate = new Date()
         const rounds = await Round.find({
-            StartDate: { $lt: currentDate},
+            StartDate: { $lte: currentDate},
             EndDate: { $gte: currentDate}
             })
             .sort({ startDate: 1 });

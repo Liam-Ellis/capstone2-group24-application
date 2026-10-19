@@ -1,0 +1,51 @@
+.radio-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.preference-submit {
+  background-color: #B58B0B;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.preference-submit:hover {
+  background-color: #4f3e00;
+}
+
+.pref-container{
+    margin-left: 1%;
+}
+
+.pref-form-section {
+  margin-bottom: 25px;
+}
+
+.pref-form-section label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.pref-form-section input,
+.pref-form-section textarea {
+  width: 50%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.pref-form-section textarea {
+  resize: vertical;
+}

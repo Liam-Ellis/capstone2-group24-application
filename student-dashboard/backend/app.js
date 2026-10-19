@@ -29,7 +29,7 @@ app.use("/api/application", applicationRoutes);
 
 
 mongoose
-    .connect("mongodb+srv://kohmeiyun06_db_user:Ameliakoh@capstone24.17jnurt.mongodb.net/?appName=Capstone24")
+    .connect("mongodb://josiahwb_db_user:jXoKctzTOXLOG9cL@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24", {dbName: "test"})
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("Could not connect to MongoDB: ", err));
 

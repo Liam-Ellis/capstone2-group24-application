@@ -69,17 +69,6 @@ function PreferencePage() {
 
     const validate = (values) => {
         const errors = {};
-        if (!values.studentId.trim()) {
-            errors.studentId = "Student ID is required!";
-        }
-
-        if (!values.fullName.trim()) {
-            errors.fullName = "Full name is required!";
-        }
-
-        if (!values.CWA.trim()) {
-            errors.CWA = "Course Weighted Average is required!";
-        }
 
         return errors;
     };
@@ -90,36 +79,6 @@ function PreferencePage() {
 
             <div className="pref-page">
                 <form className="pref-container" onSubmit={handleSubmit}>
-                    <label> Student ID </label>
-                    <input 
-                        type="number"
-                        name="studentId"
-                        value={studentDetails.studentId}
-                        isInvalid={!!formErrors.studentId}
-                        onChange={inputChanges}
-                        placeholder="Student ID"
-                    />
-
-                    <label> Full Name </label>
-                    <input 
-                        type="text"
-                        name="fullName"
-                        value={studentDetails.fullName}
-                        isInvalid={!!formErrors.fullName}
-                        onChange={inputChanges}
-                        placeholder="Full Name"
-                    />
-
-                    <label> Course Weighted Average (CWA) </label>
-                    <input 
-                        type="number"
-                        name="CWA"
-                        value={studentDetails.CWA}
-                        isInvalid={!!formErrors.CWA}
-                        onChange={inputChanges}
-                        placeholder="Course Weighted Average"
-                    />
-
                     <div className="radio-container">
                         <label> Email Notifications </label>
                         <label className="radio-opt">
@@ -141,28 +100,6 @@ function PreferencePage() {
                             />
                             No, opt out of emails
                         </label>
-
-                        <label> Select your course / major </label>
-                        {["opt1", "opt2", "opt3", "opt4", "opt5"].map((opt, i) => {
-                            const labels = [
-                                "Bachelor of Computing (Computer Science)",
-                                "Bachelor of Computing (Cyber Security)",
-                                "Bachelor of Computing (Software Engineering)",
-                                "Bachelor of Information Technology",
-                                "Other"
-                            ];
-                            return (
-                                <label className="radio-opt" key={opt}>
-                                    <input 
-                                        type="radio"
-                                        name="major"
-                                        value={opt}
-                                        onChange={inputChanges}
-                                    />
-                                    {labels[i]}
-                                </label>
-                            );
-                        })}
                     </div>
 
                     {[1, 2, 3, 4, 5].map((n) => (

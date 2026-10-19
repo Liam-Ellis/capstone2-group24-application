@@ -20,7 +20,7 @@ async function PostProjectChanges (){
         {
             console.log("posting changes")
             
-            const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
+            const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

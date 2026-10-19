@@ -2,64 +2,21 @@ import { useState } from "react";
 import "./GroupAllocation.css";
 import Sidebar from "./Sidebar";
 
-const initialStudents = [
-    {
-        id: "21433273",
-        firstName: "Jeffrey",
-        familyName: "Hale",
-        cwa: 67.905,
-        major: "Computer Science"
-    },
-    {
-        id: "21425286",
-        firstName: "Santiago",
-        familyName: "Rice",
-        cwa: 65.579,
-        major: "Software Engineering"
-    },
-    {
-        id: "21983473",
-        firstName: "Sondra",
-        familyName: "Esparza",
-        cwa: 72.625,
-        major: "Cyber Security"
-    },
-    {
-        id: "21093723",
-        firstName: "Coleen",
-        familyName: "Park",
-        cwa: 66.867,
-        major: "Information Technology"
-    },
-    {
-        id: "21493023",
-        firstName: "Carla",
-        familyName: "Lutz",
-        cwa: 86.208,
-        major: "Information Technology"
-    },
-    {
-        id: "19883023",
-        firstName: "Cory",
-        familyName: "Hall",
-        cwa: 59.294,
-        major: "Software Engineering"
-    },
-    {
-        id: "19799999",
-        firstName: "Beverly",
-        familyName: "Ellis",
-        cwa: 75.714,
-        major: "Information Technology"
-    },
-    {
-        id: "19789783",
-        firstName: "Lawrence",
-        familyName: "Watts",
-        cwa: 50.3,
-        major: "Cyber Security"
-    }
-];
+
+
+function GroupAllocation() {
+    let studentResponse = null;
+    let initialStudents = null;
+
+    let groupResponse = null;
+    let initialGroups = null;
+
+    const majors = [
+        "Computer Science",
+        "Software Engineering",
+        "Cyber Security",
+        "Information Technology"
+    ];
 
     const GROUPS_STORAGE_KEY = "groupAllocationGroups";
 
@@ -72,19 +29,147 @@ const initialStudents = [
             return [];
         }
     }
+    
+    function addRelevantStudents(initialGroup)
+    {
+        initialGroup.StudentObjects = []
+        for(let i = 0; i < initialStudents.length; i++)
+        {
+            for(let x = 0; x < initialGroup.Students.length; x++)
+            {
+                if (initialStudents[i].Name === initialGroup.Students[x])
+                {
+                    initialGroup.StudentObjects.push(initialStudents[i])
+                }
+            }
+        }
+    }
 
-const majors = [
-    "Computer Science",
-    "Software Engineering",
-    "Cyber Security",
-    "Information Technology"
-];
+    const startUp = async () => {
+        studentResponse = await fetch('http://localhost:3000/UC/api/requestAllCapstoneStudents', {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                }
+        });
+                    
 
-/* PR and commit test */
+        initialStudents = await studentResponse.json()
+        /* here's what a student looks like:
+        {
+        _id: ObjectId('6aa7f5cb71fa1200412a2b34'),
+        Email: 'RealStudent@testingemails.com',
+        Group: NumberInt('0'),
+        Name: 'Real Student',
+        Password: 'Password1',
+        PreferenceAgainst: [],
+        PreferenceFor: [],
+        StudentID: '00000000',
+        TermsAccepted: NumberInt('0'),
+        Unit: 'ISAD3000',
+        Username: '00000000',
+        Salt: 'idk',
+        createdAt: ISODate('2026-09-14T13:25:31.338Z'),
+        updatedAt: ISODate('2026-09-14T13:25:31.338Z'),
+        __v: NumberInt('0')
+        }
 
-function GroupAllocation() {
+
+            //old placeholder values
+            /*{
+                id: "21433273",
+                firstName: "Jeffrey",
+                familyName: "Hale",
+                cwa: 67.905,
+                major: "Computer Science"
+            },
+            {
+                id: "21425286",
+                firstName: "Santiago",
+                familyName: "Rice",
+                cwa: 65.579,
+                major: "Software Engineering"
+            },
+            {
+                id: "21983473",
+                firstName: "Sondra",
+                familyName: "Esparza",
+                cwa: 72.625,
+                major: "Cyber Security"
+            },
+            {
+                id: "21093723",
+                firstName: "Coleen",
+                familyName: "Park",
+                cwa: 66.867,
+                major: "Information Technology"
+            },
+            {
+                id: "21493023",
+                firstName: "Carla",
+                familyName: "Lutz",
+                cwa: 86.208,
+                major: "Information Technology"
+            },
+            {
+                id: "19883023",
+                firstName: "Cory",
+                familyName: "Hall",
+                cwa: 59.294,
+                major: "Software Engineering"
+            },
+            {
+                id: "19799999",
+                firstName: "Beverly",
+                familyName: "Ellis",
+                cwa: 75.714,
+                major: "Information Technology"
+            },
+            {
+                id: "19789783",
+                firstName: "Lawrence",
+                familyName: "Watts",
+                cwa: 50.3,
+                major: "Cyber Security"
+            }*/
+
+
+
+
+
+        groupResponse = await fetch('http://localhost:3000/UC/api/requestAllGroups', {
+                    method: 'GET',
+                    headers: {
+                    'Content-Type': 'application/json', // Tells backend to parse as JSON
+                    }
+                    });
+                    
+        initialGroups = await groupResponse.json()
+        /* here's what a group looks like:
+        {
+        _id: ObjectId('6a8f0aea0b0ff87d37724f4f'),
+        Confirmed: NumberInt('1'),
+        GroupNumber: NumberInt('3'),
+        Project: '2',
+        Reason: 'Students were grouped based on their interest in accessibility and inclusive design.',
+        Students: [
+            'James Anderson',
+            'Olivia Martin',
+            'Liam Thompson'
+        ],
+        createdAt: ISODate('2026-08-26T15:48:58.064Z'),
+        updatedAt: ISODate('2026-10-08T16:23:30.307Z'),
+        __v: NumberInt('2')
+        }*/
+        initialGroups.forEach(addRelevantStudents)
+
+
+    }
+
+    startUp();
+
     const [students] = useState(initialStudents);
-    const [groups, setGroups] = useState(loadSavedGroups);
+    const [groups, setGroups] = useState(initialGroups);
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [majorFilter, setMajorFilter] = useState("All");
@@ -104,21 +189,21 @@ function GroupAllocation() {
 
 
     const allocatedStudentIds = groups.flatMap((group) =>
-        group.students.map((student) => student.id)
+        group.StudentObjects.map((student) => student.StudentID)
     );
 
     const filteredStudents = students.filter((student) => {
-        const fullName =
-            `${student.firstName} ${student.familyName}`.toLowerCase();
+        const fullName = student.Name
+            //add this back later maybe, if we implement first/last in db `${student.firstName} ${student.familyName}`.toLowerCase();
 
         const matchesSearch =
             fullName.includes(searchTerm.toLowerCase()) ||
-            student.id.includes(searchTerm);
+            student.StudentID.includes(searchTerm);
 
         const matchesMajor =
-            majorFilter === "All" || student.major === majorFilter;
+            majorFilter === "All" || student.Major === majorFilter;
 
-        const isAllocated = allocatedStudentIds.includes(student.id);
+        const isAllocated = allocatedStudentIds.includes(student.StudentID);
 
         const matchesAllocation =
             allocationFilter === "all" ||
@@ -130,7 +215,7 @@ function GroupAllocation() {
 
 
     const unallocatedStudents = students.filter(
-        (student) => !allocatedStudentIds.includes(student.id)
+        (student) => !allocatedStudentIds.includes(student.StudentID)
     );
 
     const toggleStudent = (studentId) => {
@@ -150,14 +235,17 @@ function GroupAllocation() {
     const createGroup = () => {
         const nextGroupId =
             groups.length > 0
-                ? Math.max(...groups.map((group) => group.id)) + 1
+                ? Math.max(...groups.map((group) => group.GroupNumber)) + 1
                 : 1;
 
         setGroups((current) => [
             ...current,
             {
-                id: nextGroupId,
-                students: []
+                GroupNumber: nextGroupId,
+                students: [],
+                Confirmed: 0,
+                Project: '0',
+                Reason: '',
             }
         ]);
     };
@@ -168,15 +256,15 @@ function GroupAllocation() {
         }
 
         const studentsToAdd = students.filter((student) =>
-            selectedStudents.includes(student.id)
+            selectedStudents.includes(student.StudentID)
         );
 
         setGroups((current) =>
             current.map((group) =>
-                group.id === groupId
+                group.GroupNumber === groupId
                     ? {
                           ...group,
-                          students: [...group.students, ...studentsToAdd]
+                          StudentObjects: [...group.StudentObjects, ...studentsToAdd]
                       }
                     : group
             )
@@ -188,11 +276,11 @@ function GroupAllocation() {
     const removeStudentFromGroup = (groupId, studentId) => {
         setGroups((current) =>
             current.map((group) =>
-                group.id === groupId
+                group.GroupNumber === groupId
                     ? {
                           ...group,
-                          students: group.students.filter(
-                              (student) => student.id !== studentId
+                          StudentObjects: group.Students.filter(
+                              (student) => student.StudentID !== studentId
                           )
                       }
                     : group
@@ -202,7 +290,7 @@ function GroupAllocation() {
 
     const removeGroup = (groupId) => {
         setGroups((current) =>
-            current.filter((group) => group.id !== groupId)
+            current.filter((group) => group.GroupNumber !== groupId)
         );
     };
 
@@ -317,21 +405,21 @@ function GroupAllocation() {
                     <div className="student-list">
                         {filteredStudents.map((student) => {
                             const isSelected = selectedStudents.includes(
-                                student.id
+                                student.StudentID
                             );
 
                             const isAllocated = allocatedStudentIds.includes(
-                                student.id
+                                student.StudentID
                             );
 
                             return (
                                 <div
-                                    key={student.id}
+                                    key={student.StudentID}
                                     className={`student-item ${
                                         isSelected ? "selected" : ""
                                     } ${isAllocated ? "allocated" : ""}`}
                                     onClick={() =>
-                                        toggleStudent(student.id)
+                                        toggleStudent(student.StudentID)
                                     }
                                 >
                                     <div className="student-checkbox">
@@ -340,7 +428,7 @@ function GroupAllocation() {
                                             checked={isSelected}
                                             disabled={isAllocated}
                                             onChange={() =>
-                                                toggleStudent(student.id)
+                                                toggleStudent(student.StudentID)
                                             }
                                             onClick={(event) =>
                                                 event.stopPropagation()
@@ -350,23 +438,22 @@ function GroupAllocation() {
 
                                     <div className="student-info">
                                         <strong>
-                                            {student.firstName}{" "}
-                                            {student.familyName}
+                                            {student.Name}
                                         </strong>
 
                                         
 
                                         <div className="student-meta">
-                                            <span className={`student-major ${student.major
+                                            <span className={`student-major ${student.Major
                                                 .toLowerCase()
                                                 .replaceAll(" ", "-")}`}>
-                                                {student.major}
+                                                {student.Major}
                                             </span>
 
-                                            <span>{student.id}</span>
+                                            <span>{student.StudentID}</span>
 
                                             <span>
-                                                CWA {student.cwa.toFixed(3)}
+                                                CWA {student.CWA.toFixed(3)}
                                             </span>
                                         </div>
                                     </div>
@@ -451,14 +538,14 @@ function GroupAllocation() {
                         )}
 
                         {groups.map((group) => (
-                            <div className="group-card" key={group.id}>
+                            <div className="group-card" key={group.GroupNumber}>
                                 <div className="group-card-header">
                                     <div>
-                                        <h3>Group {group.id}</h3>
+                                        <h3>Group {group.GroupNumber}</h3>
 
                                         <span>
-                                            {group.students.length} student
-                                            {group.students.length !== 1
+                                            {group.StudentObjects.length} student
+                                            {group.StudentObjects.length !== 1
                                                 ? "s"
                                                 : ""}
                                         </span>
@@ -470,7 +557,7 @@ function GroupAllocation() {
                                                 className="add-to-group-button"
                                                 onClick={() =>
                                                     addStudentsToGroup(
-                                                        group.id
+                                                        group.GroupNumber
                                                     )
                                                 }
                                             >
@@ -481,7 +568,7 @@ function GroupAllocation() {
                                         <button
                                             className="remove-group-button"
                                             onClick={() =>
-                                                removeGroup(group.id)
+                                                removeGroup(group.GroupNumber)
                                             }
                                         >
                                             Remove
@@ -490,7 +577,7 @@ function GroupAllocation() {
                                 </div>
 
                                 <div className="group-students">
-                                    {group.students.length === 0 ? (
+                                    {group.StudentObjects.length === 0 ? (
                                         <div className="empty-group">
                                             <span>
                                                 No students in this group
@@ -502,39 +589,38 @@ function GroupAllocation() {
                                             </small>
                                         </div>
                                     ) : (
-                                        group.students.map((student) => (
+                                        group.StudentObjects.map((student) => (
                                             <div
                                                 className="group-student"
                                                 key={student.id}
                                             >
                                                 <div className="group-student-info">
                                                     <strong>
-                                                        {student.firstName}{" "}
-                                                        {student.familyName}
+                                                        {student.Name}
                                                     </strong>
 
                                                     <span>
-                                                        {student.id}
+                                                        {student.StudentID}
                                                     </span>
                                                 </div>
 
                                                 <div className="group-student-details">
-                                                    <span className={`major-badge ${student.major
+                                                    <span className={`major-badge ${student.Major
                                                         .toLowerCase()
                                                         .replaceAll(" ", "-")}`}>
-                                                        {student.major}
+                                                        {student.Major}
                                                     </span>
 
                                                     <strong>
-                                                        CWA: {student.cwa.toFixed(3)}
+                                                        CWA: {student.CWA.toFixed(3)}
                                                     </strong>
 
                                                     <button
                                                         className="remove-student-button"
                                                         onClick={() =>
                                                             removeStudentFromGroup(
-                                                                group.id,
-                                                                student.id
+                                                                group.GroupNumber,
+                                                                student.StudentID
                                                             )
                                                         }
                                                     >

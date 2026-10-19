@@ -23,11 +23,30 @@ const validationSchemas = {
     getProjectsSchema: joi.object({
         round: joi.number().required(),
     }),
+    postPrefsSchema: joi.object({
+        prefsFor: joi.array(),
+        prefsAgainst: joi.array(),
+    })
 };
 
 const validateParameters = (schema, property) => {
     return async (req, res, next) => {
         const { error } = schema.validate(req.params);
+
+        if (error == null) {
+            next();
+        } else {
+            const { details } = error;
+            const errorMsg = details.map(error => error.message).join(',');
+
+            res.status(422).json({ message: errorMsg });
+        }
+    };
+};
+
+const validateBodyParameters = (schema, property) => {
+    return async (req, res, next) => {
+        const { error } = schema.validate(req.body);
 
         if (error == null) {
             next();
@@ -134,6 +153,44 @@ student.get('/projects/:round', validateParameters(validationSchemas.getProjects
         });
 
         res.status(200).json(projects);
+    }
+});
+
+student.post('/prefs', validateBodyParameters(validationSchemas.postPrefsSchema), verifyStudentSession, async (req, res) => {
+    const { prefsFor, prefsAgainst } = req.body;
+    
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const user = await CapstoneStudent.findOne({Username: username}).exec();
+
+    if (user !== null) {
+        user.PreferenceFor = prefsFor;
+        user.PreferenceAgainst = prefsAgainst;
+        await user.save();
+
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(500);
+    }
+});
+
+student.get('/prefs', verifyStudentSession, async (req, res) => {    
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const user = await CapstoneStudent.findOne({Username: username}).lean();
+
+    let prefs = {
+        PreferenceFor: [],
+        PreferenceAgainst: []
+    };
+
+    if (user !== null) {
+        prefs.PreferenceFor = user.PreferenceFor;
+        prefs.PreferenceAgainst = user.PreferenceAgainst;
+
+        res.status(200).json(prefs);
+    } else {
+        res.sendStatus(500);
     }
 });
 

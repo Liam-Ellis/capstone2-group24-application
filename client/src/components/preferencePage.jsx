@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import './PreferencePage.css'
 
 function PreferencePage() {
-    const [studentDetails, setStudentDetails] = useState({
-        studentId: "",
-        fullName: "",
-        CWA: "",
-        emailNotifications: "",
+    const [prefs, setPrefs] = useState({
+        prefsFor: ["","","","",""],
+        prefsAgainst: ["","","","",""],
+    });
+
+    /*
+    const [prefs, setPrefs] = useState({
         pref1: "",
         pref2: "",
         pref3: "",
@@ -18,40 +20,41 @@ function PreferencePage() {
         dislikePref3: "",
         dislikePref4: "",
         dislikePref5: ""
-    });
+    });*/
 
     const [formErrors, setFormErrors] = useState({});
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const validationError = validate(studentDetails);
-
-        if (Object.keys(validationError).length > 0) {
-            setFormErrors(validationError);
-            return;
-        }
 
         try {
             const response = await fetch(
-                'http://localhost:3000/api/preference',
+                'http://localhost:3000/student/prefs',
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(studentDetails),
+                    body: JSON.stringify(prefs),
                     credentials: 'include'
                 }
             );
 
-            const data = await response.json();
-            if(response.ok === true) {
+            const data = await response.text();
+            if(response.ok) {
                 alert('Preference submitted successfully!');
-                navigate('/dashboard');
             }
             else {
-                setFormErrors({general: data.message || 'Preference failed to submit!'});
+                let errorMsg;
+
+                if (data.includes("{") &&
+                    data.includes("message")) {
+                    errorMsg = JSON.parse(data).message;
+                } else {
+                    errorMsg = data
+                }
+                
+                setFormErrors({general: errorMsg || 'Preference failed to submit!'});
                 return;
             }
         }
@@ -63,15 +66,20 @@ function PreferencePage() {
 
     const inputChanges = (e) => {
         const { name, value } = e.target;
-        setStudentDetails({ ...studentDetails, [name]: value });
-        setFormErrors({});
-        console.log(studentDetails);
-    };
 
-    const validate = (values) => {
-        const errors = {};
+        if (name.includes('dislikePref')) {
+            let n = name.split("dislikePref")[1];
+            let newPrefsAgainst = prefs.prefsAgainst;
+            newPrefsAgainst[n - 1] = value;
 
-        return errors;
+            setPrefs({ ...prefs, prefsAgainst: newPrefsAgainst });
+        } else {
+            let n = name.split("pref")[1];
+            let newPrefsFor = prefs.prefsFor;
+            newPrefsFor[n - 1] = value;
+
+            setPrefs({ ...prefs, prefsFor: newPrefsFor });
+        }
     };
 
     return (
@@ -86,7 +94,7 @@ function PreferencePage() {
                             <input
                                 type="text"
                                 name={`pref${n}`}
-                                value={studentDetails[`pref${n}`]}
+                                value={prefs.prefsFor[n - 1]}
                                 onChange={inputChanges}
                                 placeholder={`${n}${n === 1  ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th"} Preference`}
                             />
@@ -103,7 +111,7 @@ function PreferencePage() {
                             <input
                                 type="text"
                                 name={`dislikePref${n}`}
-                                value={studentDetails[`dislikePref${n}`]}
+                                value={prefs.prefsAgainst[n - 1]}
                                 onChange={inputChanges}
                                 placeholder={`${n}${n === 1  ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th"} Preference`}
                             />

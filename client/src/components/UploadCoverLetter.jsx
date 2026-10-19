@@ -27,6 +27,9 @@ function UploadCoverLetter({ applicationUploaded }) {
         const saveData = new FormData();
         saveData.append("document", application.document);
 
+        applicationUploaded(application.document);
+
+        /*
         try {
             const response = await fetch(
                 "http://localhost:3000/api/application/upload",
@@ -48,7 +51,7 @@ function UploadCoverLetter({ applicationUploaded }) {
         catch (err) {
             console.error("Unable to upload document: ", err);
             alert("Failed to upload document");
-        } 
+        }*/
     };
 
     return(

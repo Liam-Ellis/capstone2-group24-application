@@ -7,7 +7,7 @@ const verifyStudentSession = require('../auth').verifyStudentSession;
 const { uploadApplication,
         getApplicationStatus } = require("../controllers/applicationController");
 
-const upload = multer({ dest: "upload/" });
+const upload = multer({ dest: "./upload/" });
 
 router.post("/upload", upload.single("document"), verifyStudentSession, uploadApplication);
 

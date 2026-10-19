@@ -14,20 +14,17 @@ function ApplyForProject({
     e.preventDefault();
 
     try {
-        let appDetails = {
-          file: coverLetter,
-          ID: project.ID,
-          Type: project.Type
-        }
+        const appDetails = new FormData();
+        appDetails.append("document", coverLetter);
+        appDetails.append("ID", project.ID);
+        appDetails.append("Type", project.Type);
+
 
         const response = await fetch(
             'http://localhost:3000/student/application/upload',
             {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(appDetails),
+                body: appDetails,
                 credentials: 'include'
             }
         );
@@ -46,7 +43,7 @@ function ApplyForProject({
                 errorMsg = data
             }
 
-            setFormErrors({general: errorMsg || 'Preference failed to submit!'});
+            setFormErrors({general: errorMsg || 'Project Application failed to submit!'});
             return;
         }
     }

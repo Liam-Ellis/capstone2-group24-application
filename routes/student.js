@@ -104,7 +104,6 @@ student.get('/project/:ID', validateParameters(validationSchemas.getProjectSchem
             delete project['ClientEmail'];
         }
 
-        delete project['ID'];
         res.status(200).json(project);
     }
 });
@@ -148,8 +147,6 @@ student.get('/projects/:round', validateParameters(validationSchemas.getProjects
                     }
                 }
             }
-
-            delete project['ID'];
         });
 
         res.status(200).json(projects);

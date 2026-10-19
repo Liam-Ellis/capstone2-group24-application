@@ -180,13 +180,13 @@ student.get('/prefs', verifyStudentSession, async (req, res) => {
     const user = await CapstoneStudent.findOne({Username: username}).lean();
 
     let prefs = {
-        PreferenceFor: [],
-        PreferenceAgainst: []
+        prefsFor: [],
+        prefsAgainst: []
     };
 
     if (user !== null) {
-        prefs.PreferenceFor = user.PreferenceFor;
-        prefs.PreferenceAgainst = user.PreferenceAgainst;
+        prefs.prefsFor = user.PreferenceFor;
+        prefs.prefsAgainst = user.PreferenceAgainst;
 
         res.status(200).json(prefs);
     } else {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./ApplyForProject.css";
 import UploadCoverLeter from "./UploadCoverLetter";
-import PreferencePage from "./preferencePage";
+import PreferenceComponent from "./PreferenceComponent";
 
 function ApplyForProject({ 
   onCancel,
@@ -29,7 +29,7 @@ function ApplyForProject({
         )}
 
         {project.Type.toLowerCase() === 'group' && (
-          <PreferencePage />
+          <PreferenceComponent />
         )}
 
         <form>

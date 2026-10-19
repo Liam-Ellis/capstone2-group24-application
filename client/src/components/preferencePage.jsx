@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PreferencePage.css'
 
@@ -7,22 +7,34 @@ function PreferencePage() {
         prefsFor: ["","","","",""],
         prefsAgainst: ["","","","",""],
     });
-
-    /*
-    const [prefs, setPrefs] = useState({
-        pref1: "",
-        pref2: "",
-        pref3: "",
-        pref4: "",
-        pref5: "",
-        dislikePref1: "",
-        dislikePref2: "",
-        dislikePref3: "",
-        dislikePref4: "",
-        dislikePref5: ""
-    });*/
-
+    
     const [formErrors, setFormErrors] = useState({});
+
+    useEffect(() => {
+        const getPrefs = async () => {
+            try {
+                const response = await fetch(
+                    'http://localhost:3000/student/prefs',
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include'
+                    }
+                );
+
+                const data = await response.json();
+                if(response.ok) {
+                    setPrefs(data);
+                }
+            }
+            catch (err) {
+            }
+        };
+
+        getPrefs();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -53,7 +65,7 @@ function PreferencePage() {
                 } else {
                     errorMsg = data
                 }
-                
+
                 setFormErrors({general: errorMsg || 'Preference failed to submit!'});
                 return;
             }
@@ -87,7 +99,7 @@ function PreferencePage() {
                     <div className="pref-form-section">
                     <p>Students you want <em>included</em> in your group</p>
                     {[1, 2, 3, 4, 5].map((n) => (
-                        <div className="preferences" key={`pref${n}`}>
+                        <div key={`pref${n}`}>
                             <label>
                                 {n}{n === 1 ? "st " : n === 2 ? "nd " : n === 3 ? "rd " : "th "} 
                                 Preference
@@ -104,7 +116,7 @@ function PreferencePage() {
 
                     <p>Students you want <em>excluded</em> from your group</p>
                     {[1, 2, 3, 4, 5].map((n) => (
-                        <div className="preferences" key={`dislikePref${n}`}>
+                        <div key={`dislikePref${n}`}>
                             <label>
                                 {n}{n === 1 ? "st " : n === 2 ? "nd " : n === 3 ? "rd " : "th "} 
                                 Preference

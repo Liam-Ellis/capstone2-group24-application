@@ -1,5 +1,5 @@
-const Application = require("../models/ApplicationModel.js");
-const Round = require("../models/RoundModel.js");
+const Application = require("../models/ProjectApplication.js");
+const Round = require("../models/Round.js");
 
 const uploadApplication = async (req, res) => {
     try {
@@ -36,7 +36,8 @@ const getApplicationStatus = async (req, res) => {
 
         if (!round) {
             return res.json({
-                status: "CLOSED"
+                applied: false,
+                message: "Not Applied"
             });
         }
 
@@ -45,13 +46,15 @@ const getApplicationStatus = async (req, res) => {
         // round opened but student has not applied
         if (!application) {
             return res.json({
-                status: "NOT_APPLIED"
+                applied: false,
+                message: "Not Applied"
             });
         }
 
         // student has applied
         return res.json({
-            status: application.status
+            applied: true,
+            message: "Applied"
         });
     }
     catch (error) {

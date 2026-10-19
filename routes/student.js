@@ -168,7 +168,15 @@ student.post('/prefs', validateBodyParameters(validationSchemas.postPrefsSchema)
         user.PreferenceAgainst = prefsAgainst;
         await user.save();
 
-        res.sendStatus(200);
+        let prefs = {
+            prefsFor: [],
+            prefsAgainst: []
+        };
+
+        prefs.prefsFor = user.PreferenceFor;
+        prefs.prefsAgainst = user.PreferenceAgainst;
+
+        res.status(200).json(prefs);
     } else {
         res.sendStatus(500);
     }

@@ -62,8 +62,8 @@ function DownloadApplicationsComponent () {
 
     return (
         <div className="downloadapplications-container">
-            <div>
-                <div className="form-container">
+            <div className="form-container2">
+                <div className="round-card">
                     <div className="form-section">
                     <div className="top-row">
                         <label>

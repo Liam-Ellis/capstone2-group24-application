@@ -9,10 +9,10 @@ function ApplyForProject({
 }) {
 
   return (
-    <div className="add-project-overlay">
-      <div className="add-project-form">
+    <div className="apply-project-overlay">
+      <div className="apply-project-form">
 
-        <div className="add-project-header">
+        <div className="apply-project-header">
           <h2>Apply For Project</h2>
 
           <button

@@ -41,7 +41,6 @@ function UC_Dashboard() {
           <p></p>
         </section>
 
-        <SemesterSelector />
         {/* Units */}
         <section className="units-section">
             <h2>Units</h2>
@@ -68,29 +67,3 @@ function UC_Dashboard() {
 }
 
 export default UC_Dashboard;
-
-import { useState } from "react";
-
-
-function SemesterSelector() {
-  const [semester, setSemester] = useState("");
-  const [year, setYear] = useState("2026");
-
-  return (
-    <div className="semester-selector">
-      <label htmlFor="year">Year:</label>
-      <select id="year" value={year} onChange={(e) => setYear(e.target.value)}>
-        <option value="2026">2026</option>
-        <option value="2027">2027</option>
-        <option value="2028">2028</option>
-      </select>
-
-      <label htmlFor="semester">Semester:</label>
-      <select id="semester" value={semester} onChange={(e) => setSemester(e.target.value)}>
-        <option value="">All Semesters</option>
-        <option value="Semester 1">Semester 1</option>
-        <option value="Semester 2">Semester 2</option>
-      </select>
-    </div>
-  );
-}

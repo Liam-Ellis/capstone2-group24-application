@@ -19,16 +19,6 @@
   gap: 200px;
 }
 
-.top-row select {
-  width: 150px;
-  padding: 15px;
-  border-radius: 15px;
-  border: none;
-  background-color:rgba(39, 57, 5, 0.331);
-  color: rgb(242, 237, 237);
-  font-size: 15px;
-}
-
 .student-list {
   width: 100%;
 }
@@ -80,6 +70,20 @@
   text-align: center;
   margin-bottom: 20px;
   font-family: Arial, sans-serif;
+}
+
+.downloadapplications-container button {
+    background-color: #B58B0B;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.2s ease;
+}
+
+.downloadapplications-container button:hover {
+    background-color: #4f3e00;
 }
 
 

@@ -13,12 +13,18 @@ const ProjectApplicationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    Status: {
+        type: String,
+        enum: ["APPLIED", "NOT APPLIED", "SUCCESSFUL", "UNSUCCESSFUL"],
+        default: "NOT APPLIED",
+        required: true
+    },
     Resume: {
         type: Buffer
     },
     CoverLetter: {
         type: Buffer
-    }
+    },
 }, {
     timestamps: true
 });

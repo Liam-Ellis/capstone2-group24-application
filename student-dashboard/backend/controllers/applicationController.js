@@ -8,15 +8,26 @@ const uploadApplication = async (req, res) => {
                 message: "No file uploaded"
             });
         }
+
+        const { Student, Project, Type } = req.body;
+    
+        if (!Student || !Project || !Type ) {
+            return res.status(400).json({
+                message: "Missing required fields"
+            });
+        }
         
         const application = await Application.create({
-            document: req.file.filename,
-            status: "APPLIED"
+            Student,
+            Project,
+            Type,
+            Resume: req.file.filename,
+            Status: "APPLIED"
         });
 
         res.status(201).json({
             message: "Application submitted successfully!",
-            status: application.status
+            status: application.Status
         });
     }
     catch (err) {
@@ -29,15 +40,18 @@ const uploadApplication = async (req, res) => {
 
 const getApplicationStatus = async (req, res) => {
     try {
-        // find if round is open
+        const now = new Date();
+
         const round = await Round.findOne({
-            status: "OPEN"
+            StartDate: { $lte: now },
+            EndDate: { $gte: now }
         });
 
         if (!round) {
-            return res.json({
+            return res.status(200).json({
+                roundStatus: "CLOSED",
                 applied: false,
-                message: "Not Applied"
+                message: "This application round is closed."
             });
         }
 
@@ -45,14 +59,16 @@ const getApplicationStatus = async (req, res) => {
 
         // round opened but student has not applied
         if (!application) {
-            return res.json({
+            return res.status(200).json({
+                roundStatus: "OPEN",
                 applied: false,
                 message: "Not Applied"
             });
         }
 
         // student has applied
-        return res.json({
+        return res.status(200).json({
+            roundStatus: "OPEN",
             applied: true,
             message: "Applied"
         });

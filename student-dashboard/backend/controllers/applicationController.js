@@ -40,27 +40,22 @@ const uploadApplication = async (req, res) => {
 
 const getApplicationStatus = async (req, res) => {
     try {
-        const now = new Date();
+        const { Student, Project } = req.query;
 
-        const round = await Round.findOne({
-            StartDate: { $lte: now },
-            EndDate: { $gte: now }
-        });
-
-        if (!round) {
-            return res.status(200).json({
-                roundStatus: "CLOSED",
-                applied: false,
-                message: "This application round is closed."
+        if (!Student || !Project ) {
+            return res.status(400).json({
+                message: "Missing required fields"
             });
         }
 
-        const application = await Application.findOne();
+        const application = await Application.findOne({
+            Student: Student,
+            Project: Project
+        });
 
         // round opened but student has not applied
         if (!application) {
             return res.status(200).json({
-                roundStatus: "OPEN",
                 applied: false,
                 message: "Not Applied"
             });
@@ -68,15 +63,15 @@ const getApplicationStatus = async (req, res) => {
 
         // student has applied
         return res.status(200).json({
-            roundStatus: "OPEN",
             applied: true,
-            message: "Applied"
+            message: "Applied",
+            status: application.Status
         });
     }
     catch (error) {
         console.error("Unable to get application status: ", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             message: "Unable to get application status"
         });
     }

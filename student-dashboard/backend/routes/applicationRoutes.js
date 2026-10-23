@@ -9,7 +9,7 @@ const upload = multer({ dest: "upload/" });
 
 router.post("/upload", upload.single("document"), uploadApplication);
 
-router.get("/status", getApplicationStatus);
+router.get("/status", express.json(), getApplicationStatus);
 
 module.exports = router;
  

@@ -1,5 +1,4 @@
 const Application = require("../models/ProjectApplication.js");
-const Round = require("../models/Round.js");
 
 const uploadApplication = async (req, res) => {
     try {
@@ -17,17 +16,21 @@ const uploadApplication = async (req, res) => {
             });
         }
         
-        const application = await Application.create({
-            Student,
-            Project,
+        if (!["Resume", "CoverLetter"].includes(Type)) {
+            return res.status(400).json({
+                message: "Type must be either Resume or Cover Letter"
+            });
+        }
+
+        await Application.create({
+            Student, 
+            Project, 
             Type,
-            Resume: req.file.filename,
-            Status: "APPLIED"
+            [Type]: req.file.buffer
         });
 
         res.status(201).json({
             message: "Application submitted successfully!",
-            status: application.Status
         });
     }
     catch (err) {
@@ -49,24 +52,11 @@ const getApplicationStatus = async (req, res) => {
         }
 
         const application = await Application.findOne({
-            Student: Student,
-            Project: Project
+            Student, Project
         });
-
-        // round opened but student has not applied
-        if (!application) {
-            return res.status(200).json({
-                applied: false,
-                message: "Not Applied"
-            });
-        }
 
         // student has applied
-        return res.status(200).json({
-            applied: true,
-            message: "Applied",
-            status: application.Status
-        });
+        return res.status(200).json(!!application);
     }
     catch (error) {
         console.error("Unable to get application status: ", error);

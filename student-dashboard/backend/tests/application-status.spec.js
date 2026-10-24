@@ -22,8 +22,7 @@ test.describe('Verify get application status', () => {
             Student: appliedPair[0],
             Project: appliedPair[1],
             Type: "Resume",
-            Resume: "resume.pdf",
-            Status: "APPLIED"
+            Resume: Buffer.from("resume")
         });
     });
 
@@ -40,9 +39,7 @@ test.describe('Verify get application status', () => {
 
         const result = await response.json();
 
-        expect(result.applied).toBe(true);
-        expect(result.message).toBe('Applied');
-        expect(result.status).toBe('APPLIED');
+        expect(result).toBe(true);
     });
 
     test('Student has not applied for the application', async ({ request }) => {
@@ -52,8 +49,7 @@ test.describe('Verify get application status', () => {
 
         const result = await response.json();
 
-        expect(result.applied).toBe(false);
-        expect(result.message).toBe('Not Applied');
+        expect(result).toBe(false);
     });
 
 });

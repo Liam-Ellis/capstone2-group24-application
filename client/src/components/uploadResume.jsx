@@ -28,13 +28,15 @@ function UploadResume({ applicationUploaded }) {
         saveData.append("document", application.document);
 
         try {
-            const response = await fetch(
-                "http://localhost:3000/api/application/upload",
-                {
-                    method: "POST",
-                    body: saveData
-                }
-            );
+const saveData = new FormData();
+            saveData.append("document", application.document);
+            //TODO: this needs to be replaced by student's ID
+            saveData.append("StudentID", '00000000')
+
+            const response = await fetch('http://localhost:3000/UC/api/saveStudentResume', {
+                method: 'POST',
+                body: saveData
+            });
 
             const data = await response.json();
             if(!response.ok) {

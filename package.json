@@ -7,11 +7,11 @@
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
-    "mongodb": "^7.6.0",
-    "mongoose": "^9.9.4",
-    "multer": "^2.3.0",
     "joi": "^18.2.5",
     "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.6.0",
+    "mongoose": "^9.9.4",
+    "multer": "^2.4.0",
     "node.js": "^0.0.1-security",
     "nodemailer": "^9.0.5",
     "pug": "^3.0.4",
@@ -42,5 +42,8 @@
   "bugs": {
     "url": "https://bitbucket.org/curtincomputingprojects/bentley-sem-1-24/issues"
   },
-  "homepage": "https://bitbucket.org/curtincomputingprojects/bentley-sem-1-24#readme"
+  "homepage": "https://bitbucket.org/curtincomputingprojects/bentley-sem-1-24#readme",
+  "allowScripts": {
+    "multer@2.4.0": true
+  }
 }

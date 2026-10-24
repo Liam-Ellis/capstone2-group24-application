@@ -17,11 +17,13 @@ const ProjectApplicationSchema = new mongoose.Schema({
   },
 
   Resume: {
-    type: Buffer,
+    data: Buffer,
+    contentType: String
   },
 
   CoverLetter: {
-    type: Buffer,
+    data: Buffer,
+    contentType: String
   },
 }, { timestamps: true });
 

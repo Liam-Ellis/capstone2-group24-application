@@ -77,6 +77,18 @@ ucBackend.get('/api/requestAllProjects', async (req, res) =>{
     res.send(JSON.stringify(groups))
 });
 
+ucBackend.get('/api/requestAllGroupApplicationsForStudent/:ID', async (req, res) => {
+    const StudentID = req.params.ID
+    const groups = await ProjectApplication.find(
+        {
+            Student: StudentID,
+            Type: "Group"
+        }
+    ).lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(groups))
+});
+
 ucBackend.post('/api/SaveNewProject', async (req, res) => {
     const inProject = req.body
     console.log("saving new project: \n" + inProject + "\n")

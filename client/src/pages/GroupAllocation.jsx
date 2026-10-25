@@ -5,11 +5,15 @@ import Sidebar from "./Sidebar";
 
 
 function GroupAllocation() {
+    const [students, setStudents] = useState([]);
+    const [groups, setGroups] = useState([]);
+
     let studentResponse = null;
-    let initialStudents = null;
+    let initialStudents = []
 
     let groupResponse = null;
-    let initialGroups = null;
+    let initialGroups = [];
+
 
     const majors = [
         "Computer Science",
@@ -18,13 +22,33 @@ function GroupAllocation() {
         "Information Technology"
     ];
     
-    const capstoneProjects = [
+    //instead of being an array of Strings this will be an array of JS objects.
+    let capstoneProjects = [];
+    /*here's an example of one of the objects in the capstoneProjects array:
+    {
+        _id: ObjectId('6aae18f92ec69bab9ff6f935'),
+        ID: '2',
+        Type: 'Group',
+        Round: NumberInt('2'),
+        Name: 'Web Accessibility Project',
+        Client: 'AWS',
+        ClientEmail: 'jeff@amazon.com',
+        Description: 'The best project',
+        IntendedSize: NumberInt('5')
+    }
+    use ID, NOT _id.
+    Name is not unique, so don't use that as an identifier
+    */
+
+    
+    // old mock data for capsontProject
+    let oldCapstoneProjects = [
     "CAP001",
     "CAP002",
     "CAP003",
     "CAP004",
     "CAP005"
-    ];
+    ]
 
     const GROUPS_STORAGE_KEY = "groupAllocationGroups";
 
@@ -53,6 +77,28 @@ function GroupAllocation() {
         }
     }
 
+    async function addApplicationsToStudent(student)
+    {
+        const FetchURL = 'http://localhost:3000/UC/api/requestAllGroupApplicationsForStudent/' + student.StudentID
+        const applicationsResponse = await fetch(FetchURL, {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                }
+        });
+        const studentProjects = await applicationsResponse.json()
+        student.AppliedProjects = []
+
+        if(studentProjects != null)
+        {
+            for(let i = 0; i < studentProjects.length; i++)
+            {
+                student.push(studentProjects[i].ID)
+            }
+        }
+        
+    }
+
     const startUp = async () => {
         studentResponse = await fetch('http://localhost:3000/UC/api/requestAllCapstoneStudents', {
                 method: 'GET',
@@ -63,6 +109,7 @@ function GroupAllocation() {
                     
 
         initialStudents = await studentResponse.json()
+        await initialStudents.forEach(addApplicationsToStudent)
         /* here's what a student looks like:
         {
         _id: ObjectId('6aa7f5cb71fa1200412a2b34'),
@@ -151,7 +198,7 @@ function GroupAllocation() {
                     headers: {
                     'Content-Type': 'application/json', // Tells backend to parse as JSON
                     }
-                    });
+        });
                     
         initialGroups = await groupResponse.json()
         /* here's what a group looks like:
@@ -172,14 +219,22 @@ function GroupAllocation() {
         }*/
         initialGroups.forEach(addRelevantStudents)
 
+        const projectResponse = await fetch('http://localhost:3000/UC/api/requestAllGroupProjects', {
+                    method: 'GET',
+                    headers: {
+                    'Content-Type': 'application/json', // Tells backend to parse as JSON
+                    }
+        });
+        capstoneProjects = await projectResponse.json()
 
+
+        setStudents(initialStudents)
+        setGroups(initialGroups)
     }
-
+    
     startUp();
-/* PR and commit test */
 
-    const [students] = useState(initialStudents);
-    const [groups, setGroups] = useState(initialGroups);
+    
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [majorFilter, setMajorFilter] = useState("All");
@@ -200,6 +255,7 @@ function GroupAllocation() {
         }
     };
 
+    console.log("groups: " + groups)
     const allocatedStudentIds = groups.flatMap((group) =>
         group.StudentObjects.map((student) => student.StudentID)
     );
@@ -694,7 +750,7 @@ function GroupAllocation() {
                                                 -- Select a project --
                                             </option>
 
-                                            {capstoneProjects.map((project) => (
+                                            {oldCapstoneProjects.map((project) => (
                                                 <option
                                                     key={project}
                                                     value={project}

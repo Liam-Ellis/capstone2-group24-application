@@ -5,11 +5,14 @@ import Sidebar from "./Sidebar";
 
 
 function GroupAllocation() {
+    const [students, setStudents] = useState([]);
+    const [groups, setGroups] = useState([]);
+
     let studentResponse = null;
-    let initialStudents = null;
+    let initialStudents = [];
 
     let groupResponse = null;
-    let initialGroups = null;
+    let initialGroups = [];
 
     const majors = [
         "Computer Science",
@@ -163,13 +166,12 @@ function GroupAllocation() {
         }*/
         initialGroups.forEach(addRelevantStudents)
 
-
+        setStudents(initialStudents)
+        setGroups(initialGroups)
     }
 
     startUp();
 
-    const [students] = useState(initialStudents);
-    const [groups, setGroups] = useState(initialGroups);
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [majorFilter, setMajorFilter] = useState("All");

@@ -8,21 +8,37 @@ const initialStudents = [
         firstName: "Jeffrey",
         familyName: "Hale",
         cwa: 67.905,
-        major: "Computer Science"
+        major: "Computer Science",
+        preferredProjects: [
+            "CAP001",
+            "CAP002"
+        ],
+        preferredTeammates: ["21425286", "21983473"]
+        
     },
     {
         id: "21425286",
         firstName: "Santiago",
         familyName: "Rice",
         cwa: 65.579,
-        major: "Software Engineering"
+        major: "Software Engineering",
+        preferredProjects: [
+            "CAP003",
+            "CAP004"
+        ],       
+        preferredTeammates: ["21433273"]
     },
     {
         id: "21983473",
         firstName: "Sondra",
         familyName: "Esparza",
         cwa: 72.625,
-        major: "Cyber Security"
+        major: "Cyber Security",
+        preferredProjects: [
+            "CAP005",
+            "CAP006"
+        ]        
+        
     },
     {
         id: "21093723",
@@ -80,6 +96,17 @@ const majors = [
     "Information Technology"
 ];
 
+const capstoneProjects = [
+    "CAP001",
+    "CAP002",
+    "CAP003",
+    "CAP004",
+    "CAP005"
+];
+
+
+
+
 /* PR and commit test */
 
 function GroupAllocation() {
@@ -88,20 +115,22 @@ function GroupAllocation() {
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [majorFilter, setMajorFilter] = useState("All");
+    const [allocationFilter, setAllocationFilter] = useState("unallocated");
     const [saveMessage, setSaveMessage] = useState("");
+    const [projectFilter, setProjectFilter] = useState("all");
 
     const handleSaveChanges = () => {
-    try {
-        localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
-        setSaveMessage("Changes saved successfully.");
-    } catch (error) {
-        console.error("Failed to save groups:", error);
-        setSaveMessage("Failed to save changes. Please try again.");
-    }
+        try {
+            localStorage.setItem(
+                GROUPS_STORAGE_KEY,
+                JSON.stringify(groups)
+            );
+            setSaveMessage("Changes saved successfully.");
+        } catch (error) {
+            console.error("Failed to save groups:", error);
+            setSaveMessage("Failed to save changes. Please try again.");
+        }
     };
-    
-    const [allocationFilter, setAllocationFilter] = useState("unallocated");
-
 
     const allocatedStudentIds = groups.flatMap((group) =>
         group.students.map((student) => student.id)
@@ -124,10 +153,14 @@ function GroupAllocation() {
             allocationFilter === "all" ||
             (allocationFilter === "allocated" && isAllocated) ||
             (allocationFilter === "unallocated" && !isAllocated);
+        const matchesProject =
+            projectFilter === "all" ||
+            student.preferredProjects?.includes(projectFilter);
 
-        return matchesSearch && matchesMajor && matchesAllocation;
+
+
+        return matchesSearch && matchesMajor && matchesAllocation && matchesProject;
     });
-
 
     const unallocatedStudents = students.filter(
         (student) => !allocatedStudentIds.includes(student.id)
@@ -138,13 +171,11 @@ function GroupAllocation() {
             return;
         }
 
-        setSelectedStudents((current) => {
-            if (current.includes(studentId)) {
-                return current.filter((id) => id !== studentId);
-            }
-
-            return [...current, studentId];
-        });
+        setSelectedStudents((current) =>
+            current.includes(studentId)
+                ? current.filter((id) => id !== studentId)
+                : [...current, studentId]
+        );
     };
 
     const createGroup = () => {
@@ -157,9 +188,26 @@ function GroupAllocation() {
             ...current,
             {
                 id: nextGroupId,
+                project: "",
                 students: []
             }
         ]);
+
+        setSaveMessage("");
+    };
+
+
+    
+    const assignProject = (groupId, projectName) => {
+        setGroups((current) =>
+            current.map((group) =>
+                group.id === groupId
+                    ? { ...group, project: projectName }
+                    : group
+            )
+        );
+
+        setSaveMessage("");
     };
 
     const addStudentsToGroup = (groupId) => {
@@ -183,6 +231,7 @@ function GroupAllocation() {
         );
 
         setSelectedStudents([]);
+        setSaveMessage("");
     };
 
     const removeStudentFromGroup = (groupId, studentId) => {
@@ -198,32 +247,39 @@ function GroupAllocation() {
                     : group
             )
         );
+
+        setSaveMessage("");
     };
 
     const removeGroup = (groupId) => {
         setGroups((current) =>
             current.filter((group) => group.id !== groupId)
         );
+
+        setSaveMessage("");
     };
 
     const resetAllocation = () => {
         setGroups([]);
         setSelectedStudents([]);
+        setSaveMessage("");
     };
 
+    const [preferredProjectFilter, setPreferredProjectFilter] = useState("all");
 
+
+    
 
     return (
-    <div className="group-allocation-layout">
-        <Sidebar />    
-        
-        <div className="group-allocation-page">
-            <div className="allocation-header">
-                <div>
-                    <h1>Group Allocation</h1>
-                </div>
+        <div className="group-allocation-layout">
+            <Sidebar />
 
-                {groups.length > 0 && (
+            <div className="group-allocation-page">
+                <div className="allocation-header">
+                    <div>
+                        <h1>Group Allocation</h1>
+                    </div>
+
                     <div className="header-buttons">
                         <button
                             className="reset-button"
@@ -232,329 +288,424 @@ function GroupAllocation() {
                             Reset Allocation
                         </button>
 
-                        <button className="save-button" onClick={handleSaveChanges}>
-                        Save Changes
+                        <button
+                            className="save-button"
+                            onClick={handleSaveChanges}
+                        >
+                            Save Changes
                         </button>
+
                         {saveMessage && (
-                        <p role="status" aria-live="polite">
-                            {saveMessage}
-                        </p>
+                            <p role="status" aria-live="polite">
+                                {saveMessage}
+                            </p>
                         )}
                     </div>
-                )}
-            </div>
-
-            <div className="allocation-summary">
-                <div className="summary-card">
-                    <span className="summary-label">Students</span>
-                    <span className="summary-number">{students.length}</span>
                 </div>
 
-                <div className="summary-card">
-                    <span className="summary-label">Allocated</span>
-                    <span className="summary-number">
-                        {allocatedStudentIds.length}
-                    </span>
+                <div className="allocation-summary">
+                    <div className="summary-card">
+                        <span className="summary-label">Students</span>
+                        <span className="summary-number">
+                            {students.length}
+                        </span>
+                    </div>
+
+                    <div className="summary-card">
+                        <span className="summary-label">Allocated</span>
+                        <span className="summary-number">
+                            {allocatedStudentIds.length}
+                        </span>
+                    </div>
+
+                    <div className="summary-card">
+                        <span className="summary-label">Groups</span>
+                        <span className="summary-number">
+                            {groups.length}
+                        </span>
+                    </div>
+
+                    <div className="summary-card">
+                        <span className="summary-label">Unallocated</span>
+                        <span
+                            className={`summary-number ${
+                                unallocatedStudents.length > 0
+                                    ? "has-unallocated"
+                                    : ""
+                            }`}
+                        >
+                            {unallocatedStudents.length}
+                        </span>
+                    </div>
                 </div>
 
-                <div className="summary-card">
-                    <span className="summary-label">Groups</span>
-                    <span className="summary-number">{groups.length}</span>
-                </div>
-
-                <div className="summary-card">
-                    <span className="summary-label">Unallocated</span>
-                    <span className={`summary-number ${ unallocatedStudents.length > 0 ? "has-unallocated" : "" }`} > {unallocatedStudents.length}
-                    </span>
-                </div>
-            </div>
-
-            <div className="allocation-content">
-                <section className="students-panel">
-                    <div className="panel-header">
-                        <div>
+                <div className="allocation-content">
+                    <section className="students-panel">
+                        <div className="panel-header">
                             <h2>Students List</h2>
                         </div>
-                    </div>
 
-                    <div className="student-filters">
-                        <input
-                            type="text"
-                            placeholder="Search students..."
-                            value={searchTerm}
-                            onChange={(event) =>
-                                setSearchTerm(event.target.value)
-                            }
-                        />
+                        <div className="student-filters">
+                            <input
+                                type="text"
+                                placeholder="Search students..."
+                                value={searchTerm}
+                                onChange={(event) =>
+                                    setSearchTerm(event.target.value)
+                                }
+                            />
 
-                        <select
-                            value={majorFilter}
-                            onChange={(event) =>
-                                setMajorFilter(event.target.value)
-                            }
-                        >
-                            <option value="All">All Majors</option>
+                            <select
+                                value={majorFilter}
+                                onChange={(event) =>
+                                    setMajorFilter(event.target.value)
+                                }
+                            >
+                                <option value="All">All Majors</option>
+                                {majors.map((major) => (
+                                    <option key={major} value={major}>
+                                        {major}
+                                    </option>
+                                ))}
+                            </select>
 
-                            {majors.map((major) => (
-                                <option key={major} value={major}>
-                                    {major}
-                                </option>
-                            ))}
-                        </select>
+                            <select
+                                value={allocationFilter}
+                                onChange={(event) =>
+                                    setAllocationFilter(event.target.value)
+                                }
+                            >
+                                <option value="all">All Students</option>
+                                <option value="allocated">Allocated</option>
+                                <option value="unallocated">Unallocated</option>
+                            </select>
+                            <select
+                                value={projectFilter}
+                                onChange={(e) => setProjectFilter(e.target.value)}
+                            >
+                                <option value="all">Preferred Projects</option>
+                                <option value="CAP001">CAP001</option>
+                                <option value="CAP002">CAP002</option>
+                                <option value="CAP003">CAP003</option>
+                                <option value="CAP004">CAP004</option>
+                                <option value="CAP005">CAP005</option>
+                            </select>
+                        </div>
 
+                        <div className="student-list">
+                            {filteredStudents.map((student) => {
+                                const isSelected =
+                                    selectedStudents.includes(student.id);
 
-                        <select
-                            value={allocationFilter}
-                            onChange={(event) => setAllocationFilter(event.target.value)}
-                        >
-                            <option value="allocated">Allocated</option>
-                            <option value="unallocated">Unallocated</option>
-                        </select>
+                                const isAllocated =
+                                    allocatedStudentIds.includes(student.id);
 
-
-                    </div>
-
-                    <div className="student-list">
-                        {filteredStudents.map((student) => {
-                            const isSelected = selectedStudents.includes(
-                                student.id
-                            );
-
-                            const isAllocated = allocatedStudentIds.includes(
-                                student.id
-                            );
-
-                            return (
-                                <div
-                                    key={student.id}
-                                    className={`student-item ${
-                                        isSelected ? "selected" : ""
-                                    } ${isAllocated ? "allocated" : ""}`}
-                                    onClick={() =>
-                                        toggleStudent(student.id)
-                                    }
-                                >
-                                    <div className="student-checkbox">
-                                        <input
-                                            type="checkbox"
-                                            checked={isSelected}
-                                            disabled={isAllocated}
-                                            onChange={() =>
-                                                toggleStudent(student.id)
-                                            }
-                                            onClick={(event) =>
-                                                event.stopPropagation()
-                                            }
-                                        />
-                                    </div>
-
-                                    <div className="student-info">
-                                        <strong>
-                                            {student.firstName}{" "}
-                                            {student.familyName}
-                                        </strong>
-
-                                        
-
-                                        <div className="student-meta">
-                                            <span className={`student-major ${student.major
-                                                .toLowerCase()
-                                                .replaceAll(" ", "-")}`}>
-                                                {student.major}
-                                            </span>
-
-                                            <span>{student.id}</span>
-
-                                            <span>
-                                                CWA {student.cwa.toFixed(3)}
-                                            </span>
+                                return (
+                                    <div
+                                        key={student.id}
+                                        className={`student-item ${
+                                            isSelected ? "selected" : ""
+                                        } ${isAllocated ? "allocated" : ""}`}
+                                        onClick={() =>
+                                            toggleStudent(student.id)
+                                        }
+                                    >
+                                        <div className="student-checkbox">
+                                            <input
+                                                type="checkbox"
+                                                checked={isSelected}
+                                                disabled={isAllocated}
+                                                onChange={() =>
+                                                    toggleStudent(student.id)
+                                                }
+                                                onClick={(event) =>
+                                                    event.stopPropagation()
+                                                }
+                                            />
                                         </div>
+
+                                        <div className="student-info">
+                                            <strong>
+                                                {student.firstName}{" "}
+                                                {student.familyName}
+                                            </strong>
+
+                                            <div className="student-meta">
+                                                <span
+                                                    className={`student-major ${student.major
+                                                        .toLowerCase()
+                                                        .replaceAll(" ", "-")}`}
+                                                >
+                                                    {student.major}
+                                                </span>
+
+                                                <span>{student.id}</span>
+                                                <span>
+                                                    CWA {student.cwa.toFixed(3)}
+                                                </span>
+                                            </div>
+                                            <div className="student-preferred-projects">
+                                                <strong>Preferred Projects:</strong>
+
+                                                {student.preferredProjects?.length > 0 ? (
+                                                    <div className="preferred-project-tags">
+                                                        {student.preferredProjects.map((project) => (
+                                                            <span key={project} className="preferred-project-tag">
+                                                                {project}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <span>No preferences provided</span>
+                                                )}
+                                            </div>
+                                            <div className="student-preferred-teammates">
+                                                <strong>Preferred Teammates:</strong>
+
+                                                {student.preferredTeammates?.length > 0 ? (
+                                                    <div className="preferred-teammate-tags">
+                                                        {student.preferredTeammates.map((teammateId) => {
+                                                            const teammate = students.find(
+                                                                (item) => item.id === teammateId
+                                                            );
+
+                                                            return (
+                                                                <span
+                                                                    key={teammateId}
+                                                                    className="preferred-teammate-tag"
+                                                                >
+                                                                    {teammate
+                                                                        ? `${teammate.firstName} ${teammate.familyName}`
+                                                                        : teammateId}
+                                                                </span>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <span>No preferences provided</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {isAllocated && (
+                                            <span className="allocated-label material-symbols-outlined">
+                                                check_circle
+                                            </span>
+                                        )}
                                     </div>
+                                );
+                            })}
 
-                                    {isAllocated && (
-                                        <span className="allocated-label material-symbols-outlined">
-                                            check_circle
-                                        </span>
-                                    )}
+                            {filteredStudents.length === 0 && (
+                                <div className="empty-state">
+                                    No students match your search or filter.
                                 </div>
-                            );
-                        })}
+                            )}
+                        </div>
 
-                        {filteredStudents.length === 0 && (
-                            <div className="empty-state">
-                                No students match your search or filter.
-                            </div>
-                        )}
-                    </div>
+                        <div className="selection-footer">
+                            <span>
+                                <strong>{selectedStudents.length}</strong>{" "}
+                                selected
+                            </span>
 
-                    <div className="selection-footer">
-                        <span>
-                            <strong>{selectedStudents.length}</strong>{" "}
-                            selected
-                        </span>
+                            {selectedStudents.length > 0 && (
+                                <span className="selection-help">
+                                    Select a group to add students
+                                </span>
+                            )}
+                        </div>
+                    </section>
+
+                    <section className="groups-panel">
+                        <div className="panel-header groups-panel-header">
+                            <h2>Group Allocation</h2>
+
+                            <button
+                                className="create-group-button"
+                                onClick={createGroup}
+                            >
+                                + Create Group
+                            </button>
+                        </div>
 
                         {selectedStudents.length > 0 && (
-                            <span className="selection-help">
-                                Select a group to add students
-                            </span>
-                        )}
-                    </div>
-                </section>
+                            <div className="selection-banner">
+                                <div>
+                                    <strong>
+                                        {selectedStudents.length} student
+                                        {selectedStudents.length !== 1
+                                            ? "s"
+                                            : ""}{" "}
+                                        selected
+                                    </strong>
 
-                <section className="groups-panel">
-                    <div className="panel-header groups-panel-header">
-                        <div>
-                            <h2>Group Allocation</h2>
-                        </div>
-
-                        <button
-                            className="create-group-button"
-                            onClick={createGroup}
-                        >
-                            + Create Group
-                        </button>
-                    </div>
-
-                    {selectedStudents.length > 0 && (
-                        <div className="selection-banner">
-                            <div>
-                                <strong>
-                                    {selectedStudents.length} student
-                                    {selectedStudents.length !== 1
-                                        ? "s"
-                                        : ""}{" "}
-                                    selected
-                                </strong>
-
-                                <span>
-                                    Choose a group below to add the selected
-                                    students.
-                                </span>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="groups-list">
-                        {groups.length === 0 && (
-                            <div className="groups-empty-state">
-
-
-                                <h3>There are currently no groups created</h3>
-
-                                <button
-                                    className="create-group-button large"
-                                    onClick={createGroup}
-                                >
-                                    + Create First Group
-                                </button>
+                                    <span>
+                                        Choose a group below to add the
+                                        selected students.
+                                    </span>
+                                </div>
                             </div>
                         )}
 
-                        {groups.map((group) => (
-                            <div className="group-card" key={group.id}>
-                                <div className="group-card-header">
-                                    <div>
-                                        <h3>Group {group.id}</h3>
+                        <div className="groups-list">
+                            {groups.length === 0 && (
+                                <div className="groups-empty-state">
+                                    <h3>
+                                        There are currently no groups created
+                                    </h3>
 
-                                        <span>
-                                            {group.students.length} student
-                                            {group.students.length !== 1
-                                                ? "s"
-                                                : ""}
+                                    <button
+                                        className="create-group-button large"
+                                        onClick={createGroup}
+                                    >
+                                        + Create First Group
+                                    </button>
+                                </div>
+                            )}
+
+                            {groups.map((group) => (
+                                <div className="group-card" key={group.id}>
+                                    <div className="group-card-header">
+                                        <div>
+                                            <h3>Group {group.id}</h3>
+
+                                            <span>
+                                                {group.students.length} student
+                                                {group.students.length !== 1
+                                                    ? "s"
+                                                    : ""}
+                                            </span>
+                                        </div>
+
+                                        <div className="group-actions">
+                                            {selectedStudents.length > 0 && (
+                                                <button
+                                                    className="add-to-group-button"
+                                                    onClick={() =>
+                                                        addStudentsToGroup(
+                                                            group.id
+                                                        )
+                                                    }
+                                                >
+                                                    + Add
+                                                </button>
+                                            )}
+
+                                            <button
+                                                className="remove-group-button"
+                                                onClick={() =>
+                                                    removeGroup(group.id)
+                                                }
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="group-project">
+                                        <label htmlFor={`project-${group.id}`}>
+                                            Capstone Project
+                                        </label>
+
+                                        <select
+                                            id={`project-${group.id}`}
+                                            value={group.project || ""}
+                                            onChange={(event) =>
+                                                assignProject(
+                                                    group.id,
+                                                    event.target.value
+                                                )
+                                            }
+                                        >
+                                            <option value="">
+                                                -- Select a project --
+                                            </option>
+
+                                            {capstoneProjects.map((project) => (
+                                                <option
+                                                    key={project}
+                                                    value={project}
+                                                >
+                                                    {project}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <span className="project-assignment-status">
+                                            {group.project
+                                                ? `Assigned: ${group.project}`
+                                                : "No project assigned"}
                                         </span>
                                     </div>
 
-                                    <div className="group-actions">
-                                        {selectedStudents.length > 0 && (
-                                            <button
-                                                className="add-to-group-button"
-                                                onClick={() =>
-                                                    addStudentsToGroup(
-                                                        group.id
-                                                    )
-                                                }
-                                            >
-                                                + Add
-                                            </button>
-                                        )}
+                                    <div className="group-students">
+                                        {group.students.length === 0 ? (
+                                            <div className="empty-group">
+                                                <span>
+                                                    No students in this group
+                                                </span>
 
-                                        <button
-                                            className="remove-group-button"
-                                            onClick={() =>
-                                                removeGroup(group.id)
-                                            }
-                                        >
-                                            Remove
-                                        </button>
+                                                <small>
+                                                    Select students from the
+                                                    list and click "Add".
+                                                </small>
+                                            </div>
+                                        ) : (
+                                            group.students.map((student) => (
+                                                <div
+                                                    className="group-student"
+                                                    key={student.id}
+                                                >
+                                                    <div className="group-student-info">
+                                                        <strong>
+                                                            {student.firstName}{" "}
+                                                            {student.familyName}
+                                                        </strong>
+
+                                                        <span>{student.id}</span>
+                                                    </div>
+
+                                                    <div className="group-student-details">
+                                                        <span
+                                                            className={`major-badge ${student.major
+                                                                .toLowerCase()
+                                                                .replaceAll(" ", "-")}`}
+                                                        >
+                                                            {student.major}
+                                                        </span>
+
+                                                        <strong>
+                                                            CWA:{" "}
+                                                            {student.cwa.toFixed(3)}
+                                                        </strong>
+
+                                                        <button
+                                                            className="remove-student-button"
+                                                            onClick={() =>
+                                                                removeStudentFromGroup(
+                                                                    group.id,
+                                                                    student.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
-
-                                <div className="group-students">
-                                    {group.students.length === 0 ? (
-                                        <div className="empty-group">
-                                            <span>
-                                                No students in this group
-                                            </span>
-
-                                            <small>
-                                                Select students from the list
-                                                and click "Add".
-                                            </small>
-                                        </div>
-                                    ) : (
-                                        group.students.map((student) => (
-                                            <div
-                                                className="group-student"
-                                                key={student.id}
-                                            >
-                                                <div className="group-student-info">
-                                                    <strong>
-                                                        {student.firstName}{" "}
-                                                        {student.familyName}
-                                                    </strong>
-
-                                                    <span>
-                                                        {student.id}
-                                                    </span>
-                                                </div>
-
-                                                <div className="group-student-details">
-                                                    <span className={`major-badge ${student.major
-                                                        .toLowerCase()
-                                                        .replaceAll(" ", "-")}`}>
-                                                        {student.major}
-                                                    </span>
-
-                                                    <strong>
-                                                        CWA: {student.cwa.toFixed(3)}
-                                                    </strong>
-
-                                                    <button
-                                                        className="remove-student-button"
-                                                        onClick={() =>
-                                                            removeStudentFromGroup(
-                                                                group.id,
-                                                                student.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
+                            ))}
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
-    </div>    
     );
-    
 }
+
 
 export default GroupAllocation;
 

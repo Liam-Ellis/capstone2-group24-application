@@ -6,6 +6,8 @@ import ApplicationProjects from './ApplicationProjects';
 import notification from '../assets/notification.png'
 
 function ApplicationPage() {
+    const navigate = useNavigate();
+
     const [rounds, setRounds] = useState([]);
         const [error, setError] = useState("");
     

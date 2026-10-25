@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+U:wght@100..900&display=swap');
+
+.projects-box {
+  background: white;
+  font-family: "M PLUS U", sans-serif;
+}
+
+.projects-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: -5px 10px 15px 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.projects-header h4 {
+  margin-top: -5px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.download-applications-btn {
+  background-color: #B58B0B;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.download-applications-btn:hover {
+  background-color: #4f3e00;
+}
+
+.projects-container {
+  display: flex;
+  width: 100%;
+  min-height: 250px;
+  gap: 0;
+}
+
+.project-list-section {
+  flex: 3;
+  background: #f5f7fa;
+  border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+
+  margin: 0;
+  padding: 0;
+}
+
+.project-list-header {
+  padding: 15px;
+  padding-bottom: 0px;
+  margin: 0;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.project-list-header h3 {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.project-list {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.project-item {
+  padding: 14px;
+  margin: 0;
+  background: #f5f7fa;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.project-item:hover {
+  background: #374151;
+  color: white;
+}
+
+.project-item:active {
+  background: #1f2937;
+}
+
+
+.project-details {
+  position: relative;
+  flex: 7;
+  background: white;
+  padding: 20px;
+  margin: 0;
+
+}
+
+.project-details h3 {
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.project-details p {
+  white-space: pre-line;
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+.project-buttons {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}

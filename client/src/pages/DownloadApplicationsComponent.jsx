@@ -1,110 +1,103 @@
 import './DownloadApplicationsComponent.css'
 import { useState } from "react";
+import WorkProjects from '../components/WorkProjects'
 
 function DownloadApplicationsComponent () {
-    const [project, setProject] = useState("");
-    const studentsList = {
-        project1: [
+    const [round, setRound] = useState(-1);
+    const [rounds, setRounds] = useState([]);
+    const [roundsList, setRoundsList] = useState([]);
+
+    //will be a 2 dimenstional array after startup. 
+    //first dimension is round, second is project. e.g. roundslist[0][2] would get look at round 1 and get the 3rd project 
+
+    const startUp = async () => {
+        //array of work projects
+        let workProjects = null 
+        //array of rounds.
+        let roundss = null
+        const projectsResponse = await fetch('http://localhost:3000/UC/api/requestAllWORKProjects', {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                }
+        });
+
+        workProjects = await projectsResponse.json()
+
+        const roundsResponse = await fetch('http://localhost:3000/UC/api/requestAllRounds', {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                }
+        });
+
+        roundss = await roundsResponse.json()
+        setRounds(roundss)
+
+        let roundssList = []
+
+        for (var j = 0; j < rounds.length; j++)
+        {
+            let row = []
+
+            for (var i = 0; i < workProjects.length; i++)
             {
-                id: 1,
-                name: "Kai Bennette",
-                submitted: "2026-02-01",
-                fileSize: "1.2MB"
-            },
-            {
-                id: 2,
-                name: "Maya Thompson",
-                submitted: "2026-01-29",
-                fileSize: "0.9MB"
+                try{
+                    if ((workProjects[i].Round - 1) === j){
+                        row.push(workProjects[i])
+                    }
+                } catch (err) {
+                    console.error("Unable to tie the project \'" + workProjects[i].Name + "\' to a round.", err);
+                } 
             }
-        ],
-        project2: [
-            {
-                id: 1,
-                name: "Theo Morgon",
-                submitted: "2026-02-01",
-                fileSize: "1.2MB"
-            },
-            {
-                id: 2,
-                name: "Aria Collins",
-                submitted: "2026-02-02",
-                fileSize: "1.1MB"
-            }
-        ],
-        project3: [
-            {
-                id: 1,
-                name: "Sienna Brooke",
-                submitted: "2026-02-02",
-                fileSize: "1.0MB"
-            },
-            {
-                id: 2,
-                name: "Luna Parker",
-                submitted: "2026-01-28",
-                fileSize: "0.9MB"
-            }
-        ]
-    };
+
+            roundssList.push(row)
+        }
+
+        setRoundsList(roundssList);
+    }
+
+    startUp();
 
     const inputChanges = (e) => {
-        setProject(e.target.value);
-    };
-
-    const handleDownloadAll = () => {
-        console.log("Downloading...", project);
-    };
-
-    const handleDownload = (student) => {
-        console.log("Downloading...", student.name);
+        if (e.target.value !== null && e.target.value != "") {
+            setRound(e.target.value);
+        } else {
+            setRound(-1);
+        }
     };
 
     return (
         <div className="downloadapplications-container">
             <div className="form-container2">
-                <div className="round-card">
+                <div className="download-card">
                     <div className="form-section">
-                    <div className="top-row">
-                        <label>
-                            Round
-                            <select 
-                                value={project}
-                                onChange={inputChanges}
-                            >
-                        
-                                <option value=""> Select an option </option>
-                                <option value="project1"> Round 1 </option>
-                                <option value="project2"> Round 2 </option>
-                                <option value="project3"> Round 3 </option>
-                            </select>
-                        </label>
+                        <div className="top-row">
+                            <label>
+                                Round
+                                <select 
+                                    value={round}
+                                    onChange={inputChanges}
+                                >
+                            
+                                    <option value=""> Select an option </option>
 
-                        <button 
-                            className="download-all"
-                            onClick={handleDownloadAll}
-                            disabled={!project}>
-                            Download All
-                        </button>
-                    </div>
-                </div>
-
-            {project && (
-                <div className="student-list">
-                    {studentsList[project].map((student) => (
-                        <div key={student.id} className="student-row">
-                            <span>{student.name}</span>
-                            <p> Submitted {student.submitted} · {student.fileSize} </p>
-                            <button onClick={() => handleDownload(student)}>
-                                Download
-                            </button>
+                                    {rounds.map((round) => (
+                                        <option
+                                        key={round.RoundNumber}
+                                        value={round.RoundNumber}
+                                        >
+                                        Round {round.RoundNumber}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
                         </div>
-                    ))
-                    }
-                </div>
+                    </div>
 
-            )}
-        </div>
+                    {round > -1 && (
+                        <WorkProjects roundNum={round} roundsList={roundsList} />)}
+                </div>
             </div>
         </div>
     )

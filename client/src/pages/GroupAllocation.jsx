@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./GroupAllocation.css";
 import Sidebar from "./Sidebar";
 
@@ -7,6 +7,17 @@ import Sidebar from "./Sidebar";
 function GroupAllocation() {
     const [students, setStudents] = useState([]);
     const [groups, setGroups] = useState([]);
+
+    
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [majorFilter, setMajorFilter] = useState("All");
+    const [allocationFilter, setAllocationFilter] = useState("unallocated");
+    const [saveMessage, setSaveMessage] = useState("");
+    const [projectFilter, setProjectFilter] = useState("all");
+
+    
+    
 
     let studentResponse = null;
     let initialStudents = []
@@ -23,7 +34,8 @@ function GroupAllocation() {
     ];
     
     //instead of being an array of Strings this will be an array of JS objects.
-    let capstoneProjects = [];
+
+    const [capstoneProjects, setCapstoneProjects] = useState([]);
     /*here's an example of one of the objects in the capstoneProjects array:
     {
         _id: ObjectId('6aae18f92ec69bab9ff6f935'),
@@ -42,6 +54,7 @@ function GroupAllocation() {
 
     
     // old mock data for capsontProject
+    
     let oldCapstoneProjects = [
     "CAP001",
     "CAP002",
@@ -93,23 +106,30 @@ function GroupAllocation() {
         {
             for(let i = 0; i < studentProjects.length; i++)
             {
-                student.push(studentProjects[i].ID)
+                student.AppliedProjects.push(studentProjects[i].ID)
             }
         }
         
     }
 
     const startUp = async () => {
-        studentResponse = await fetch('http://localhost:3000/UC/api/requestAllCapstoneStudents', {
+        const studentResponse = await fetch('http://localhost:3000/UC/api/requestAllCapstoneStudents', {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
                 }
         });
-                    
+        
+        const studentData = await studentResponse.json();
+        
 
-        initialStudents = await studentResponse.json()
-        await initialStudents.forEach(addApplicationsToStudent)
+        initialStudents = studentData;
+
+        await Promise.all(
+            initialStudents.map((student) => addApplicationsToStudent(student))
+        );
+
+        setStudents(initialStudents);
         /* here's what a student looks like:
         {
         _id: ObjectId('6aa7f5cb71fa1200412a2b34'),
@@ -201,6 +221,14 @@ function GroupAllocation() {
         });
                     
         initialGroups = await groupResponse.json()
+
+        initialGroups = initialGroups.map((group) => ({
+            ...group,
+            StudentObjects: students.filter((student) =>
+                (group.Students || []).includes(student.Name)
+            )
+        }));
+
         /* here's what a group looks like:
         {
         _id: ObjectId('6a8f0aea0b0ff87d37724f4f'),
@@ -225,22 +253,20 @@ function GroupAllocation() {
                     'Content-Type': 'application/json', // Tells backend to parse as JSON
                     }
         });
-        capstoneProjects = await projectResponse.json()
+
+        const projectData = await projectResponse.json();
+        setCapstoneProjects(projectData);
 
 
         setStudents(initialStudents)
         setGroups(initialGroups)
     }
     
-    startUp();
+    useEffect(() => {
+        startUp();
+    }, []);
 
     
-    const [selectedStudents, setSelectedStudents] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [majorFilter, setMajorFilter] = useState("All");
-    const [allocationFilter, setAllocationFilter] = useState("unallocated");
-    const [saveMessage, setSaveMessage] = useState("");
-    const [projectFilter, setProjectFilter] = useState("all");
 
     const handleSaveChanges = () => {
         try {
@@ -277,13 +303,17 @@ function GroupAllocation() {
             allocationFilter === "all" ||
             (allocationFilter === "allocated" && isAllocated) ||
             (allocationFilter === "unallocated" && !isAllocated);
+
+        /*
         const matchesProject =
             projectFilter === "all" ||
             student.preferredProjects?.includes(projectFilter);
+        */
 
 
-
-        return matchesSearch && matchesMajor && matchesAllocation && matchesProject;
+        return matchesSearch && matchesMajor && matchesAllocation
+        // && matchesProject
+        ;
     });
 
     const unallocatedStudents = students.filter(
@@ -302,20 +332,22 @@ function GroupAllocation() {
         );
     };
 
+
     const createGroup = () => {
         const nextGroupId =
             groups.length > 0
-                ? Math.max(...groups.map((group) => group.GroupNumber)) + 1
+                ? Math.max(...groups.map((group) => group.GroupNumber || 0)) + 1
                 : 1;
 
         setGroups((current) => [
             ...current,
             {
                 GroupNumber: nextGroupId,
-                students: [],
+                StudentObjects: [],
+                Students: [],
                 Confirmed: 0,
-                Project: '0',
-                Reason: '',
+                Project: "",
+                Reason: ""
             }
         ]);
 
@@ -336,6 +368,7 @@ function GroupAllocation() {
         setSaveMessage("");
     };
 
+
     const addStudentsToGroup = (groupId) => {
         if (selectedStudents.length === 0) {
             return;
@@ -349,9 +382,12 @@ function GroupAllocation() {
             current.map((group) =>
                 group.GroupNumber === groupId
                     ? {
-                          ...group,
-                          StudentObjects: [...group.StudentObjects, ...studentsToAdd]
-                      }
+                        ...group,
+                        StudentObjects: [
+                            ...(group.StudentObjects || []),
+                            ...studentsToAdd
+                        ]
+                    }
                     : group
             )
         );
@@ -360,22 +396,30 @@ function GroupAllocation() {
         setSaveMessage("");
     };
 
+
+
     const removeStudentFromGroup = (groupId, studentId) => {
         setGroups((current) =>
-            current.map((group) =>
-                group.GroupNumber === groupId
-                    ? {
-                          ...group,
-                          StudentObjects: group.Students.filter(
-                              (student) => student.StudentID !== studentId
-                          )
-                      }
-                    : group
-            )
+            current.map((group) => {
+                if (group.GroupNumber !== groupId) {
+                    return group;
+                }
+
+                const remainingStudents = (group.StudentObjects || []).filter(
+                    (student) => student.StudentID !== studentId
+                );
+
+                return {
+                    ...group,
+                    StudentObjects: remainingStudents,
+                    Students: remainingStudents.map((student) => student.Name)
+                };
+            })
         );
 
         setSaveMessage("");
     };
+
 
     const removeGroup = (groupId) => {
         setGroups((current) =>
@@ -391,7 +435,20 @@ function GroupAllocation() {
         setSaveMessage("");
     };
 
-    const [preferredProjectFilter, setPreferredProjectFilter] = useState("all");
+
+    const handleProjectChange = (groupNumber, projectID) => {
+        setGroups((current) =>
+            current.map((group) =>
+                group.GroupNumber === groupNumber
+                    ? { ...group, Project: projectID }
+                    : group
+            )
+        );
+
+        setSaveMessage("");
+    };
+
+
 
 
     
@@ -505,6 +562,7 @@ function GroupAllocation() {
                                 <option value="allocated">Allocated</option>
                                 <option value="unallocated">Unallocated</option>
                             </select>
+                            {/*
                             <select
                                 value={projectFilter}
                                 onChange={(e) => setProjectFilter(e.target.value)}
@@ -516,15 +574,16 @@ function GroupAllocation() {
                                 <option value="CAP004">CAP004</option>
                                 <option value="CAP005">CAP005</option>
                             </select>
+                            */}
                         </div>
 
                         <div className="student-list">
                             {filteredStudents.map((student) => {
                                 const isSelected =
-                                    selectedStudents.includes(student.id);
+                                    selectedStudents.includes(student.StudentID);
 
                                 const isAllocated =
-                                    allocatedStudentIds.includes(student.id);
+                                    allocatedStudentIds.includes(student.StudentID);
 
 
                             return (
@@ -572,6 +631,7 @@ function GroupAllocation() {
                                             </span>
                                         
                                             </div>
+                                            {/*
                                             <div className="student-preferred-projects">
                                                 <strong>Preferred Projects:</strong>
 
@@ -587,30 +647,59 @@ function GroupAllocation() {
                                                     <span>No preferences provided</span>
                                                 )}
                                             </div>
+                                            */}
                                             <div className="student-preferred-teammates">
                                                 <strong>Preferred Teammates:</strong>
 
-                                                {student.preferredTeammates?.length > 0 ? (
+                                                {student.PreferenceFor?.filter(
+                                                    (teammateId) => teammateId.trim() !== ""
+                                                ).length > 0 ? (
                                                     <div className="preferred-teammate-tags">
-                                                        {student.preferredTeammates.map((teammateId) => {
-                                                            const teammate = students.find(
-                                                                (item) => item.id === teammateId
-                                                            );
+                                                        {student.PreferenceFor
+                                                            .filter((teammateId) => teammateId.trim() !== "")
+                                                            .map((teammateId, index) => {
+                                                                const teammate = students.find(
+                                                                    (item) => item.StudentID === teammateId
+                                                                );
 
-                                                            return (
-                                                                <span
-                                                                    key={teammateId}
-                                                                    className="preferred-teammate-tag"
-                                                                >
-                                                                    {teammate
-                                                                        ? `${teammate.firstName} ${teammate.familyName}`
-                                                                        : teammateId}
-                                                                </span>
-                                                            );
-                                                        })}
+                                                                return (
+                                                                    <span
+                                                                        key={`${teammateId}-${index}`}
+                                                                        className="preferred-teammate-tag"
+                                                                    >
+                                                                        {teammate ? teammate.Name : teammateId}
+                                                                    </span>
+                                                                );
+                                                            })}
                                                     </div>
                                                 ) : (
                                                     <span>No preferences provided</span>
+                                                )}
+                                            </div>
+                                            <div className="student-avoid-teammates">
+                                                <strong>Avoid:</strong>
+
+                                                {student.PreferenceAgainst?.filter((studentId) => studentId.trim() !== "").length > 0 ? (
+                                                    <div className="avoid-teammate-tags">
+                                                    {student.PreferenceAgainst
+                                                        .filter((studentId) => studentId.trim() !== "")
+                                                        .map((studentId, index) => {
+                                                        const teammate = students.find(
+                                                            (item) => item.StudentID === studentId
+                                                        );
+
+                                                        return (
+                                                            <span
+                                                            key={`${studentId}-${index}`}
+                                                            className="avoid-teammate-tag"
+                                                            >
+                                                            {teammate ? teammate.Name : studentId}
+                                                            </span>
+                                                        );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <span>No students to avoid</span>
                                                 )}
                                             </div>
                                         </div>
@@ -737,28 +826,20 @@ function GroupAllocation() {
                                         </label>
 
                                         <select
-                                            id={`project-${group.GroupNumber}`}
                                             value={group.Project || ""}
-                                            onChange={(event) =>
-                                                assignProject(
-                                                    group.id,
-                                                    event.target.value
-                                                )
+                                            onChange={(e) =>
+                                                handleProjectChange(group.GroupNumber, e.target.value)
                                             }
                                         >
-                                            <option value="">
-                                                -- Select a project --
-                                            </option>
+                                            <option value="">Select a project</option>
 
-                                            {oldCapstoneProjects.map((project) => (
-                                                <option
-                                                    key={project}
-                                                    value={project}
-                                                >
-                                                    {project}
+                                            {capstoneProjects.map((project) => (
+                                                <option key={project._id} value={project.ID}>
+                                                    {project.Name}
                                                 </option>
                                             ))}
                                         </select>
+
 
                                         <span className="project-assignment-status">
                                             {group.Project
@@ -787,7 +868,7 @@ function GroupAllocation() {
                                                 >
                                                     <div className="group-student-info">
                                                         <strong>
-                                                            {student.name}
+                                                            {student.Name}
                                                         </strong>
 
                                                         <span>{student.StudentID}</span>

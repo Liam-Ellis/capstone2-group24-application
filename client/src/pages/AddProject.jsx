@@ -121,7 +121,7 @@ function AddProject({
                 required
               >
                 <option value="">Select Project Type</option>
-                <option value="Individual">Individual</option>
+                <option value="Work">Work</option>
                 <option value="Group">Group</option>
               </select>
             </label>

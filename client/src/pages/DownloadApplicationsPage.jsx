@@ -1,0 +1,87 @@
+import "./DownloadApplicationsPage.css";
+import Dropdown from "./Dropdown";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import DownloadApplicationsComponent from "./DownloadApplicationsComponent";
+
+function DownloadApplicationsPage({ unitName, unitTitle}) {
+    const navigate = useNavigate();
+
+    const sidebar = [
+        {
+            name: "Units",
+            path: "/ucdashboard"
+        },
+        {
+            name: "Rounds",
+            path: "/ucdashboard/rounds"
+        },
+        {
+            name: "Group Allocation",
+            path: "/ucdashboard/groups"
+        }
+    ];
+
+
+    return (
+        <div className="isad3000-container">
+
+            {/* Sidebar */}
+            <aside className="sidebar">
+                <h2>UC Dashboard</h2>
+
+                <nav>
+                    <ul>
+                        {sidebar.map((item) => (
+                            <li
+                                key={item.name}
+                                onClick={() => navigate(item.path)}
+                            >
+                                {item.name}
+                            </li>
+                        ))}
+
+                        <Dropdown
+                            unitName={unitName}
+                            items={[
+                                /*{
+                                    name: "Announcements",
+                                    path: `/ucdashboard/${unitName}/announcements`
+                                },*/
+                                {
+                                    name: "Student List",
+                                    path: `/ucdashboard/${unitName}`
+                                }
+                            ]}
+                        />
+                    </ul>
+                </nav>
+            </aside>
+
+
+            {/* Main Content */}
+            <main className="main-content">
+
+                <section className="unit-name">
+                    <h1>{unitTitle} | {unitName}</h1>
+                    <p>Download Applications</p>
+                </section>
+
+                <div className="downloadapplications-box">
+
+                    <div className="downloadapplications-header">
+
+                        <h2>Download Applications</h2>
+                    </div>
+
+                    <DownloadApplicationsComponent />
+
+                </div>
+
+            </main>
+
+        </div>
+    );
+}
+
+export default DownloadApplicationsPage;

@@ -18,12 +18,16 @@ app.use(cookieParser());
 
 const authRoute = require('./routes/auth').router;
 const studentRoutes = require('./routes/student');
-const ucRoute = require('./routes/UCDashboardBackendServer')
+const ucRoute = require('./routes/UCDashboardBackendServer');
+const applicationRoutes = require("./routes/studentRoutes/applicationRoutes");
+const roundRoutes = require("./routes/studentRoutes/roundRoutes");
 
 // Use routes
 app.use('/auth', authRoute);
 app.use('/student', studentRoutes);
 app.use('/UC', ucRoute);
+app.use("/student/application", applicationRoutes);
+app.use("/student/round", roundRoutes);
 
 app.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");

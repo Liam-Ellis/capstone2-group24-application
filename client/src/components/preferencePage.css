@@ -19,8 +19,33 @@
   background-color: #4f3e00;
 }
 
-.preferences input{
-    position: relative;
-    left: 5%;
-    padding: 1%; 
+.pref-container{
+    margin-left: 1%;
+}
+
+.pref-form-section {
+  margin-bottom: 25px;
+}
+
+.pref-form-section label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.pref-form-section input,
+.pref-form-section textarea {
+  width: 50%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.pref-form-section textarea {
+  resize: vertical;
 }

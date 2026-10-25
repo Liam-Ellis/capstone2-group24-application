@@ -2,6 +2,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import './StudentUnitMenu.css';
+import './StudentUnitPage.css';
 import notification from '../assets/notification.png'
 
 function Student_ISAD3000() {
@@ -11,8 +12,8 @@ function Student_ISAD3000() {
         <div className="dashboard">
             <div className="sidebar">
                 <h1 className="dashboard-title">Dashboard</h1>
-                <button className="link">Home</button>
-                <button className="link">Settings</button>
+                <button className="link" onClick={() => navigate("/studentdashboard")}>Home</button>
+                <button className="link" onClick={() => navigate("/studentdashboard/prefs")}>Settings</button>
                 <button className="link">Log Out</button>
             </div>
             <div className="content">
@@ -24,9 +25,9 @@ function Student_ISAD3000() {
                     </div>
                 </div>
                 <div className="unitmenu">
-                    <button className="menuitem">Announcements</button>
                     <button className="menuitem">Allocated Group</button>
-                    <button className="menuitem" onClick={() => navigate("/studentdashboard/apply")}>Application</button>  
+                    <button className="menuitem" onClick={() => navigate("/studentdashboard/apply")}>Application</button>
+                    <button className="menuitem" onClick={() => navigate("/studentdashboard/resume")}>Upload Resume</button>  
                 </div>
             </div>
         </div> 

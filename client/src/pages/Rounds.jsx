@@ -32,15 +32,37 @@ function Rounds() {
   const [showAddRound, setShowAddRound] = useState(false);
   const [editingRound, setEditingRound] = useState(null);
 
-  const addRound = (newRound) => {
-    const roundWithId = {
-      ...newRound,
-      id: Date.now()
-    };
+  const fetchRounds = async () => {
+    try {
+        const response = await fetch(
+            "http://localhost:3000/UC/api/requestAllRounds",
+            {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            }
+        );
 
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setRounds(data);
+    }
+    catch (err) {
+        console.error("Unable to get rounds: ", err);
+    }
+  };
+
+  fetchRounds();
+
+  const addRound = (newRound) => {
     setRounds((previousRounds) => [
       ...previousRounds,
-      roundWithId
+      newRound
     ]);
 
     setShowAddRound(false);
@@ -49,7 +71,7 @@ function Rounds() {
   const editRound = (updatedRound) => {
     setRounds((previousRounds) =>
       previousRounds.map((round) =>
-        round.id === updatedRound.id
+        round.RoundNumber === updatedRound.RoundNumber
           ? updatedRound
           : round
       )
@@ -107,7 +129,7 @@ function Rounds() {
       <main className="main-content">
 
         <section className="unit-name">
-          <h1>Rounds setup</h1>
+          <h1>Rounds Setup</h1>
           <p></p>
         </section>
 
@@ -115,7 +137,7 @@ function Rounds() {
 
           <div className="round-header">
 
-            <h2>Current available Round</h2>
+            <h2>Rounds</h2>
 
             <button
               className="add-round-btn"
@@ -146,31 +168,26 @@ function Rounds() {
             {rounds.map((round, index) => (
               <div
                 className="round-card"
-                key={round.id}
+                key={round.RoundNumber}
               >
 
-                <h3>{round.name}</h3>
-
-                <p>
-                  Semester: {round.semester}
-                </p>
+                <h3>Round {round.RoundNumber}</h3>
 
                 <p>
                   Status:{" "}
                   {isRoundExpired(round.endDate)
                     ? "Closed"
-                    : round.status}
+                    : "Open"}
                 </p>
 
                 <p>
-                  Duration: From {round.startDate} to{" "}
-                  {round.endDate}
+                  Duration: From {round.StartDate} to{" "}
+                  {round.EndDate}
                 </p>
 
                 <div className="round-buttons">
 
-                  {!isRoundExpired(round.endDate) &&
-                    ["Open", "Draft"].includes(round.status) && (
+                  {!isRoundExpired(round.endDate) && (
                       <div className="round-buttons">
 
                         <button
@@ -193,7 +210,7 @@ function Rounds() {
                 </div>
                 
 
-                {!isRoundExpired(round.endDate) && round.status !== "Closed" && (
+                {!isRoundExpired(round.EndDate) && (
                 <Projects />)}
 
               </div>

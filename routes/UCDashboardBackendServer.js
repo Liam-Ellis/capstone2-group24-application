@@ -15,13 +15,11 @@ const joi = require('joi');
 
 const validationSchemas = {
     saveRoundSchema: joi.object({
-        startDate: joi.date().required(),
-        endDate: joi.date().required(),
+        StartDate: joi.date().required(),
+        EndDate: joi.date().required(),
     }),
-    editRoundSchema: joi.object({
-        id: joi.number().required(),
-        startDate: joi.date().required(),
-        endDate: joi.date().required(),
+    closeRoundSchema: joi.object({
+        RoundNumber: joi.number().required(),
     }),
     getProjectsSchema: joi.object({
         round: joi.number().required(),
@@ -61,8 +59,8 @@ const validateBodyParameters = (schema, property) => {
 ucBackend.post('/api/SaveNewRound', validateBodyParameters(validationSchemas.saveRoundSchema), async (req, res) => {
     const {StartDate, EndDate} = req.body
 
-    const trueStartDate = Date(StartDate);
-    const trueEndDate = Date(EndDate);
+    const trueStartDate = new Date(StartDate);
+    const trueEndDate = new Date(EndDate);
 
     if (trueEndDate <= trueStartDate) {
         return res.status(400).send('Start date must precede end date');
@@ -81,17 +79,17 @@ ucBackend.post('/api/SaveNewRound', validateBodyParameters(validationSchemas.sav
     res.status(201).json(newRound);
 });
 
-ucBackend.post('/api/EditRound', validateBodyParameters(validationSchemas.editRoundSchema), async (req, res) => {
+ucBackend.post('/api/EditRound', async (req, res) => {
     const {RoundNumber, StartDate, EndDate} = req.body
 
-    const round = await Round.find({RoundNumber: RoundNumber}).exec();
+    let round = await Round.findOne({RoundNumber: RoundNumber}).exec();
 
     if (!round) {
         return res.status(404).send('Round does not exist');
     }
 
-    const trueStartDate = Date(StartDate);
-    const trueEndDate = Date(EndDate);
+    const trueStartDate = new Date(StartDate);
+    const trueEndDate = new Date(EndDate);
 
     if (trueEndDate <= trueStartDate) {
         return res.status(400).send('Start date must precede end date');
@@ -99,6 +97,34 @@ ucBackend.post('/api/EditRound', validateBodyParameters(validationSchemas.editRo
 
     round.StartDate = trueStartDate;
     round.EndDate = trueEndDate;
+
+    await round.save();
+
+    res.status(200).json(round);
+});
+
+ucBackend.post('/api/CloseRound', validateBodyParameters(validationSchemas.closeRoundSchema), async (req, res) => {
+    const {RoundNumber} = req.body
+
+    let round = await Round.findOne({RoundNumber: RoundNumber}).exec();
+
+    if (!round) {
+        return res.status(404).send('Round does not exist');
+    }
+
+    const currentDate = new Date();
+    let yesterday = new Date();
+    yesterday.setDate(currentDate.getDate() - 1)
+
+
+    const startDate = new Date(round.StartDate);
+    const endDate = new Date(round.EndDate);
+
+    if (currentDate < startDate || currentDate > endDate) {
+        return res.status(400).send('Round must be open to close it');
+    }
+
+    round.EndDate = yesterday;
 
     await round.save();
 

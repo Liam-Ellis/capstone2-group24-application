@@ -86,14 +86,38 @@ function Rounds() {
     setShowAddRound(true);
   };
 
-  const closeRound = (index) => {
-    setRounds((previousRounds) =>
-      previousRounds.map((round, roundIndex) =>
-        roundIndex === index
-          ? { ...round, status: "Closed" }
-          : round
-      )
-    );
+  const closeRound = async (initialRound) => {
+        try {
+        const response = await fetch(
+            `http://localhost:3000/UC/api/closeRound`,
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              RoundNumber: initialRound.RoundNumber,
+            }),
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setRounds((previousRounds) =>
+          previousRounds.map((round) =>
+            round.RoundNumber === data.RoundNumber
+              ? data
+              : round
+          )
+        );
+    }
+    catch (err) {
+        console.error("Unable to update round: ", err);
+    }
   };
 
   const isRoundOpen = (round) => {
@@ -203,16 +227,16 @@ function Rounds() {
                 </p>
 
                 <div className="round-buttons">
-
-                  {!isRoundExpired(round.EndDate) && (
                       <div className="round-buttons">
 
-                        <button
-                          className="close-round-btn"
-                          onClick={() => closeRound(index)}
-                        >
-                          Close Round
-                        </button>
+                        {isRoundOpen(round) && (
+                          <button
+                            className="close-round-btn"
+                            onClick={() => closeRound(round)}
+                          >
+                            Close Round
+                          </button>
+                        )}
 
                         <button
                           className="edit-round-btn"
@@ -222,8 +246,6 @@ function Rounds() {
                         </button>
 
                       </div>
-                  )}
-
                 </div>
                 
                 <Projects round={round.RoundNumber} roundExpired={isRoundExpired(round.EndDate)} />

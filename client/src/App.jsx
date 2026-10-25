@@ -15,6 +15,7 @@ import Student_ISAD3000 from './components/Student_ISAD3000';
 import ApplicationPage from './components/ApplicationPage';
 import UploadResumePage from './components/UploadResumePage';
 import StudentPrefsPage from './components/StudentPrefsPage';
+import Student_GroupAllocation from './components/StudentGroupAllocationPage';
 
 import { Routes, Route, useNavigate } from "react-router-dom"
 
@@ -81,6 +82,7 @@ function App() {
       <Route path="/studentdashboard/apply" element={<ApplicationPage />} />
       <Route path="/studentdashboard/resume" element={<UploadResumePage />} />
       <Route path="/studentdashboard/prefs" element={<StudentPrefsPage />} />
+      <Route path="/studentdashboard/group" element={<Student_GroupAllocation />} />
     </Routes>
   );
 } 

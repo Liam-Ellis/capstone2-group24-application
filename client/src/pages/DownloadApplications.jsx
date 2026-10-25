@@ -6,7 +6,7 @@ function DownloadApplications () {
     
     //will be a 2 dimenstional array after startup. 
     //first dimension is round, second is project. e.g. roundslist[0][2] would get look at round 1 and get the 3rd project 
-    const roundsList = null
+    let roundsList = null
 
     const startUp = async () => {
         //array of work projects
@@ -103,8 +103,8 @@ function DownloadApplications () {
         console.log("Downloading...", project);
     };
 
-    const handleDownload = (student) => {
-        console.log("Downloading...", student.name);
+    const handleDownload = (project) => {
+        console.log("Downloading...", project.Name);
     };
 
     return (
@@ -137,10 +137,10 @@ function DownloadApplications () {
 
             {project && (
                 <div className="student-list">
-                    {projectsList[project].map((project) => (
-                        <div key={project.id} className="student-row">
-                            <span>{project.name}</span>
-                            <p> Submitted {project.submitted} · {project.fileSize} </p>
+                    {roundsList[project].map((project) => (
+                        <div key={project.ID} className="student-row">
+                            <span>{project.Name}</span>
+                            <p> Client {project.Client}</p>
                             <button onClick={() => handleDownload(project)}>
                                 Download
                             </button>

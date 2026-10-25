@@ -26,7 +26,7 @@ function UploadResume({ applicationUploaded }) {
         
 
         try {
-            /*
+            
             const saveData = new FormData();
             saveData.append("document", application.document);
             saveData.append("StudentID", '00000000')
@@ -38,17 +38,28 @@ function UploadResume({ applicationUploaded }) {
                 method: 'POST',
                 body: saveData
             });
-            */
             
+            //this was used for testing
+            /*
             const response = await fetch('http://localhost:3000/UC/api/getWorkProjectApplications/100', {
                 method: 'GET',
             });
-            
-
-            const data = await response.json();
             if(!response.ok) {
                 throw new Error(data.message);
+            } else{
+                const data = await response.blob();
+
+                const url = URL.createObjectURL(data);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'project number ' + '100' +' applications.zip'; 
+                a.click();
             }
+            */
+            
+
+            
 
             
             alert("Resume or cover letter uploaded successfully!");

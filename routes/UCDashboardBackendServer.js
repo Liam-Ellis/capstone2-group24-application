@@ -6,7 +6,7 @@ const express = require("express")
 const ucBackend = express.Router();
 const mongoose = require("mongoose")
 const cors = require ("cors")
-const {CapstoneStudent, Group, ProjectApplication, Project} = require ("../models")
+const {CapstoneStudent, Group, ProjectApplication, Project, Round} = require ("../models")
 const { group } = require("node:console")
 const fs = require ("node:fs")
 const AdmZip = require("adm-zip");
@@ -70,15 +70,27 @@ ucBackend.get('/api/requestAllGroups', async (req, res) =>{
 });
 
 ucBackend.get('/api/requestAllGroupProjects', async (req, res) =>{
-    const groups = await Project.find({Type: "Group"}).lean()
+    const projects = await Project.find({Type: "Group"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
-    res.send(JSON.stringify(groups))
+    res.send(JSON.stringify(projects))
+});
+
+ucBackend.get('/api/requestAllWORKProjects', async (req, res) =>{
+    const projects = await Project.find({Type: "WORK"}).lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(projects))
 });
 
 ucBackend.get('/api/requestAllProjects', async (req, res) =>{
     const groups = await Project.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))
+});
+
+ucBackend.get('/api/requestAllRounds', async (req, res) =>{
+    const rounds = await Round.find().lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(rounds))
 });
 
 ucBackend.post('/api/SaveNewProject', async (req, res) => {
@@ -313,10 +325,6 @@ async function zipTheFile(filePathToZip){
     console.log(zip.getEntries().length)
 
     const sourceDir = path.resolve(filePathToZip);
-    console.log("cwd:", process.cwd());
-    console.log("sourceDir:", sourceDir);
-    console.log("isDirectory:", fs.existsSync(sourceDir) && fs.statSync(sourceDir).isDirectory());
-    console.log("contents:", fs.existsSync(sourceDir) ? fs.readdirSync(sourceDir) : "n/a");
     zip.writeZip(outputFile);
     console.log(`Created ${outputFile} successfully`);
 }

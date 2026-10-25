@@ -3,7 +3,53 @@ import { useState } from "react";
 
 function DownloadApplications () {
     const [project, setProject] = useState("");
-    const studentsList = {
+    
+    //will be a 2 dimenstional array after startup. 
+    //first dimension is round, second is project. e.g. roundslist[0][2] would get look at round 1 and get the 3rd project 
+    const roundsList = null
+
+    const startUp = async () => {
+        //array of work projects
+        let workProjects = null 
+        //array of rounds.
+        let rounds = null
+        const projectsResponse = await fetch('http://localhost:3000/UC/api/requestAllWORKProjects', {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                }
+        });
+
+        workProjects = await projectsResponse.json()
+
+        const roundsResponse = await fetch('http://localhost:3000/UC/api/requestAllRounds', {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                }
+        });
+
+        rounds = await roundsResponse.json()
+        roundsList = []
+        for (var i = 0; i < rounds.length; i++)
+        {
+            roundsList.push([])
+        }
+
+        for (var i = 0; i < workProjects.length; i++)
+        {
+            try{
+                //add this work project to the appropriate part of the array. note that roundsList[0] is Round number 1
+                roundsList[workProjects[i].Round-1].push(workProjects[i])
+            } catch (err) {
+                console.error("Unable to tie the project \'" + workProjects[i].Name + "\' to a round.", err);
+            } 
+        }
+    }
+    startUp();
+
+    /*
+    const projectsList = {
         project1: [
             {
                 id: 1,
@@ -47,6 +93,7 @@ function DownloadApplications () {
             }
         ]
     };
+    */
 
     const inputChanges = (e) => {
         setProject(e.target.value);
@@ -90,11 +137,11 @@ function DownloadApplications () {
 
             {project && (
                 <div className="student-list">
-                    {studentsList[project].map((student) => (
-                        <div key={student.id} className="student-row">
-                            <span>{student.name}</span>
-                            <p> Submitted {student.submitted} · {student.fileSize} </p>
-                            <button onClick={() => handleDownload(student)}>
+                    {projectsList[project].map((project) => (
+                        <div key={project.id} className="student-row">
+                            <span>{project.name}</span>
+                            <p> Submitted {project.submitted} · {project.fileSize} </p>
+                            <button onClick={() => handleDownload(project)}>
                                 Download
                             </button>
                         </div>

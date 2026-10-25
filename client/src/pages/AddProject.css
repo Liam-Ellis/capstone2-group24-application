@@ -18,7 +18,9 @@
 }
 
 .add-project-form {
-  width: 500px;
+  width: 400px;
+  height: 80%;
+  overflow-y: scroll;
   background: white;
   border-radius: 12px;
   padding: 30px;

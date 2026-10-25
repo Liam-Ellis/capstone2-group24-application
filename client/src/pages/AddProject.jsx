@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./AddProject.css";
 
-function AddProject({ 
+function AddProject({
+  round, 
   onAddProject, 
   onEditProject,
   onCancel,
@@ -13,15 +14,16 @@ function AddProject({
   const [clientEmail, setClientEmail] = useState("");
   const [projectType, setProjectType] = useState("");
   const [intendedGroupSize, setIntendedGroupSize] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (existingProject) {
-      setProjectName(existingProject.name || "");
-      setDescription(existingProject.description || "");
-      setClient(existingProject.client || "");
-      setClientEmail(existingProject.clientEmail || "");
-      setProjectType(existingProject.projectType || "");
-      setIntendedGroupSize(existingProject.intendedGroupSize || "");
+      setProjectName(existingProject.Name || "");
+      setDescription(existingProject.Description || "");
+      setClient(existingProject.Client || "");
+      setClientEmail(existingProject.ClientEmail || "");
+      setProjectType(existingProject.Type || "");
+      setIntendedGroupSize(existingProject.IntendedSize || "");
     } else {
       setProjectName("");
       setDescription("");
@@ -32,23 +34,74 @@ function AddProject({
     }
   }, [existingProject]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const projectData = {
       ...existingProject,
-      name: projectName,
-      description: description,
-      client: client,
-      clientEmail: clientEmail,
-      projectType: projectType,
-      intendedGroupSize: intendedGroupSize
+      Name: projectName,
+      Description: description,
+      Client: client,
+      Round: round,
+      ClientEmail: clientEmail,
+      Type: projectType,
+      IntendedSize: intendedGroupSize
     };
 
     if (existingProject) {
-      onEditProject(projectData);
+      try {
+        const response = await fetch(
+            "http://localhost:3000/UC/api/SaveEditedProject",
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectData),
+            }
+        );
+
+        const data = await response.text();
+        if(!response.ok) {
+          if (data.includes("{") && data.includes("message")) {
+            setError(JSON.parse(data).message);
+          } else {
+            setError(data);
+          }
+        } else {
+          onEditProject(JSON.parse(data));
+        }
+      }
+      catch (err) {
+        setError(err);
+      }
     } else {
-      onAddProject(projectData);
+      try {
+        const response = await fetch(
+            "http://localhost:3000/UC/api/SaveNewProject",
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectData),
+            }
+        );
+
+        const data = await response.text();
+        if(!response.ok) {
+          if (data.includes("{") && data.includes("message")) {
+            setError(JSON.parse(data).message);
+          } else {
+            setError(data);
+          }
+        } else {
+          onAddProject(JSON.parse(data));
+        }
+      }
+      catch (err) {
+          setError(err);
+      }
     }
   };
 
@@ -156,6 +209,10 @@ function AddProject({
             </button>
           </div>
 
+          {error && (
+            <div className="error-msg-div">
+              <p>{error}</p>
+            </div>)}
         </form>
       </div>
     </div>

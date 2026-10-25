@@ -2,23 +2,44 @@ import { useState } from "react";
 import "./Projects.css";
 import AddProject from "./AddProject";
 
-function Projects() {
+function Projects({round}) {
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState([]);
   const [showAddProject, setShowAddProject] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
 
-  const addProject = (newProject) => {
-    const projectWithId = {
-      ...newProject,
-      unique_id: Date.now()
-    };
+  const fetchProjects = async () => {
+    try {
+        const response = await fetch(
+            `http://localhost:3000/UC/api/projects/${round}`,
+            {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            }
+        );
 
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setProjects(data);
+    }
+    catch (err) {
+        console.error("Unable to get projects: ", err);
+    }
+  };
+
+  fetchProjects();
+
+  const addProject = (newProject) => {
     setProjects((previousProjects) => [
       ...previousProjects,
       {
-        id: previousProjects.length + 1,
-        ...projectWithId
+        ...newProject
       }
     ]);
 
@@ -28,7 +49,7 @@ function Projects() {
   const editProject = (updatedProject) => {
     setProjects((previousProjects) =>
       previousProjects.map((project) => {
-        if (project.unique_id === updatedProject.unique_id) {
+        if (project.ID === updatedProject.ID) {
           if (selectedProject === project) {
             setSelectedProject(updatedProject);
           }
@@ -71,6 +92,7 @@ function Projects() {
 
         {showAddProject && (
           <AddProject
+            round={round}
             existingProject={editingProject}
             onAddProject={addProject}
             onEditProject={editProject}
@@ -94,7 +116,7 @@ function Projects() {
                   className="project-item"
                   onClick={() => setSelectedProject(project)}
                 >
-                  {project.name}
+                  {project.Name}
                 </div>
               ))}
             </div>
@@ -107,27 +129,27 @@ function Projects() {
                 <>
                     <p>
                         <strong>Description: </strong>
-                        {selectedProject.description}
+                        {selectedProject.Description}
                     </p>
 
                     <p>
                         <strong>Client: </strong>
-                        {selectedProject.client}
+                        {selectedProject.Client}
                     </p>
 
                     <p>
                         <strong>Contact: </strong>
-                        {selectedProject.clientEmail}
+                        {selectedProject.ClientEmail}
                     </p>
 
                     <p>
                         <strong>Project Type: </strong>
-                        {selectedProject.projectType}
+                        {selectedProject.Type}
                     </p>
 
                     <p>
                         <strong>Intended Group Size: </strong>
-                        {selectedProject.intendedGroupSize}
+                        {selectedProject.IntendedSize}
                     </p>
                 </>
             ) : (
@@ -135,7 +157,7 @@ function Projects() {
             )}
 
             {selectedProject && (
-                <div className="project-buttons">
+                <div className="project-page-buttons">
                     <button
                         className="delete-project-btn"
                         onClick={() => deleteProject(selectedProject)}

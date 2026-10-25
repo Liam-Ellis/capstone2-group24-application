@@ -23,6 +23,24 @@ const validationSchemas = {
         startDate: joi.date().required(),
         endDate: joi.date().required(),
     }),
+    getProjectsSchema: joi.object({
+        round: joi.number().required(),
+    }),
+};
+
+const validateParameters = (schema, property) => {
+    return async (req, res, next) => {
+        const { error } = schema.validate(req.params);
+
+        if (error == null) {
+            next();
+        } else {
+            const { details } = error;
+            const errorMsg = details.map(error => error.message).join(',');
+
+            res.status(422).json({ message: errorMsg });
+        }
+    };
 };
 
 const validateBodyParameters = (schema, property) => {
@@ -90,6 +108,18 @@ ucBackend.post('/api/EditRound', validateBodyParameters(validationSchemas.editRo
 ucBackend.get('/api/requestAllRounds', async (req, res) =>{
     const rounds = await Round.find().lean()
     res.status(200).json(rounds);
+});
+
+ucBackend.get('/api/projects/:round', validateParameters(validationSchemas.getProjectsSchema), async (req, res) => {
+    const projects = await Project.find({ Round: req.params.round }).lean();
+    const round = await Round.findOne({ RoundNumber: req.params.round }).lean();
+
+    if (round === null) {
+        res.sendStatus(404);
+    }
+    else {
+        res.status(200).json(projects);
+    }
 });
 
 //
@@ -183,9 +213,7 @@ ucBackend.post('/api/SaveNewProject', async (req, res) => {
     const newProject = new Project(inProject)
     await newProject.save()
 
-    res.status(200).json({ 
-        message: "project saved successfully"
-    }).end()
+    res.status(200).json(newProject);
     
 });
 
@@ -215,9 +243,7 @@ ucBackend.post('/api/SaveEditedProject', async (req, res) => {
     projectToEdit.IntendedSize =  inProject.IntendedSize
     await projectToEdit.save()
 
-    res.status(200).json({ 
-        message: "project edited successfully"
-    }).end()
+    res.status(200).json(projectToEdit);
     
 });
 

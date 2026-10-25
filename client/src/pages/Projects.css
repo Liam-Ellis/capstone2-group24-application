@@ -121,10 +121,7 @@
   line-height: 1.6;
 }
 
-
-.project-buttons {
-  position: absolute;
-  bottom: 0;
+.project-page-buttons {
   display: flex;
   gap: 10px;
   margin-top: 20px;

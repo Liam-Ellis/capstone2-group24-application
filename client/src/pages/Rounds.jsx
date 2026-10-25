@@ -211,7 +211,7 @@ function Rounds() {
                 
 
                 {!isRoundExpired(round.EndDate) && (
-                <Projects />)}
+                <Projects round={round.RoundNumber} />)}
 
               </div>
             ))}

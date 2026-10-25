@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./Projects.css";
 import AddProject from "./AddProject";
 
-function Projects({round}) {
+function Projects({round, roundExpired}) {
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState([]);
   const [showAddProject, setShowAddProject] = useState(false);
@@ -50,9 +50,7 @@ function Projects({round}) {
     setProjects((previousProjects) =>
       previousProjects.map((project) => {
         if (project.ID === updatedProject.ID) {
-          if (selectedProject === project) {
-            setSelectedProject(updatedProject);
-          }
+          setSelectedProject(updatedProject);
           return updatedProject;
         } else {
           return project;
@@ -70,10 +68,37 @@ function Projects({round}) {
     setShowAddProject(true);
   };
 
-   const deleteProject = (project) => {
-    setProjects(projects.filter(proj => proj !== project));
-    if (selectedProject === project) {
-      setSelectedProject(null);
+   const deleteProject = async (projectToDelete) => {
+    try {
+        const response = await fetch(
+            `http://localhost:3000/UC/api/project/${projectToDelete.ID}`,
+            {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setProjects((previousProjects) =>
+          previousProjects.map((project) => {
+            if (project.ID !== projectToDelete.ID) {
+              return project;
+            }
+          }
+        )
+        );
+
+        setSelectedProject(null);
+    }
+    catch (err) {
+        console.error("Unable to get projects: ", err);
     }
   };
 
@@ -81,14 +106,16 @@ function Projects({round}) {
     <div className="projects-box">
       <div className="projects-header">
         <h4>Available Projects</h4>
-        <button
-          className="add-project-btn"
-          onClick={() => {
-            setEditingProject(null);
-            setShowAddProject(true);}}
-        >
-          + Add Project
-        </button>
+        {!roundExpired && (
+          <button
+            className="add-project-btn"
+            onClick={() => {
+              setEditingProject(null);
+              setShowAddProject(true);}}
+          >
+            + Add Project
+          </button>
+        )}
 
         {showAddProject && (
           <AddProject
@@ -112,7 +139,7 @@ function Projects({round}) {
             <div className="project-list">
               {projects.map((project) => (
                 <div
-                  key={project.id}
+                  key={project.ID}
                   className="project-item"
                   onClick={() => setSelectedProject(project)}
                 >
@@ -156,7 +183,7 @@ function Projects({round}) {
                 <p>Select a project to view details.</p>
             )}
 
-            {selectedProject && (
+            {selectedProject && !roundExpired && (
                 <div className="project-page-buttons">
                     <button
                         className="delete-project-btn"

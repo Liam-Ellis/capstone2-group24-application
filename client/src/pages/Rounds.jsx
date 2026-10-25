@@ -96,6 +96,14 @@ function Rounds() {
     );
   };
 
+  const isRoundOpen = (round) => {
+    const today = new Date();
+    const end = new Date(round.EndDate);
+    const start = new Date(round.StartDate);
+
+    return today >= start && today <= end;
+  };
+
   const isRoundExpired = (endDate) => {
     const today = new Date();
     const end = new Date(endDate);
@@ -184,9 +192,9 @@ function Rounds() {
 
                 <p>
                   Status:{" "}
-                  {isRoundExpired(round.endDate)
-                    ? "Closed"
-                    : "Open"}
+                  {isRoundOpen(round)
+                    ? "Open"
+                    : "Closed"}
                 </p>
 
                 <p>
@@ -196,7 +204,7 @@ function Rounds() {
 
                 <div className="round-buttons">
 
-                  {!isRoundExpired(round.endDate) && (
+                  {!isRoundExpired(round.EndDate) && (
                       <div className="round-buttons">
 
                         <button
@@ -218,10 +226,7 @@ function Rounds() {
 
                 </div>
                 
-
-                {!isRoundExpired(round.EndDate) && (
-                <Projects round={round.RoundNumber} />)}
-
+                <Projects round={round.RoundNumber} roundExpired={isRoundExpired(round.EndDate)} />
               </div>
             ))}
 

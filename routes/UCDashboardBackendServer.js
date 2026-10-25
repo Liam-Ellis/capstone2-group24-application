@@ -122,6 +122,19 @@ ucBackend.get('/api/projects/:round', validateParameters(validationSchemas.getPr
     }
 });
 
+ucBackend.delete('/api/project/:id', async (req, res) => {
+    const id = req.params.id;
+    const projectToDelete = await Project.findOneAndDelete({ ID: id}).exec();
+
+    if (projectToDelete === null) {
+        return res.status(400).json({
+            message: "could not find project to delete"
+        })
+    }
+
+    res.sendStatus(200);
+});
+
 //
 ucBackend.post('/api/POST_student', async (req, res) => {
     console.log(req.body)
@@ -209,9 +222,18 @@ ucBackend.post('/api/SaveNewProject', async (req, res) => {
         return
     }
 
+    const projects = await Project.find().lean()
     
-    const newProject = new Project(inProject)
-    await newProject.save()
+    const newProject = await Project.create({
+        ID: String(projects.length + 1),
+        Name: inProject.Name,
+        Description: inProject.Description,
+        Client: inProject.Client,
+        Round: inProject.Round,
+        ClientEmail: inProject.ClientEmail,
+        Type: inProject.Type,
+        IntendedSize: inProject.IntendedSize}
+    );
 
     res.status(200).json(newProject);
     

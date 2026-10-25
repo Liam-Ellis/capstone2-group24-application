@@ -167,11 +167,6 @@ function Rounds() {
                   {round.endDate}
                 </p>
 
-                <p>
-                  Applications: {round.applications} /{" "}
-                  {round.maxApplications}
-                </p>
-
                 <div className="round-buttons">
 
                   {!isRoundExpired(round.endDate) &&

@@ -61,6 +61,7 @@
 }
 
 .form-section input,
+.form-section select,
 .form-section textarea {
   width: 100%;
   padding: 10px;
@@ -69,6 +70,18 @@
   font-family: "M PLUS U", sans-serif;
   font-size: 14px;
   box-sizing: border-box;
+  background-color: white;
+  color: #333;
+}
+
+.form-section select:focus {
+  outline: none;
+  border-color: #B58B0B;
+}
+
+.form-section select option {
+  font-family: "M PLUS U", sans-serif;
+  font-size: 14px;
 }
 
 .form-section textarea {

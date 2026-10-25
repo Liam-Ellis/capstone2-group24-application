@@ -6,6 +6,7 @@ const ProjectApplicationSchema = new mongoose.Schema({
     required: true,
   },
 
+  //ID of the project
   Project: {
     type: String,
     required: true,
@@ -17,11 +18,13 @@ const ProjectApplicationSchema = new mongoose.Schema({
   },
 
   Resume: {
-    type: Buffer,
+    data: Buffer,
+    contentType: String
   },
 
   CoverLetter: {
-    type: Buffer,
+    data: Buffer,
+    contentType: String
   },
 }, { timestamps: true });
 

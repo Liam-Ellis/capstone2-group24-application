@@ -131,7 +131,9 @@ function PreferenceComponent() {
                     ))}
 
                     {formErrors.general && (
-                        <div> {formErrors.general} </div>
+                        <div className="error-msg-div">
+                            <p> {formErrors.general} </p>
+                        </div>
                     )}
                     
                     <button className="preference-submit" type="submit">

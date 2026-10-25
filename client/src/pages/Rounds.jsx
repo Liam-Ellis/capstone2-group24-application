@@ -103,6 +103,15 @@ function Rounds() {
     return today > end;
   };
 
+  const dateOptions = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  };
+
+  const dateFormatter = new Intl.DateTimeFormat('en-AU', dateOptions);
+
   return (
     <div className="work3008-container">
 
@@ -181,8 +190,8 @@ function Rounds() {
                 </p>
 
                 <p>
-                  Duration: From {round.StartDate} to{" "}
-                  {round.EndDate}
+                  Duration: {dateFormatter.format(new Date(round.StartDate))} —{" "}
+                  {dateFormatter.format(new Date(round.EndDate))}
                 </p>
 
                 <div className="round-buttons">

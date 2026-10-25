@@ -25,7 +25,7 @@ function Student_ISAD3000() {
                     </div>
                 </div>
                 <div className="unitmenu">
-                    <button className="menuitem">Allocated Group</button>
+                    <button className="menuitem" onClick={() => navigate("/studentdashboard/group")}>Allocated Group</button>
                     <button className="menuitem" onClick={() => navigate("/studentdashboard/apply")}>Application</button>
                     <button className="menuitem" onClick={() => navigate("/studentdashboard/resume")}>Upload Resume</button>  
                 </div>

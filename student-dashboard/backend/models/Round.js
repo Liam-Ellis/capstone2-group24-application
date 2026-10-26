@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
-const roundSchema = new mongoose.Schema({
+const RoundSchema = new mongoose.Schema({
     RoundNumber: {
         type: Number,
-        required: true,
+        required: true
     },
     StartDate: {
         type: Date,
@@ -12,10 +12,10 @@ const roundSchema = new mongoose.Schema({
     EndDate: {
         type: Date,
         required: true
-    }
+    },
 },
 {
     timestamps: true
 });
 
-module.exports = mongoose.model('round', roundSchema);
+module.exports = mongoose.model('Round', RoundSchema);

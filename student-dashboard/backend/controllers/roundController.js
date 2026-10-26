@@ -1,4 +1,4 @@
-const Round = require("../models/RoundModel.js");
+const Round = require("../models/Round.js");
 
 // get all rounds
 const getRounds = async (req, res) => {

@@ -1,5 +1,4 @@
-const Application = require("../models/ApplicationModel.js");
-const Round = require("../models/RoundModel.js");
+const Application = require("../models/ProjectApplication.js");
 
 const uploadApplication = async (req, res) => {
     try {
@@ -8,15 +7,30 @@ const uploadApplication = async (req, res) => {
                 message: "No file uploaded"
             });
         }
+
+        const { Student, Project, Type } = req.body;
+    
+        if (!Student || !Project || !Type ) {
+            return res.status(400).json({
+                message: "Missing required fields"
+            });
+        }
         
-        const application = await Application.create({
-            document: req.file.filename,
-            status: "APPLIED"
+        if (!["Resume", "CoverLetter"].includes(Type)) {
+            return res.status(400).json({
+                message: "Type must be either Resume or Cover Letter"
+            });
+        }
+
+        await Application.create({
+            Student, 
+            Project, 
+            Type,
+            [Type]: req.file.buffer
         });
 
         res.status(201).json({
             message: "Application submitted successfully!",
-            status: application.status
         });
     }
     catch (err) {
@@ -29,35 +43,25 @@ const uploadApplication = async (req, res) => {
 
 const getApplicationStatus = async (req, res) => {
     try {
-        // find if round is open
-        const round = await Round.findOne({
-            status: "OPEN"
+        const { Student, Project } = req.query;
+
+        if (!Student || !Project ) {
+            return res.status(400).json({
+                message: "Missing required fields"
+            });
+        }
+
+        const application = await Application.findOne({
+            Student, Project
         });
-
-        if (!round) {
-            return res.json({
-                status: "CLOSED"
-            });
-        }
-
-        const application = await Application.findOne();
-
-        // round opened but student has not applied
-        if (!application) {
-            return res.json({
-                status: "NOT_APPLIED"
-            });
-        }
 
         // student has applied
-        return res.json({
-            status: application.status
-        });
+        return res.status(200).json(!!application);
     }
     catch (error) {
         console.error("Unable to get application status: ", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             message: "Unable to get application status"
         });
     }

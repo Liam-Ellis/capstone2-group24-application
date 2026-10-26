@@ -495,7 +495,31 @@ async function zipTheFile(filePathToZip){
 }
 
 
+ucBackend.get('/api/applicationStatus', async (req, res) => {
+    try {
+        const { Student, Project } = req.query;
 
+        if (!Student || !Project ) {
+            return res.status(400).json({
+                message: "Missing required fields"
+            });
+        }
+
+        const application = await ProjectApplication.findOne({
+            Student: Student, Project: Project
+        });
+
+        // student has applied
+        return res.status(200).json(!!application);
+    }
+    catch (error) {
+        console.error("Unable to get application status: ", error);
+
+        return res.status(500).json({
+            message: "Unable to get application status"
+        });
+    }
+});
 
 
 //this probably should be in a different file, but it's here because I don't want to mess with someone else's file

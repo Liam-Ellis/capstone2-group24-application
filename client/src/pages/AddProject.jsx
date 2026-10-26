@@ -115,13 +115,15 @@ function AddProject({
 
             <label>
               Project Type
-              <input
-                type="text"
+              <select
                 value={projectType}
                 onChange={(event) => setProjectType(event.target.value)}
-                placeholder="Project Type"
                 required
-              />
+              >
+                <option value="">Select Project Type</option>
+                <option value="Work">Work</option>
+                <option value="Group">Group</option>
+              </select>
             </label>
 
             <label>

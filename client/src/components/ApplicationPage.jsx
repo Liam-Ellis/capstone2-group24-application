@@ -1,5 +1,3 @@
-// This screen showcases the unit menu items upon selecting a unit
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ApplicationPage.css';
@@ -8,6 +6,8 @@ import ApplicationProjects from './ApplicationProjects';
 import notification from '../assets/notification.png'
 
 function ApplicationPage() {
+    const navigate = useNavigate();
+
     const [rounds, setRounds] = useState([]);
         const [error, setError] = useState("");
     
@@ -15,7 +15,14 @@ function ApplicationPage() {
             const fetchRounds = async () => {
                 try {
                     const response = await fetch(
-                        "http://localhost:3000/api/round"
+                        "http://localhost:3000/student/round",
+                        {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include'
+                        }
                     );
     
                     const data = await response.json();
@@ -34,10 +41,6 @@ function ApplicationPage() {
     
             fetchRounds();
         },[]);
-    
-        if (error) {
-            return <p>{error}</p>
-        }
     
         const anyOpenRound = (rounds) => {
             if (rounds.length === 0) {
@@ -65,8 +68,8 @@ function ApplicationPage() {
         <div className="dashboard">
             <div className="sidebar">
                 <h1 className="dashboard-title">Dashboard</h1>
-                <button className="link">Home</button>
-                <button className="link">Settings</button>
+                <button className="link" onClick={() => navigate("/studentdashboard")}>Home</button>
+                <button className="link" onClick={() => navigate("/studentdashboard/prefs")}>Settings</button>
                 <button className="link">Log Out</button>
             </div>
             <div className="content">
@@ -78,19 +81,19 @@ function ApplicationPage() {
                     </div>
                 </div>
                 <div className="round-page">
-                <div className="round-box">
-                {!anyOpenRounds ? (
-                    <p> No open application rounds </p>
-                ) : (
-                    rounds.map((round) => (
-                        <Round 
-                            key={round._id}
-                            round={round}
-                        />
-                    ))
-                )}
+                    <div className="round-box">
+                        {!anyOpenRounds ? (
+                            <p> No open application rounds </p>
+                        ) : (
+                            rounds.map((round) => (
+                                <Round 
+                                    key={round._id}
+                                    round={round}
+                                />
+                            ))
+                        )}
+                    </div>
                 </div>
-            </div>
             </div>
         </div> 
     );

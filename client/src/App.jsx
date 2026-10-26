@@ -11,11 +11,11 @@ import LogIn from './pages/Login';
 import SetupAccount from './pages/SetupAccount';
 import ForgotPassword from './pages/ForgotPassword';
 import ICTE3002 from './pages/ICTE3002';
-import StudentUnitPage from './components/StudentUnitPage';
 import Student_ISAD3000 from './components/Student_ISAD3000';
-import Student_ICTE3002 from './components/Student_ICTE3002';
-import Student_WORK3008 from './components/Student_WORK3008';
 import ApplicationPage from './components/ApplicationPage';
+import UploadResumePage from './components/UploadResumePage';
+import StudentPrefsPage from './components/StudentPrefsPage';
+import Student_GroupAllocation from './components/StudentGroupAllocationPage';
 
 import { Routes, Route, useNavigate } from "react-router-dom"
 
@@ -78,11 +78,11 @@ function App() {
       <Route path="/ucdashboard/isad3000" element={<ISAD3000 />} />
       <Route path="/ucdashboard/icte3002" element={<ICTE3002 />} />
       <Route path="/ucdashboard/groups" element={<GroupAllocation />} />
-      <Route path="/studentdashboard" element={<StudentUnitPage />} />
-      <Route path="/studentdashboard/ISAD3000" element={<Student_ISAD3000 />} />
-      <Route path="/studentdashboard/ICTE3002" element={<Student_ICTE3002 />} />
-      <Route path="/studentdashboard/WORK3008" element={<Student_WORK3008 />} />
+      <Route path="/studentdashboard" element={<Student_ISAD3000 />} />
       <Route path="/studentdashboard/apply" element={<ApplicationPage />} />
+      <Route path="/studentdashboard/resume" element={<UploadResumePage />} />
+      <Route path="/studentdashboard/prefs" element={<StudentPrefsPage />} />
+      <Route path="/studentdashboard/group" element={<Student_GroupAllocation />} />
     </Routes>
   );
 } 

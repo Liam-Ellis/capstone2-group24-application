@@ -1,7 +1,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+U:wght@100..900&display=swap');
 
-.add-project-overlay {
+.apply-project-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -17,7 +17,7 @@
   z-index: 1000;
 }
 
-.add-project-form {
+.apply-project-form {
   width: 500px;
   background: white;
   border-radius: 12px;
@@ -27,14 +27,14 @@
   font-family: "M PLUS U", sans-serif;
 }
 
-.add-project-header {
+.apply-project-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
 }
 
-.add-project-header h2 {
+.apply-project-header h2 {
   margin: 0;
   font-size: 24px;
 }
@@ -81,7 +81,7 @@
 }
 
 .cancel-btn,
-.create-project-btn {
+.apply-project-btn {
   padding: 10px 18px;
   border-radius: 6px;
   font-family: "M PLUS U", sans-serif;
@@ -94,7 +94,7 @@
   border: 1px solid #ccc;
 }
 
-.create-project-btn {
+.apply-project-btn {
   background: #B58B0B;
   color: white;
   border: 1px solid #B58B0B;
@@ -104,6 +104,6 @@
   background: #f0f0f0;
 }
 
-.create-project-btn:hover {
+.apply-project-btn:hover {
   background: #4f3e00;
 }

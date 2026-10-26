@@ -9,8 +9,8 @@ const path = require('path');
 const fs = require('fs');
 const csv = require('csv-parser');
 const { pipeline } = require("stream/promises");
-const CapstoneStudent = require("./models/CapstoneStudent");
-const HCIStudent = require("./models/HCIStudent");
+const CapstoneStudent = require("../models/CapstoneStudent");
+const HCIStudent = require("../models/HCIStudent");
 
 const upload = multer({
     dest: 'uploads/',
@@ -53,10 +53,23 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
     if (!Model) {
         return res.status(400).json({message: "Unknown Student Type."});
     }
+        
+    if (!req.file) {
+        return res.status(400).json({message: "No File Uploaded."});
+    }
 
     try {
 
-        const rows = await parseCSV(req.file.path);
+        let rows;
+        try {
+            rows = await parseCSV(req.file.path);
+        } catch (parseError) {
+            return res.status(400).json({message: "Invalid CSV file."});
+        }
+        if (rows.length === 0) {
+            return res.status(400).json({message: "CSV file is empty."});
+        }
+
         const transformedRows = rows.map(row => transformRow(row, req.params.type));
         const saved = await Model.insertMany(transformedRows, {ordered: false });
         res.json({

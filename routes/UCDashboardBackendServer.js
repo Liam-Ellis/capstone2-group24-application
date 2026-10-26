@@ -173,7 +173,7 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
         }
     };
     res.status(200).json({ 
-        message: "project edited successfully"
+        message: "groups saved successfully"
     }).end()
 });
 

@@ -253,6 +253,7 @@ function GroupAllocation() {
                     'Content-Type': 'application/json', // Tells backend to parse as JSON
                     }
         });
+        
 
         const projectData = await projectResponse.json();
         setCapstoneProjects(projectData);
@@ -268,20 +269,47 @@ function GroupAllocation() {
 
     
 
-    const handleSaveChanges = () => {
+    const handleSaveChanges = async () => {
         try {
-            localStorage.setItem(
-                GROUPS_STORAGE_KEY,
-                JSON.stringify(groups)
-            );
-            setSaveMessage("Changes saved successfully.");
+            //we cant just save what we've got, as there's an additional element in the normal groups object that we don't want to save.
+            //savegroups is just a replica of groups without that element
+            let saveGroups = []
+            //loop through every group, put it in saveGroups
+            for(let i = 0; i < groups.length; i++)
+            {
+                const tempGroup = 
+                {
+                    Confirmed: 0,
+                    GroupNumber: groups[i].GroupNumber,
+                    Project: groups[i].Project,
+                    Reason: 'Client manually made group',
+                    Students: groups[i].Students
+                }
+                saveGroups.push(tempGroup)
+            }
+
+            const response = await fetch('http://localhost:3000/UC/api/SaveGroups', {
+                            method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/json', // Tells backend to parse as JSON
+                            },
+                            body: JSON.stringify(saveGroups), // Converts JS object to JSON string
+                        });
+            if(response.status == 200)
+            {
+                alert("groups saved successfully");
+            } else
+            {
+                alert("groups failed to save.");
+            }
+
         } catch (error) {
             console.error("Failed to save groups:", error);
             setSaveMessage("Failed to save changes. Please try again.");
         }
     };
 
-    console.log("groups: " + groups)
+    
     const allocatedStudentIds = groups.flatMap((group) =>
         group.StudentObjects.map((student) => student.StudentID)
     );
@@ -843,7 +871,7 @@ function GroupAllocation() {
 
                                         <span className="project-assignment-status">
                                             {group.Project
-                                                ? `Assigned: ${group.Project}`
+                                                ? `Project ID: ${group.Project}`
                                                 : "No project assigned"}
                                         </span>
                                     </div>

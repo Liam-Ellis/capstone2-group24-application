@@ -71,13 +71,20 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
         }
 
         const transformedRows = rows.map(row => transformRow(row, req.params.type));
-        const saved = await Model.insertMany(transformedRows, {ordered: false });
-        res.json({
-            message: "File Uploaded.",
-            recordsSaved: saved.length,
-            recordsFailed: transformedRows.length - saved.length
+        try
+        {
+            const saved = await Model.insertMany(transformedRows, {ordered: false });
+            
+            res.json({
+                message: "File Uploaded.",
+                recordsSaved: saved.length,
+                recordsFailed: transformedRows.length - saved.length
         
-        });
+            });
+        } catch (error)
+        {
+            console.log("failed to upload students: " + error)
+        }
 
     } catch (error) {
         next(error);
@@ -96,18 +103,10 @@ function transformRow(row, type) {
         row.Username = row.STU_ID;
         row.Password = 'dummyPassword';
         row.Salt = 'dummySalt';
-        row.Email = row.STU_ID + '@dummymail.com';
+        row.Email = row.STU_ID + '@student.curtin.edu.au';
         row.Unit = 'dummyUnit';
         row.TermsAccepted = 0;
-
-        if (row.Group) row.Group = Number(row.Group);
-        if (row.TermsAccepted) row.TermsAccepted = Number(row.TermsAccepted);
-        if (typeof row.PreferenceFor == 'string') {
-            row.PreferenceFor = row.PreferenceFor.split(',').map(s => s.trim());
-        }
-        if (typeof row.PreferenceAgainst == 'string') {
-            row.PreferenceAgainst = row.PreferenceAgainst.split(',').map(s => s.trim());
-        }
+        row.Group = 0;
     }
     return row;
 }

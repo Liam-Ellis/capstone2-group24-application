@@ -8,13 +8,6 @@ function GroupAllocation() {
     const [students, setStudents] = useState([]);
     const [groups, setGroups] = useState([]);
 
-<<<<<<< HEAD
-    let studentResponse = null;
-    let initialStudents = [];
-
-    let groupResponse = null;
-    let initialGroups = [];
-=======
     
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -32,7 +25,6 @@ function GroupAllocation() {
     let groupResponse = null;
     let initialGroups = [];
 
->>>>>>> c053344f1a921400d0575cf5a85f2bf252ef4996
 
     const majors = [
         "Computer Science",

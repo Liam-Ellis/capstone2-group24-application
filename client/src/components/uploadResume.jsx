@@ -24,20 +24,19 @@ function UploadResume() {
             return;
         }
 
-        // send pdf file to the backend and store in the database
-        const saveData = new FormData();
-        saveData.append("document", resume.document);
-
-        /*
+        
         try {
-const saveData = new FormData();
-            saveData.append("document", application.document);
-            //TODO: this needs to be replaced by student's ID
+            const saveData = new FormData();
+            
+            saveData.append("document", resume.document);
             saveData.append("StudentID", '00000000')
 
+
+            console.log("now attempting fetch")
             const response = await fetch('http://localhost:3000/UC/api/saveStudentResume', {
                 method: 'POST',
-                body: saveData
+                body: saveData,
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -51,7 +50,7 @@ const saveData = new FormData();
         catch (err) {
             console.error("Unable to upload document: ", err);
             alert("Failed to upload document");
-        }*/
+        }
     };
 
     return(

@@ -9,6 +9,37 @@ function WorkProjects({roundNum, roundsList}) {
     setSelectedProject(null);
   }, roundNum);
 
+
+  async function downloadApplications(selectedProject)
+  {
+    try
+    {
+      const getURL = 'http://localhost:3000/UC/api/getWorkProjectApplications/' + selectedProject.ID
+      const response = await fetch(getURL, {
+              method: 'GET',
+      });
+      if(!response.ok) {
+        throw new Error(data.message);
+      } else{
+        const data = await response.blob();
+
+        const url = URL.createObjectURL(data);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'project number ' + '100' +' applications.zip'; 
+        a.click();
+      }
+    } catch (err)
+    {
+      
+      console.error("Unable to download documents: ", err);
+      alert("Failed to download documents");
+        
+    }
+  }
+
+
   return (
     <div className="projects-box">
       <div className="projects-header">

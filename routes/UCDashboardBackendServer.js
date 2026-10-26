@@ -13,7 +13,8 @@ const AdmZip = require("adm-zip");
 const { boolean } = require("joi")
 const multer = require("multer");
 const path = require("node:path");
-
+const verifyStudentSession = require('./auth').verifyStudentSession;
+const jwt = require('jsonwebtoken');
 
 
 
@@ -335,7 +336,7 @@ async function zipTheFile(filePathToZip){
 
 //this probably should be in a different file, but it's here because I don't want to mess with someone else's file
 //takes in a student ID, returns if they have a resume in the db
-ucBackend.get('/api/DoesStudentHaveResume', async (req, res) =>{
+ucBackend.get('/api/DoesStudentHaveResume', verifyStudentSession, async (req, res) =>{
     const studentID = req.body
     const fullStudent = await CapstoneStudent.findOne({StudentID: studentID}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
@@ -358,31 +359,16 @@ const storage = multer.memoryStorage();
 const saveLoc = multer({ storage: storage });
 
 
-ucBackend.post('/api/saveStudentResume', saveLoc.any(), async (req, res) =>{
+ucBackend.post('/api/saveStudentResume', verifyStudentSession, saveLoc.any(), async (req, res) =>{
     
     console.log(req.body)
     console.log(req.files)
-    const {StudentID} = req.body;
-    console.log(StudentID)
-    var student = await CapstoneStudent.findOne({StudentID: StudentID})
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const student = await CapstoneStudent.findOne({Username: username});
+    
     student.Resume = req.files[0].buffer
     student.save()
-
-    /* TODO: get rid of this later, it's just for debugging
-    var applicationOne = await ProjectApplication.findOne({Student: '00000000'})
-    console.log("app 1: " + applicationOne.Student)
-    var applicationTwo = await ProjectApplication.findOne({Student: '231251'})
-    console.log("app 2: " + applicationTwo.Student)
-    applicationOne.Resume = {data: req.files[0].buffer, contentType: 'application/pdf' }
-    applicationTwo.Resume = {data: req.files[0].buffer, contentType: 'application/pdf' }
-    applicationOne.save()
-    applicationTwo.save()
-    */
-
-    
-    //await fs.writeFileSync('testData2.pdf', req.files[0].buffer)
-
-    
 
     return res.status(200).json({ 
         message: "resume saved successfully"

@@ -123,7 +123,9 @@ function LogIn() {
         </section>
 
         <section className="links">
-          <a href="" onClick={() => {navigate("/setup");}}>Create an account</a>
+          {userType === "Staff" && (
+            <a href="" onClick={() => {navigate("/setup");}}>Create an account</a>
+          )}
           <a href="" onClick={() => {navigate("/forgot");}}>Forgot password</a>
         </section>
       </main>

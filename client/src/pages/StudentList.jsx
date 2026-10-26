@@ -10,6 +10,8 @@ function StudentList({ unitName, unitTitle }) {
 
     const [editingId, setEditingId] = useState(null);
     const [pendingDelete, setPendingDelete] = useState(null);
+    const [error, setError] = useState("");
+
 
     const [studentDetails, setStudentDetails] = useState({
         ID: "",
@@ -61,27 +63,76 @@ function StudentList({ unitName, unitTitle }) {
         setPendingDelete(id);
     };
 
-    const handleSave = () => {
-        setStudents(prevStudents =>
-            prevStudents.map(student =>
-                student.studentID === editingId
-                    ? {
-                        ...student,
-                        ...studentDetails
-                    }
-                    : student
-            )
-        );
+    const handleSave = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/studentManage/capstone/updatebyID/${studentDetails.ID}`,
+                {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(studentDetails),
+                }
+            );
 
-        setEditingId(null);
+            const data = await response.text();
+            if(!response.ok) {
+                if (data.includes("{") && data.includes("error")) {
+                    setError(JSON.parse(data).error);
+                } else {
+                    setError(data);
+                }
+            } else {
+                setStudents(prevStudents =>
+                    prevStudents.map(student =>
+                        student.StudentID === editingId
+                            ? {
+                                ...student,
+                                ...studentDetails
+                            }
+                            : student
+                    )
+                );
+
+                setEditingId(null);
+            }
+        }
+        catch (err) {
+            setError(err);
+        }
     };
 
-    const confirmDelete = (id) => {
-        setStudents(prevStudents =>
-            prevStudents.filter(student => student.StudentID !== id)
-        );
+    const confirmDelete = async (id) => {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/studentManage/capstone/delete/${id}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }
+            );
 
-        setPendingDelete(null);
+            const data = await response.text();
+            if(!response.ok) {
+                if (data.includes("{") && data.includes("error")) {
+                    setError(JSON.parse(data).error);
+                } else {
+                    setError(data);
+                }
+            } else {
+                setStudents(prevStudents =>
+                    prevStudents.filter(student => student.StudentID !== id)
+                );
+
+                setPendingDelete(null);
+            }
+        }
+        catch (err) {
+            setError(err);
+        }
     };
 
     useEffect(() => {
@@ -250,6 +301,11 @@ function StudentList({ unitName, unitTitle }) {
                                                     Cancel
                                                 </button>
                                             </div>
+
+                                            {error && (
+                                                <div className="error-msg-div">
+                                                    <p>{error}</p>
+                                                </div>)}
                                         </div>
 
                                     ) : isDeleting ? (
@@ -281,6 +337,11 @@ function StudentList({ unitName, unitTitle }) {
                                                         Remove
                                                     </button>
                                                 </div>
+
+                                                {error && (
+                                                <div className="error-msg-div">
+                                                    <p>{error}</p>
+                                                </div>)}
                                             </div>
 
                                         </div>

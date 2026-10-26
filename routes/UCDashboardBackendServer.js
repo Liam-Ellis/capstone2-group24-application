@@ -178,7 +178,7 @@ ucBackend.post('/api/POST_student', async (req, res) => {
         console.log("student failed to save, was invalid")
         //a lot of different probalems can get us here, but most of them are just the user inputting an invalid student
         return res.status(400).json({
-            message: "object given was not a valid student"
+            message: exception.message
         }).end()
     }
 
@@ -187,7 +187,7 @@ ucBackend.post('/api/POST_student', async (req, res) => {
     if (isInDb)
     {
         return res.status(401).json({
-            message: "student already exists"
+            message: "Student already exists"
         }).end()
     }
 
@@ -367,17 +367,17 @@ function createValidStudent(inStudent)
     if (!inStudent.email.includes("@"))
     {
         console.log("invalid email")
-        throw TypeError
+        throw "Invalid Email"
     }
     if (inStudent.studentId.length != 8)
     {
         console.log("invalid id")
-        throw TypeError
+        throw "Invalid ID"
     }
     if (inStudent.unit == [])
     {
         console.log("no unit selected")
-        throw TypeError
+        throw "No unit selected"
     }
     //console.log(Object.values(inStudent))
     //console.log(Object.keys(inStudent))
@@ -391,10 +391,10 @@ function createValidStudent(inStudent)
         Password: 'Password1',//TODO: randomly generate passwords
         StudentID: inStudent.studentId,
         TermsAccepted: 0,
-        Unit: inStudent.unit[0], //the unit is given as a list, but we don't need a list, just 1 unit
-        Major: inStudent.unit[0], 
-        CWA: inStudent.CWA,
-        Username: inStudent.studentId, //the username needs to be unique. idk if using the student ID is good longterm, but it helps shortterm
+        Unit: inStudent.unit, //the unit is given as a list, but we don't need a list, just 1 unit
+        Major: inStudent.course, 
+        CWA: inStudent.cwa,
+        Username: inStudent.email, //the username needs to be unique. idk if using the student ID is good longterm, but it helps shortterm
         Salt: 'idk' //I dont understand the salt other than it helps keep passwords safe. we don't need to set it properly yet
     }
     return mongooseStudent

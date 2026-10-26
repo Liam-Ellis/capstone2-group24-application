@@ -80,4 +80,20 @@
     background-color: #4f3e00;
 }
 
+.download-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  width: 50%;
+  height: 50%;
+  background-color: #fafafa;
+}
 
+.download-card h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.download-card p {
+  margin: 8px 0;
+}

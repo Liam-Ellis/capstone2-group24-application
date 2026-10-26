@@ -23,25 +23,45 @@ function UploadResume({ applicationUploaded }) {
             return;
         }
 
-        // send pdf file to the backend and store in the database
-        const saveData = new FormData();
-        saveData.append("document", application.document);
+        
 
         try {
-            const response = await fetch(
-                "http://localhost:3000/api/application/upload",
-                {
-                    method: "POST",
-                    body: saveData
-                }
-            );
+            
+            const saveData = new FormData();
+            saveData.append("document", application.document);
+            saveData.append("StudentID", '00000000')
 
-            const data = await response.json();
+
+            console.log("now attempting fetch")
+
+            const response = await fetch('http://localhost:3000/UC/api/saveStudentResume', {
+                method: 'POST',
+                body: saveData
+            });
+            
+            //this was used for testing
+            /*
+            const response = await fetch('http://localhost:3000/UC/api/getWorkProjectApplications/100', {
+                method: 'GET',
+            });
             if(!response.ok) {
                 throw new Error(data.message);
-            }
+            } else{
+                const data = await response.blob();
 
-            applicationUploaded(application.document);
+                const url = URL.createObjectURL(data);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'project number ' + '100' +' applications.zip'; 
+                a.click();
+            }
+            */
+            
+
+            
+
+            
             alert("Resume or cover letter uploaded successfully!");
             
         }

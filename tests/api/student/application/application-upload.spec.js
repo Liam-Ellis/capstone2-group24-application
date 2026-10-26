@@ -31,14 +31,14 @@ test.describe('Verify Upload Application API', () => {
         expect(await response.text()).toEqual('Not authorised');
     });
     
-    test('No resume for WORK project - should return error code', async ({ request }) => {
+    test('No resume for Work project - should return error code', async ({ request }) => {
         const credentials = { username: 'random.human@student.curtin.edu.au', password: 'n6fLmXiOdxWi', type: 'student' };
         await request.post('http://localhost:3000/auth/login', {data: credentials});
 
         const appDetails = new FormData();
         appDetails.append("document", '12345');
         appDetails.append("ID", '3');
-        appDetails.append("Type", 'WORK');
+        appDetails.append("Type", 'Work');
 
         const response = await request.post(`${applyURL}`, {multipart: appDetails});
         expect(response.status()).toEqual(400);
@@ -47,13 +47,13 @@ test.describe('Verify Upload Application API', () => {
         expect(responseJSON.message).toEqual('No Resume uploaded');*/
     });
 
-    test('No cover letter for WORK project - should return error code', async ({ request }) => {
+    test('No cover letter for Work project - should return error code', async ({ request }) => {
         const credentials = { username: 'random.human@student.curtin.edu.au', password: 'n6fLmXiOdxWi', type: 'student' };
         await request.post('http://localhost:3000/auth/login', {data: credentials});
 
         const appDetails = new FormData();
         appDetails.append("ID", '3');
-        appDetails.append("Type", 'WORK');
+        appDetails.append("Type", 'Work');
 
         const response = await request.post(`${applyURL}`, {multipart: appDetails});
         expect(response.status()).toEqual(400);
@@ -68,7 +68,7 @@ test.describe('Verify Upload Application API', () => {
         const appDetails = new FormData();
         appDetails.append("document", '12345');
         appDetails.append("ID", '3');
-        appDetails.append("Type", 'WORK');
+        appDetails.append("Type", 'Work');
 
         const response = await request.post(`${applyURL}`, {multipart: appDetails});
         expect(response.status()).toEqual(201);

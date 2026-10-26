@@ -6,11 +6,17 @@ const express = require("express")
 const ucBackend = express.Router();
 const mongoose = require("mongoose")
 const cors = require ("cors")
-const {CapstoneStudent, Group, ProjectApplication, Round, Project} = require ("../models")
+const {CapstoneStudent, Group, ProjectApplication, Project, Round} = require ("../models")
 const { group } = require("node:console")
 const fs = require ("node:fs")
 const AdmZip = require("adm-zip");
-//const { boolean } = require("joi")
+const { boolean } = require("joi")
+const multer = require("multer");
+const path = require("node:path");
+const verifyStudentSession = require('./auth').verifyStudentSession;
+const jwt = require('jsonwebtoken');
+
+
 const joi = require('joi');
 
 const validationSchemas = {
@@ -213,15 +219,27 @@ ucBackend.get('/api/requestAllGroups', async (req, res) =>{
 });
 
 ucBackend.get('/api/requestAllGroupProjects', async (req, res) =>{
-    const groups = await Project.find({Type: "Group"}).lean()
+    const projects = await Project.find({Type: "Group"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
-    res.send(JSON.stringify(groups))
+    res.send(JSON.stringify(projects))
+});
+
+ucBackend.get('/api/requestAllWORKProjects', async (req, res) =>{
+    const projects = await Project.find({Type: "Work"}).lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(projects))
 });
 
 ucBackend.get('/api/requestAllProjects', async (req, res) =>{
     const groups = await Project.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))
+});
+
+ucBackend.get('/api/requestAllRounds', async (req, res) =>{
+    const rounds = await Round.find().lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(rounds))
 });
 
 ucBackend.get('/api/requestAllGroupApplicationsForStudent/:ID', async (req, res) => {
@@ -401,66 +419,125 @@ function createValidStudent(inStudent)
 
 
 
-ucBackend.get('/api/getWorkProjectApplications', async (req, res) => {
-    const project = JSON.parse(res.body)
-
+ucBackend.get('/api/getWorkProjectApplications/:ID', async (req, res) => {
+    const projectID = JSON.parse(req.params.ID)
+    const project = await Project.findOne({ID: projectID}).lean()
     //grab all student applications for the project the frontend chooses
-    const applications = await ProjectApplication.find({Project: project.Name}).lean()
+    const applications = await ProjectApplication.find({Project: projectID}).lean()
+    
     const applicationsFilePath = 'applications/' + project.Name
-
+    console.log("file: " + applicationsFilePath)
     try {
         //try to make a new folder for this set of applications
         if (!fs.existsSync(applicationsFilePath)) {
-            fs.mkdirSync(applicationsFilePath)
+            fs.mkdirSync(applicationsFilePath, {recursive: true})
         } else { 
             //we get here if the file already exists. This is fine, it just means this is the second time the UC has tried to download this
             //this just means we need to delete the old before making the new
-            fs.rm(applicationsFilePath, { recursive: true, force: true })
+            fs.rmSync(applicationsFilePath, {recursive: true, force: true})
             fs.mkdirSync(applicationsFilePath)
         }
 
     } catch (err) {
         console.error(err)
+        console.log("failed making folder for project")
     }
 
-    
+    /*
     //loop through all student aplications for this project
-    applications.forEach(element => {
+    await applications.forEach(element => {
         //create's a file for each student, adding their resume and cover letter to the file
-        createAStudentFile(element, applicationsFilePath)
-    });
+        await createAStudentFile(element, applicationsFilePath)
+    });*/
+
+    for (var i = 0; i < applications.length; i++)
+    {
+        await createAStudentFile(applications[i], applicationsFilePath)
+    }
     
     //does what it says on the tin
     zipTheFile(applicationsFilePath)
     
     //ask the frontend to download the zip file created
-    res.download(applicationsFilePath)
+    res.download(applicationsFilePath + ".zip")
 });
     
     
 //function that creates a new folder for the student and puts in their resume and Cover Letter
 async function createAStudentFile(application, applicationsFilePath){
-    const studentsFilePath = applicationsFilePath + application.Student
+    const student = await CapstoneStudent.findOne({StudentID: application.Student}).lean()
+    const studentsFilePath = applicationsFilePath + "/" + student.Name
     try {
         if (!fs.existsSync(studentsFilePath)) {
             fs.mkdirSync(studentsFilePath)
         }
     } catch (err) {
-        console.error("folder already exists")
+        console.error("could not make student file path")
     }
-    await fs.writeFile(studentsFilePath + '/' + application.Student + '_Resume.pdf', application.Resume)
-    await fs.writeFile(studentsFilePath + '/' + application.Student + '_CoverLetter.pdf', application.CoverLetter)
+    
+    await fs.writeFileSync(studentsFilePath + '/' + student.Name + '_Resume.pdf', application.Resume.data.buffer)
+    await fs.writeFileSync(studentsFilePath + '/' + student.Name + '_CoverLetter.pdf', application.CoverLetter.data.buffer)
 }
 
 
 async function zipTheFile(filePathToZip){
     const zip = new AdmZip();
     const outputFile = filePathToZip + ".zip";
+    if (fs.existsSync(outputFile)) {
+        fs.rmSync(outputFile, {recursive: true, force: true})
+    }
     zip.addLocalFolder(filePathToZip);
+    console.log(zip.getEntries().length)
+
+    const sourceDir = path.resolve(filePathToZip);
     zip.writeZip(outputFile);
     console.log(`Created ${outputFile} successfully`);
 }
 
+
+
+
+
+//this probably should be in a different file, but it's here because I don't want to mess with someone else's file
+//takes in a student ID, returns if they have a resume in the db
+ucBackend.get('/api/DoesStudentHaveResume', verifyStudentSession, async (req, res) =>{
+    const studentID = req.body
+    const fullStudent = await CapstoneStudent.findOne({StudentID: studentID}).lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    if (Object.hasOwn(fullStudent, "Resume"))
+    {
+        return res.status(200).json({ 
+        hasResume: "true"
+    }).end()
+    } else
+    {
+        return res.status(201).json({ 
+        hasResume: "false"
+    }).end()
+    }
+    
+});
+
+
+const storage = multer.memoryStorage();
+const saveLoc = multer({ storage: storage });
+
+
+ucBackend.post('/api/saveStudentResume', verifyStudentSession, saveLoc.any(), async (req, res) =>{
+    
+    console.log(req.body)
+    console.log(req.files)
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const student = await CapstoneStudent.findOne({Username: username});
+    
+    student.Resume = req.files[0].buffer
+    student.save()
+
+    return res.status(200).json({ 
+        message: "resume saved successfully"
+    }).end()
+});
 
 
 

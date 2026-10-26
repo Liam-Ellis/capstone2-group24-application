@@ -42,5 +42,8 @@
   "bugs": {
     "url": "https://bitbucket.org/curtincomputingprojects/bentley-sem-1-24/issues"
   },
-  "homepage": "https://bitbucket.org/curtincomputingprojects/bentley-sem-1-24#readme"
+  "homepage": "https://bitbucket.org/curtincomputingprojects/bentley-sem-1-24#readme",
+  "allowScripts": {
+    "multer@2.4.0": true
+  }
 }

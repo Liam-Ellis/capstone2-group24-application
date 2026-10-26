@@ -24,7 +24,7 @@ test.describe('Post new project', () => {
 
         const validProject = ({
                 ID: "-2",
-                Type: "WORK",
+                Type: "Work",
                 Round: 2,
                 Name: "add new project",
                 Client: "Liam Ellis",
@@ -43,7 +43,7 @@ test.describe('Post new project', () => {
 
             const projectToEdit = await Project.findOne({ ID: "-2"})
 
-            expect(projectToEdit.Type).toEqual("WORK")
+            expect(projectToEdit.Type).toEqual("Work")
             expect(projectToEdit.Round).toEqual(2)
             expect(projectToEdit.Name).toEqual("add new project")
             expect(projectToEdit.Description).toEqual("new project")

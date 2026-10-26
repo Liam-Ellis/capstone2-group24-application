@@ -77,7 +77,7 @@ ucBackend.get('/api/requestAllGroupProjects', async (req, res) =>{
 });
 
 ucBackend.get('/api/requestAllWORKProjects', async (req, res) =>{
-    const projects = await Project.find({Type: "WORK"}).lean()
+    const projects = await Project.find({Type: "Work"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(projects))
 });

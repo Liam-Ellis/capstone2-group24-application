@@ -20,7 +20,7 @@ test.describe('Edit existing Project', () => {
         test.skip(browserName !== 'firefox', 'only 1 of this test should run at a time and since this is backend it doesnt need to be tested on every browser. Locks dont actually fix this issue, so this is how im handling it');
         const validProject = ({
                 ID: "-1",
-                Type: "WORK",
+                Type: "Work",
                 Round: 2,
                 Name: "Liam's project",
                 Client: "Liam Ellis",
@@ -39,7 +39,7 @@ test.describe('Edit existing Project', () => {
 
             const projectToEdit = await Project.findOne({ ID: -1})
 
-            expect(projectToEdit.Type).toEqual("WORK")
+            expect(projectToEdit.Type).toEqual("Work")
             expect(projectToEdit.Round).toEqual(2)
             expect(projectToEdit.Name).toEqual("Liam's project")
             expect(projectToEdit.Description).toEqual("cool project")

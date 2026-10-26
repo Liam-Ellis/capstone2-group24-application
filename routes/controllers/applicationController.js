@@ -16,7 +16,7 @@ const uploadApplication = async (req, res) => {
         const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
         const username = decodedToken.username;
 
-        //currently working off ID, maybe should work off name
+        
         const student = await CapstoneStudent.findOne({Username: username}).lean();
         
         //theoretically we should never get here, the frontend should be logged in as a student and if this is null that means the student logged in doesn't exist

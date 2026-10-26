@@ -20,7 +20,7 @@ test.describe('Edit existing projects', () => {
         test.skip(browserName !== 'firefox', 'I need only 1 version of this test to run, the locks just dont work and this test refuses to not run in parralel with other tests');
         const validProject = ({
                 ID: "-1",
-                Type: "WORK",
+                Type: "Work",
                 Round: 2,
                 Name: "Liam's project",
                 Client: "Liam Ellis",
@@ -39,7 +39,7 @@ test.describe('Edit existing projects', () => {
 
             const projectToEdit = await Project.findOne({ ID: -1})
 
-            expect(projectToEdit.Type).toEqual("WORK")
+            expect(projectToEdit.Type).toEqual("Work")
             expect(projectToEdit.Round).toEqual(2)
             expect(projectToEdit.Name).toEqual("Liam's project")
             expect(projectToEdit.Description).toEqual("cool project")

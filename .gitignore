@@ -60,6 +60,9 @@ Thumbs.db
 /playwright/.auth/
 *run.json
 
+# Multer
+/upload/
+
 # Plaintext
 
 environment.env

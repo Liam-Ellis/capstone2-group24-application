@@ -1,15 +1,16 @@
-/* Student upload resume or cover letter */
+/* Student upload resume */
 import { useState } from 'react';
+import './UploadResume.css' 
 
-function UploadResume({ applicationUploaded }) {
-    const [application, setApplication] = useState({
+function UploadResume() {
+    const [resume, setResume] = useState({
         document: null
     });
     
     const inputChanges = (e) => {
         const { name, files } = e.target;
 
-        setApplication(prevDetails => ({
+        setResume(prevDetails => ({
             ...prevDetails, 
             [name]: files[0] 
         }));
@@ -18,22 +19,19 @@ function UploadResume({ applicationUploaded }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!application.document) {
+        if (!resume.document) {
             alert("Please upload a pdf file.");
             return;
         }
 
         // send pdf file to the backend and store in the database
         const saveData = new FormData();
-        saveData.append("document", application.document);
+        saveData.append("document", resume.document);
 
+        /*
         try {
             const response = await fetch(
-                "http://localhost:3000/api/application/upload",
-                {
-                    method: "POST",
-                    body: saveData
-                }
+                // resume upload method
             );
 
             const data = await response.json();
@@ -41,21 +39,19 @@ function UploadResume({ applicationUploaded }) {
                 throw new Error(data.message);
             }
 
-            applicationUploaded(application.document);
-            alert("Resume or cover letter uploaded successfully!");
+            alert("Resume uploaded successfully!");
             
         }
         catch (err) {
             console.error("Unable to upload document: ", err);
             alert("Failed to upload document");
-        } 
+        }*/
     };
 
     return(
+            <div className="resume-form-box">
                 <div className="form-box">
-                    <form onSubmit={handleSubmit}>
-                
-                        <label> Upload Resume or Cover Letter </label>    
+                    <form onSubmit={handleSubmit}>                
                         <input
                             type="file"
                             name="document"
@@ -69,6 +65,7 @@ function UploadResume({ applicationUploaded }) {
                         </button>    
                     </form>
                 </div>
+            </div>
     )
 
 }

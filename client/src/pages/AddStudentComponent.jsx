@@ -13,6 +13,7 @@ function AddStudentComponent() {
         email: "",
         course: "",
         unit: "",
+        cwa: ""
     });
 
     async function PostStudent (){
@@ -30,7 +31,7 @@ function AddStudentComponent() {
             if (response.status == 200)
             {
                 alert("Student added to the list successfully!");
-                navigate("/ucdashboard/isad3000/students");
+                navigate("/ucdashboard/isad3000");
             } else if (response.status == 400)
             {
                 alert("invalid student given, please make sure the student is valid before submitting")
@@ -127,6 +128,17 @@ function AddStudentComponent() {
                             />
                             </label>
 
+                            <label> CWA 
+                            <input 
+                                type="tel"
+                                name="cwa"
+                                value={studentDetails.cwa}
+                                required
+                                onChange={inputChanges}
+                                placeholder="CWA"
+                            />
+                            </label>
+
                             <label> Course
                             <select
                                 name="course"
@@ -138,19 +150,19 @@ function AddStudentComponent() {
                                     Select course 
                                 </option>
 
-                                <option value="1">
+                                <option value="Software Engineering">
                                     Bachelor of Computing - Software Engineering
                                 </option>
 
-                                <option value="2">
+                                <option value="Computer Science">
                                     Bachelor of Computing - Computer Science
                                 </option>
 
-                                <option value="3">
+                                <option value="Cyber Security">
                                     Bachelor of Computing - Cyber Security
                                 </option>
 
-                                <option value="4">
+                                <option value="Information Technology">
                                     Bachelor of Information Technology
                                 </option>
 

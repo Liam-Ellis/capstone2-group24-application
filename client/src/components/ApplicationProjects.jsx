@@ -115,7 +115,7 @@ function ApplicationProjects({round}) {
             )}
 
             {selectedProject && (
-                <div className="project-buttons">
+                <div className="app-project-buttons">
                     <button
                         className="apply-project-btn"
                         onClick={() => applyForProject(selectedProject)}

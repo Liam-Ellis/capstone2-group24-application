@@ -157,7 +157,6 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
     
     //loop through every group sent in by the frontend
     for (let i = 0; i < groups.length; i++) {
-        console.log("start of group " + i)
         //check to see if this group exists in the database already
         const groupToEdit = await Group.findOne({GroupNumber: groups[i].GroupNumber})
         //if this group doesn't exist in the database yet

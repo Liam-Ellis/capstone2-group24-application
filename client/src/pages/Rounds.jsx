@@ -32,15 +32,37 @@ function Rounds() {
   const [showAddRound, setShowAddRound] = useState(false);
   const [editingRound, setEditingRound] = useState(null);
 
-  const addRound = (newRound) => {
-    const roundWithId = {
-      ...newRound,
-      id: Date.now()
-    };
+  const fetchRounds = async () => {
+    try {
+        const response = await fetch(
+            "http://localhost:3000/UC/api/requestAllRounds",
+            {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            }
+        );
 
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setRounds(data);
+    }
+    catch (err) {
+        console.error("Unable to get rounds: ", err);
+    }
+  };
+
+  fetchRounds();
+
+  const addRound = (newRound) => {
     setRounds((previousRounds) => [
       ...previousRounds,
-      roundWithId
+      newRound
     ]);
 
     setShowAddRound(false);
@@ -49,7 +71,7 @@ function Rounds() {
   const editRound = (updatedRound) => {
     setRounds((previousRounds) =>
       previousRounds.map((round) =>
-        round.id === updatedRound.id
+        round.RoundNumber === updatedRound.RoundNumber
           ? updatedRound
           : round
       )
@@ -64,14 +86,46 @@ function Rounds() {
     setShowAddRound(true);
   };
 
-  const closeRound = (index) => {
-    setRounds((previousRounds) =>
-      previousRounds.map((round, roundIndex) =>
-        roundIndex === index
-          ? { ...round, status: "Closed" }
-          : round
-      )
-    );
+  const closeRound = async (initialRound) => {
+        try {
+        const response = await fetch(
+            `http://localhost:3000/UC/api/closeRound`,
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              RoundNumber: initialRound.RoundNumber,
+            }),
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setRounds((previousRounds) =>
+          previousRounds.map((round) =>
+            round.RoundNumber === data.RoundNumber
+              ? data
+              : round
+          )
+        );
+    }
+    catch (err) {
+        console.error("Unable to update round: ", err);
+    }
+  };
+
+  const isRoundOpen = (round) => {
+    const today = new Date();
+    const end = new Date(round.EndDate);
+    const start = new Date(round.StartDate);
+
+    return today >= start && today <= end;
   };
 
   const isRoundExpired = (endDate) => {
@@ -80,6 +134,15 @@ function Rounds() {
 
     return today > end;
   };
+
+  const dateOptions = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  };
+
+  const dateFormatter = new Intl.DateTimeFormat('en-AU', dateOptions);
 
   return (
     <div className="work3008-container">
@@ -107,7 +170,7 @@ function Rounds() {
       <main className="main-content">
 
         <section className="unit-name">
-          <h1>Rounds setup</h1>
+          <h1>Rounds Setup</h1>
           <p></p>
         </section>
 
@@ -115,7 +178,7 @@ function Rounds() {
 
           <div className="round-header">
 
-            <h2>Current available Round</h2>
+            <h2>Rounds</h2>
 
             <button
               className="add-round-btn"
@@ -146,39 +209,34 @@ function Rounds() {
             {rounds.map((round, index) => (
               <div
                 className="round-card"
-                key={round.id}
+                key={round.RoundNumber}
               >
 
-                <h3>{round.name}</h3>
-
-                <p>
-                  Semester: {round.semester}
-                </p>
+                <h3>Round {round.RoundNumber}</h3>
 
                 <p>
                   Status:{" "}
-                  {isRoundExpired(round.endDate)
-                    ? "Closed"
-                    : round.status}
+                  {isRoundOpen(round)
+                    ? "Open"
+                    : "Closed"}
                 </p>
 
                 <p>
-                  Duration: From {round.startDate} to{" "}
-                  {round.endDate}
+                  Duration: {dateFormatter.format(new Date(round.StartDate))} —{" "}
+                  {dateFormatter.format(new Date(round.EndDate))}
                 </p>
 
                 <div className="round-buttons">
-
-                  {!isRoundExpired(round.endDate) &&
-                    ["Open", "Draft"].includes(round.status) && (
                       <div className="round-buttons">
 
-                        <button
-                          className="close-round-btn"
-                          onClick={() => closeRound(index)}
-                        >
-                          Close Round
-                        </button>
+                        {isRoundOpen(round) && (
+                          <button
+                            className="close-round-btn"
+                            onClick={() => closeRound(round)}
+                          >
+                            Close Round
+                          </button>
+                        )}
 
                         <button
                           className="edit-round-btn"
@@ -188,14 +246,9 @@ function Rounds() {
                         </button>
 
                       </div>
-                  )}
-
                 </div>
                 
-
-                {!isRoundExpired(round.endDate) && round.status !== "Closed" && (
-                <Projects />)}
-
+                <Projects round={round.RoundNumber} roundExpired={isRoundExpired(round.EndDate)} />
               </div>
             ))}
 

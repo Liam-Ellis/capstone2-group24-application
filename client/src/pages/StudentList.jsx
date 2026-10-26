@@ -1,21 +1,24 @@
 import "./StudentList.css";
 import Dropdown from "./Dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function StudentList({ unitName, unitTitle, students: initialStudents }) {
+function StudentList({ unitName, unitTitle }) {
     const navigate = useNavigate();
 
-    const [students, setStudents] = useState(initialStudents);
+    const [students, setStudents] = useState([]);
 
     const [editingId, setEditingId] = useState(null);
     const [pendingDelete, setPendingDelete] = useState(null);
+    const [error, setError] = useState("");
+
 
     const [studentDetails, setStudentDetails] = useState({
-        name: "",
-        email: "",
-        course: "",
-        cwa: ""
+        ID: "",
+        Name: "",
+        Email: "",
+        Major: "",
+        CWA: 0.0
     });
 
     const sidebar = [
@@ -44,13 +47,14 @@ function StudentList({ unitName, unitTitle, students: initialStudents }) {
 
     const handleEdit = (student) => {
         setPendingDelete(null);
-        setEditingId(student.id);
+        setEditingId(student.StudentID);
 
         setStudentDetails({
-            name: student.name,
-            email: student.email,
-            course: student.course,
-            cwa: student.cwa
+            ID: student.StudentID, 
+            Name: student.Name,
+            Email: student.Email,
+            Major: student.Major,
+            CWA: student.CWA
         });
     };
 
@@ -59,28 +63,106 @@ function StudentList({ unitName, unitTitle, students: initialStudents }) {
         setPendingDelete(id);
     };
 
-    const handleSave = () => {
-        setStudents(prevStudents =>
-            prevStudents.map(student =>
-                student.id === editingId
-                    ? {
-                        ...student,
-                        ...studentDetails
+    const handleSave = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/studentManage/capstone/updatebyID/${studentDetails.ID}`,
+                {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(studentDetails),
+                }
+            );
+
+            const data = await response.text();
+            if(!response.ok) {
+                if (data.includes("{") && data.includes("error")) {
+                    setError(JSON.parse(data).error);
+                } else {
+                    setError(data);
+                }
+            } else {
+                setStudents(prevStudents =>
+                    prevStudents.map(student =>
+                        student.StudentID === editingId
+                            ? {
+                                ...student,
+                                ...studentDetails
+                            }
+                            : student
+                    )
+                );
+
+                setEditingId(null);
+            }
+        }
+        catch (err) {
+            setError(err);
+        }
+    };
+
+    const confirmDelete = async (id) => {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/studentManage/capstone/delete/${id}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }
+            );
+
+            const data = await response.text();
+            if(!response.ok) {
+                if (data.includes("{") && data.includes("error")) {
+                    setError(JSON.parse(data).error);
+                } else {
+                    setError(data);
+                }
+            } else {
+                setStudents(prevStudents =>
+                    prevStudents.filter(student => student.StudentID !== id)
+                );
+
+                setPendingDelete(null);
+            }
+        }
+        catch (err) {
+            setError(err);
+        }
+    };
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            try {
+                const response = await fetch(
+                    `http://localhost:3000/UC/api/requestAllCapstoneStudents`,
+                    {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
                     }
-                    : student
-            )
-        );
+                );
 
-        setEditingId(null);
-    };
+                const data = await response.json();
+                if(!response.ok) {
+                    throw new Error(data.message);
+                }
+                
+                setStudents(data);
+            }
+            catch (err) {
+                console.error("Unable to get students: ", err);
+            }
+        };
 
-    const confirmDelete = (id) => {
-        setStudents(prevStudents =>
-            prevStudents.filter(student => student.id !== id)
-        );
-
-        setPendingDelete(null);
-    };
+        fetchStudents();
+    }, []);
 
     return (
         <div className="isad3000-container">
@@ -152,62 +234,78 @@ function StudentList({ unitName, unitTitle, students: initialStudents }) {
 
                     </div>
 
-                    <div className="form-box">
+                    <div className="form-box2">
 
                         {students.map((student) => {
 
-                            const isEditing = editingId === student.id;
-                            const isDeleting = pendingDelete === student.id;
+                            const isEditing = editingId === student.StudentID;
+                            const isDeleting = pendingDelete === student.StudentID;
 
                             return (
-                                <div key={student.id} className="student">
+                                <div>
+                                <div key={student.StudentID} className="student-card">
 
                                     {isEditing ? (
 
-                                        <div className="edit-container">
+                                        <div className="form-section">
+                                            <label> Name
+                                                <input
+                                                    type="text"
+                                                    name="Name"
+                                                    value={studentDetails.Name}
+                                                    onChange={inputChanges}
+                                                />
+                                            </label>
 
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                value={studentDetails.name}
-                                                onChange={inputChanges}
-                                            />
+                                            <label> Email
+                                                <input
+                                                    type="email"
+                                                    name="Email"
+                                                    value={studentDetails.Email}
+                                                    onChange={inputChanges}
+                                                />                                 
+                                            </label>
 
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                value={studentDetails.email}
-                                                onChange={inputChanges}
-                                            />
+                                            <label> Major
+                                                <input
+                                                    type="text"
+                                                    name="Major"
+                                                    value={studentDetails.Major}
+                                                    onChange={inputChanges}
+                                                />
+                                            </label>
 
-                                            <input
-                                                type="text"
-                                                name="course"
-                                                value={studentDetails.course}
-                                                onChange={inputChanges}
-                                            />
+                                            <label> CWA
+                                                <input
+                                                    type="number"
+                                                    name="CWA"
+                                                    value={studentDetails.CWA}
+                                                    onChange={inputChanges}
+                                                />
+                                            </label>
 
-                                            <input
-                                                type="number"
-                                                name="cwa"
-                                                value={studentDetails.cwa}
-                                                onChange={inputChanges}
-                                            />
+                                            <div className="student-detail-buttons">
+                                                <button
+                                                    onClick={handleSave}
+                                                    title="Save student"
+                                                    className="edit-student-btn"
+                                                >
+                                                    Save
+                                                </button>
 
-                                            <button
-                                                onClick={handleSave}
-                                                title="Save student"
-                                            >
-                                                Save
-                                            </button>
+                                                <button
+                                                    onClick={() => setEditingId(null)}
+                                                    title="Cancel Editing"
+                                                    className="cancel-edit-btn"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
 
-                                            <button
-                                                onClick={() => setEditingId(null)}
-                                                title="Cancel Editing"
-                                            >
-                                                Cancel
-                                            </button>
-
+                                            {error && (
+                                                <div className="error-msg-div">
+                                                    <p>{error}</p>
+                                                </div>)}
                                         </div>
 
                                     ) : isDeleting ? (
@@ -217,51 +315,62 @@ function StudentList({ unitName, unitTitle, students: initialStudents }) {
                                             <div className="confirm-delete-container">
 
                                                 <p>
-                                                    Are you sure you want to remove{" "}
-                                                    <strong>{student.name}</strong>?
+                                                    Are you sure you want to remove
                                                 </p>
 
-                                                <button
-                                                    onClick={() => setPendingDelete(null)}
-                                                >
-                                                    Cancel
-                                                </button>
+                                                <p>
+                                                    <strong>{student.Name}</strong>?
+                                                </p>
 
-                                                <button
-                                                    onClick={() => confirmDelete(student.id)}
-                                                >
-                                                    Remove
-                                                </button>
+                                                <div className="confirm-delete-buttons">
+                                                    <button
+                                                        onClick={() => setPendingDelete(null)}
+                                                        className="cancel-delete-btn"
+                                                    >
+                                                        Cancel
+                                                    </button>
 
+                                                    <button
+                                                        onClick={() => confirmDelete(student.StudentID)}
+                                                        className="confirm-delete-btn"
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+
+                                                {error && (
+                                                <div className="error-msg-div">
+                                                    <p>{error}</p>
+                                                </div>)}
                                             </div>
 
                                         </div>
 
                                     ) : (
 
-                                        <div className="student-details">
+                                        <div className="form-section">
 
                                             <div className="student-detail-text">
-
-                                                <h4>{student.name}</h4>
-                                                <h4>{student.email}</h4>
-                                                <h4>{student.course}</h4>
-                                                <h4>CWA: {student.cwa}</h4>
-
+                                                <p><b>Name: </b>{student.Name}</p>
+                                                <p><b>Email: </b>{student.Email}</p>  
+                                                <p><b>Major: </b>{student.Major}</p>           
+                                                <p><b>CWA: </b>{student.CWA}</p>
                                             </div>
 
-                                            <div>
+                                            <div className="student-detail-buttons">
 
                                                 <button
                                                     onClick={() => handleEdit(student)}
                                                     title="Edit student"
+                                                    className="edit-student-btn"
                                                 >
                                                     Edit
                                                 </button>
 
                                                 <button
-                                                    onClick={() => handleRemove(student.id)}
+                                                    onClick={() => handleRemove(student.StudentID)}
                                                     title="Remove student"
+                                                    className="delete-student-btn"
                                                 >
                                                     Remove
                                                 </button>
@@ -272,6 +381,7 @@ function StudentList({ unitName, unitTitle, students: initialStudents }) {
 
                                     )}
 
+                                </div>
                                 </div>
                             );
                         })}

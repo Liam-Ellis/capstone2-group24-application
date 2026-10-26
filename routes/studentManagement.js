@@ -46,7 +46,7 @@ router.delete('/hci/delete/:ID', async (req, res) => {
 
 });
 
-
+module.exports = router;
 
 
 

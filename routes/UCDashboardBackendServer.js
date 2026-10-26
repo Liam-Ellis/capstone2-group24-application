@@ -6,13 +6,160 @@ const express = require("express")
 const ucBackend = express.Router();
 const mongoose = require("mongoose")
 const cors = require ("cors")
-const {CapstoneStudent, Group, ProjectApplication, Project} = require ("../models")
+const {CapstoneStudent, Group, ProjectApplication, Round, Project} = require ("../models")
 const { group } = require("node:console")
 const fs = require ("node:fs")
 const AdmZip = require("adm-zip");
-const { boolean } = require("joi")
+//const { boolean } = require("joi")
+const joi = require('joi');
+
+const validationSchemas = {
+    saveRoundSchema: joi.object({
+        StartDate: joi.date().required(),
+        EndDate: joi.date().required(),
+    }),
+    closeRoundSchema: joi.object({
+        RoundNumber: joi.number().required(),
+    }),
+    getProjectsSchema: joi.object({
+        round: joi.number().required(),
+    }),
+};
+
+const validateParameters = (schema, property) => {
+    return async (req, res, next) => {
+        const { error } = schema.validate(req.params);
+
+        if (error == null) {
+            next();
+        } else {
+            const { details } = error;
+            const errorMsg = details.map(error => error.message).join(',');
+
+            res.status(422).json({ message: errorMsg });
+        }
+    };
+};
+
+const validateBodyParameters = (schema, property) => {
+    return async (req, res, next) => {
+        const { error } = schema.validate(req.body);
+
+        if (error == null) {
+            next();
+        } else {
+            const { details } = error;
+            const errorMsg = details.map(error => error.message).join(',');
+
+            res.status(422).json({ message: errorMsg });
+        }
+    };
+};
+
+ucBackend.post('/api/SaveNewRound', validateBodyParameters(validationSchemas.saveRoundSchema), async (req, res) => {
+    const {StartDate, EndDate} = req.body
+
+    const trueStartDate = new Date(StartDate);
+    const trueEndDate = new Date(EndDate);
+
+    if (trueEndDate <= trueStartDate) {
+        return res.status(400).send('Start date must precede end date');
+    }
+
+    const rounds = await Round.find().lean();
+    
+    const numRounds = rounds.length;
+
+    const newRound = await Round.create({
+        RoundNumber: numRounds + 1,
+        StartDate: trueStartDate,
+        EndDate: trueEndDate,
+    });
+
+    res.status(201).json(newRound);
+});
+
+ucBackend.post('/api/EditRound', async (req, res) => {
+    const {RoundNumber, StartDate, EndDate} = req.body
+
+    let round = await Round.findOne({RoundNumber: RoundNumber}).exec();
+
+    if (!round) {
+        return res.status(404).send('Round does not exist');
+    }
+
+    const trueStartDate = new Date(StartDate);
+    const trueEndDate = new Date(EndDate);
+
+    if (trueEndDate <= trueStartDate) {
+        return res.status(400).send('Start date must precede end date');
+    }
+
+    round.StartDate = trueStartDate;
+    round.EndDate = trueEndDate;
+
+    await round.save();
+
+    res.status(200).json(round);
+});
+
+ucBackend.post('/api/CloseRound', validateBodyParameters(validationSchemas.closeRoundSchema), async (req, res) => {
+    const {RoundNumber} = req.body
+
+    let round = await Round.findOne({RoundNumber: RoundNumber}).exec();
+
+    if (!round) {
+        return res.status(404).send('Round does not exist');
+    }
+
+    const currentDate = new Date();
+    let yesterday = new Date();
+    yesterday.setDate(currentDate.getDate() - 1)
 
 
+    const startDate = new Date(round.StartDate);
+    const endDate = new Date(round.EndDate);
+
+    if (currentDate < startDate || currentDate > endDate) {
+        return res.status(400).send('Round must be open to close it');
+    }
+
+    round.EndDate = yesterday;
+
+    await round.save();
+
+    res.status(200).json(round);
+});
+
+ucBackend.get('/api/requestAllRounds', async (req, res) =>{
+    const rounds = await Round.find().lean()
+    res.status(200).json(rounds);
+});
+
+ucBackend.get('/api/projects/:round', validateParameters(validationSchemas.getProjectsSchema), async (req, res) => {
+    const projects = await Project.find({ Round: req.params.round }).lean();
+    const round = await Round.findOne({ RoundNumber: req.params.round }).lean();
+
+    if (round === null) {
+        res.sendStatus(404);
+    }
+    else {
+        res.status(200).json(projects);
+    }
+});
+
+ucBackend.delete('/api/project/:id', async (req, res) => {
+    const id = req.params.id;
+    const projectToDelete = await Project.findOneAndDelete({ ID: id}).exec();
+
+    if (projectToDelete === null) {
+        return res.status(400).json({
+            message: "could not find project to delete"
+        })
+    }
+
+    res.sendStatus(200);
+});
 
 //
 ucBackend.post('/api/POST_student', async (req, res) => {
@@ -31,7 +178,7 @@ ucBackend.post('/api/POST_student', async (req, res) => {
         console.log("student failed to save, was invalid")
         //a lot of different probalems can get us here, but most of them are just the user inputting an invalid student
         return res.status(400).json({
-            message: "object given was not a valid student"
+            message: exception.message
         }).end()
     }
 
@@ -40,7 +187,7 @@ ucBackend.post('/api/POST_student', async (req, res) => {
     if (isInDb)
     {
         return res.status(401).json({
-            message: "student already exists"
+            message: "Student already exists"
         }).end()
     }
 
@@ -101,13 +248,20 @@ ucBackend.post('/api/SaveNewProject', async (req, res) => {
         return
     }
 
+    const projects = await Project.find().lean()
     
-    const newProject = new Project(inProject)
-    await newProject.save()
+    const newProject = await Project.create({
+        ID: String(projects.length + 1),
+        Name: inProject.Name,
+        Description: inProject.Description,
+        Client: inProject.Client,
+        Round: inProject.Round,
+        ClientEmail: inProject.ClientEmail,
+        Type: inProject.Type,
+        IntendedSize: inProject.IntendedSize}
+    );
 
-    res.status(200).json({ 
-        message: "project saved successfully"
-    }).end()
+    res.status(200).json(newProject);
     
 });
 
@@ -137,9 +291,7 @@ ucBackend.post('/api/SaveEditedProject', async (req, res) => {
     projectToEdit.IntendedSize =  inProject.IntendedSize
     await projectToEdit.save()
 
-    res.status(200).json({ 
-        message: "project edited successfully"
-    }).end()
+    res.status(200).json(projectToEdit);
     
 });
 
@@ -214,17 +366,17 @@ function createValidStudent(inStudent)
     if (!inStudent.email.includes("@"))
     {
         console.log("invalid email")
-        throw TypeError
+        throw "Invalid Email"
     }
     if (inStudent.studentId.length != 8)
     {
         console.log("invalid id")
-        throw TypeError
+        throw "Invalid ID"
     }
     if (inStudent.unit == [])
     {
         console.log("no unit selected")
-        throw TypeError
+        throw "No unit selected"
     }
     //console.log(Object.values(inStudent))
     //console.log(Object.keys(inStudent))
@@ -238,10 +390,10 @@ function createValidStudent(inStudent)
         Password: 'Password1',//TODO: randomly generate passwords
         StudentID: inStudent.studentId,
         TermsAccepted: 0,
-        Unit: inStudent.unit[0], //the unit is given as a list, but we don't need a list, just 1 unit
-        Major: inStudent.unit[0], 
-        CWA: inStudent.CWA,
-        Username: inStudent.studentId, //the username needs to be unique. idk if using the student ID is good longterm, but it helps shortterm
+        Unit: inStudent.unit, //the unit is given as a list, but we don't need a list, just 1 unit
+        Major: inStudent.course, 
+        CWA: inStudent.cwa,
+        Username: inStudent.email, //the username needs to be unique. idk if using the student ID is good longterm, but it helps shortterm
         Salt: 'idk' //I dont understand the salt other than it helps keep passwords safe. we don't need to set it properly yet
     }
     return mongooseStudent

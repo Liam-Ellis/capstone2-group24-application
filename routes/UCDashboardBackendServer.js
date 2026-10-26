@@ -77,6 +77,18 @@ ucBackend.get('/api/requestAllProjects', async (req, res) =>{
     res.send(JSON.stringify(groups))
 });
 
+ucBackend.get('/api/requestAllGroupApplicationsForStudent/:ID', async (req, res) => {
+    const StudentID = req.params.ID
+    const groups = await ProjectApplication.find(
+        {
+            Student: StudentID,
+            Type: "Group"
+        }
+    ).lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(groups))
+});
+
 ucBackend.post('/api/SaveNewProject', async (req, res) => {
     const inProject = req.body
     console.log("saving new project: \n" + inProject + "\n")
@@ -145,7 +157,6 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
     
     //loop through every group sent in by the frontend
     for (let i = 0; i < groups.length; i++) {
-        console.log("start of group " + i)
         //check to see if this group exists in the database already
         const groupToEdit = await Group.findOne({GroupNumber: groups[i].GroupNumber})
         //if this group doesn't exist in the database yet
@@ -161,7 +172,7 @@ ucBackend.post('/api/SaveGroups', async (req, res) => {
         }
     };
     res.status(200).json({ 
-        message: "project edited successfully"
+        message: "groups saved successfully"
     }).end()
 });
 

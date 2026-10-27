@@ -92,7 +92,7 @@ function AddStudentsPage({ unitName, unitTitle }) {
 
                     </div>
 
-                    <AddStudentsComponent />
+                    <AddStudentsComponent unitName = {unitName} />
                 </div>
 
             </main>

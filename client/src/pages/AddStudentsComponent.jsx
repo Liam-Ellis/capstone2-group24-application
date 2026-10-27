@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import backendURL from '../backendURL';
 
-function AddStudents() {
+function AddStudents({unitName}) {
     const navigate = useNavigate();
     
     const [studentList, setStudentList] = useState({
@@ -39,8 +39,17 @@ function AddStudents() {
         saveData.append("document", studentList.document);
 
         try {
+            let capstoneOrHci
+            if (unitName === 'ISAD3000')
+            {
+                capstoneOrHci = 'capstone'
+            } else
+            {
+                capstoneOrHci = 'hci'
+            }
+            const uploadCsvUrl = backendURL + '/csv/upload/' + capstoneOrHci
             const response = await fetch(
-                backendURL + "/csv/upload/capstone",
+                uploadCsvUrl,
                 {
                     method: "POST",
                     body: saveData,

@@ -19,7 +19,8 @@ function StudentList({ unitName, unitTitle }) {
         Name: "",
         Email: "",
         Major: "",
-        CWA: 0.0
+        CWA: 0.0,
+        Unit: "",
     });
 
     const sidebar = [
@@ -94,6 +95,10 @@ function StudentList({ unitName, unitTitle }) {
                             }
                             : student
                     )
+                );
+
+                setStudents(prevStudents =>
+                    prevStudents.filter(student => student.Unit !== 'WORK3008')
                 );
 
                 setEditingId(null);
@@ -288,6 +293,23 @@ function StudentList({ unitName, unitTitle }) {
                                                     value={studentDetails.CWA}
                                                     onChange={inputChanges}
                                                 />
+                                            </label>
+
+                                            <label> Unit
+                                                <select
+                                                    name="Unit"
+                                                    value={studentDetails.Unit}
+                                                    required
+                                                    onChange={inputChanges}
+                                                >
+                                                    <option value="ISAD3000">
+                                                        ISAD3000                           
+                                                     </option>
+
+                                                    <option value="WORK3008">
+                                                        WORK3008
+                                                    </option>
+                                                </select>
                                             </label>
 
                                             <div className="student-detail-buttons">

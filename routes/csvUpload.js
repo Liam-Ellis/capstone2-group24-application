@@ -48,9 +48,9 @@ async function parseCSV(filepath) {
 }
 
 const modelsByType = {
-    capstone: CapstoneStudent,
-    hci: HCIStudent
+    capstone: CapstoneStudent
 };
+let unitType = ''
 
 const sendPasswordEmail = async (to, password) => {
     const { data, error } = await resend.emails.send({
@@ -68,7 +68,8 @@ const sendPasswordEmail = async (to, password) => {
 };
 
 router.post('/upload/:type', upload.single('document'), async (req, res, next) => {
-    const Model = modelsByType[req.params.type];
+    const Model = modelsByType['capstone'];
+    unitType = req.params.type
 
     if (!Model) {
         return res.status(400).json({message: "Unknown Student Type."});
@@ -102,11 +103,21 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
         for (const row of transformedRows) {
             let password = row.PlainPassword;
             delete row['PlainPassword'];
-            let savedStudent = await Model.insertOne(row);
 
-            await sendPasswordEmail(savedStudent.Email, password);
+            const checkStudent = await Model.findOne({StudentID: row.StudentID})
+            
+            //if the student already exists then we shouldn't save it
+            if(checkStudent)
+            {
+                console.log("student with id: " + row.StudentID + " already exists in database")
+            } else
+            {
+                let savedStudent = await Model.insertOne(row);
 
-            saved.push(savedStudent);
+                await sendPasswordEmail(savedStudent.Email, password);
+
+                saved.push(savedStudent);
+            }
         }
 
         res.json({
@@ -124,24 +135,26 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
 });
 
 async function transformRow(row, type) {
+    const password = randomstring.generate(12);
+    const salt = randomstring.generate(16);
+    const securePassword = await argon2.hash(salt + password);
 
-    if (type === 'capstone') {
-        const password = randomstring.generate(12);
-        const salt = randomstring.generate(16);
-        const securePassword = await argon2.hash(salt + password);
-
-        row.StudentID = row.STU_ID;
-        row.Name = row.STU_GVN_NM + ' ' + row.STU_FAMILY_NM;
-        row.Major = row.AWARD_ON_SSP_1;
-        row.CWA = Number(row.CWA);
-        row.Username = row.STU_ID + '@student.curtin.edu.au';
-        row.PlainPassword = password;
-        row.Password = securePassword;
-        row.Salt = salt;
-        row.Email = row.STU_ID + '@student.curtin.edu.au';
+    row.StudentID = row.STU_ID;
+    row.Name = row.STU_GVN_NM + ' ' + row.STU_FAMILY_NM;
+    row.Major = row.AWARD_ON_SSP_1;
+    row.CWA = Number(row.CWA);
+    row.Username = row.STU_ID + '@student.curtin.edu.au';
+    row.PlainPassword = password;
+    row.Password = securePassword;
+    row.Salt = salt;
+    row.Email = row.STU_ID + '@student.curtin.edu.au';
+    row.TermsAccepted = 0;
+    row.Group = 0;
+    if (unitType === 'capstone') {
         row.Unit = 'ISAD3000';
-        row.TermsAccepted = 0;
-        row.Group = 0;
+    } else
+    {
+        row.Unit = 'ICTE3002';
     }
     return row;
 }

@@ -33,17 +33,17 @@ function AddStudents() {
         alert("Student List uploaded successfully!");
         navigate("/ucdashboard/isad3000/students");
  
-        /* send CSV file to the backend and store in the database
+        //send CSV file to the backend and store in the database
         const saveData = new FormData();
 
         saveData.append("document", studentList.document);
 
         try {
             const response = await fetch(
-                "http://localhost:3000",
+                "http://localhost:3000/csv/upload/capstone",
                 {
                     method: "POST",
-                    body: saveData
+                    multipart: { document: { name: 'students.csv', mimeType: 'text/csv', buffer: saveData } }
                 }
             );
 
@@ -58,7 +58,7 @@ function AddStudents() {
         }
         catch (err) {
             console.error("Unable to upload student list: ", err);
-        } */
+        } 
     };
 
     return(

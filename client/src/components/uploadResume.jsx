@@ -29,7 +29,6 @@ function UploadResume() {
             const saveData = new FormData();
             
             saveData.append("document", resume.document);
-            saveData.append("StudentID", '00000000')
 
 
             console.log("now attempting fetch")

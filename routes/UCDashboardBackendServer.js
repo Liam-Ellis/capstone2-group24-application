@@ -490,7 +490,9 @@ ucBackend.get('/api/getWorkProjectApplications/:ID', async (req, res) => {
     
     //does what it says on the tin
     zipTheFile(applicationsFilePath)
-    
+    //cleanup the folder
+    fs.rmSync(applicationsFilePath, {recursive: true, force: true})
+
     //ask the frontend to download the zip file created
     res.download(applicationsFilePath + ".zip")
 });

@@ -236,6 +236,12 @@ ucBackend.get('/api/requestAllCapstoneStudents', async (req, res) => {
     res.send(JSON.stringify(students))
 });
 
+ucBackend.get('/api/requestAllHCIStudents', async (req, res) => {
+    const students = await CapstoneStudent.find({Unit: "ICTE3002"}).lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(students))
+});
+
 ucBackend.get('/api/requestAllGroups', async (req, res) =>{
     const groups = await Group.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.

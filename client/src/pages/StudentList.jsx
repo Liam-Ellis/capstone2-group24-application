@@ -137,9 +137,14 @@ function StudentList({ unitName, unitTitle }) {
 
     useEffect(() => {
         const fetchStudents = async () => {
+            let requestString = "http://localhost:3000/UC/api/requestAllCapstoneStudents";
+            if (unitName.toUpperCase() === "ICTE3002") {
+                requestString = "http://localhost:3000/UC/api/requestAllHCIStudents";
+            }
+
             try {
                 const response = await fetch(
-                    `http://localhost:3000/UC/api/requestAllCapstoneStudents`,
+                    requestString,
                     {
                     method: 'GET',
                     headers: {

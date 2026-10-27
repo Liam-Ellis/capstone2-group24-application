@@ -22,6 +22,7 @@ const studentManagementRoutes = require('./routes/studentManagement');
 const ucRoute = require('./routes/UCDashboardBackendServer');
 const applicationRoutes = require("./routes/studentRoutes/applicationRoutes");
 const roundRoutes = require("./routes/studentRoutes/roundRoutes");
+const csvRoutes = require("./routes/csvUpload")
 
 // Use routes
 app.use('/auth', authRoute);
@@ -30,6 +31,7 @@ app.use('/UC', ucRoute);
 app.use("/student/application", applicationRoutes);
 app.use("/student/round", roundRoutes);
 app.use("/studentManage", studentManagementRoutes);
+app.use("/csv", csvRoutes)
 
 app.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");

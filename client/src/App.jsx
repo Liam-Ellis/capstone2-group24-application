@@ -72,12 +72,12 @@ function App() {
       <Route path="/setup" element={<SetupAccount />} />
       <Route path="/forgot" element={<ForgotPassword />} />
       <Route path="/ucdashboard" element={<UC_Dashboard />} />
-      <Route path="/ucdashboard/isad3000/students" element={<StudentList />} />
-      <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents />} />
-      <Route path="/ucdashboard/isad3000/addstudent" element={<AddStudent />} />
-      <Route path="/ucdashboard/icte3002/students" element={<StudentList />} />
-      <Route path="/ucdashboard/icte3002/addstudents" element={<AddStudents />} />
-      <Route path="/ucdashboard/icte3002/addstudent" element={<AddStudent />} />
+      <Route path="/ucdashboard/isad3000/students" element={<StudentList unitName="ISAD3000" unitTitle="Capstone Project 1" />} />
+      <Route path="/ucdashboard/isad3000/addstudents" element={<AddStudents unitName="ISAD3000" unitTitle="Capstone Project 1" />} />
+      <Route path="/ucdashboard/isad3000/addstudent" element={<AddStudent unitName="ISAD3000" unitTitle="Capstone Project 1" />} />
+      <Route path="/ucdashboard/icte3002/students" element={<StudentList unitName="ICTE3002" unitTitle="Human Computer Interface" />} />
+      <Route path="/ucdashboard/icte3002/addstudents" element={<AddStudents unitName="ICTE3002" unitTitle="Human Computer Interface" />} />
+      <Route path="/ucdashboard/icte3002/addstudent" element={<AddStudent unitName="ICTE3002" unitTitle="Human Computer Interface" />} />
       <Route path="/ucdashboard/rounds" element={<Rounds />} />
       <Route path="/ucdashboard/rounds/applications" element={<DownloadApplications />} />
       <Route path="/ucdashboard/isad3000" element={<ISAD3000 />} />

@@ -2,11 +2,11 @@ import "./ISAD3000.css";
 import "./Projects.css";
 import AddStudentsPage from "./AddStudentsPage";
 
-function AddStudents() {
+function AddStudents({unitName, unitTitle}) {
     return (
         <AddStudentsPage
-            unitName="ISAD3000"
-            unitTitle="Capstone Project 1"
+            unitName={unitName}
+            unitTitle={unitTitle}
         />
     );
 }

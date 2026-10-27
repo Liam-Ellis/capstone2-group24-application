@@ -7,7 +7,6 @@ function ICTE3002() {
             unitName="ICTE3002"
             unitTitle="Human Computer Interface"
             unitPath="/ucdashboard/icte3002"
-            students={ICTE3002Students}
         />
     );
 }

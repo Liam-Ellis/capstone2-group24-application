@@ -3,6 +3,7 @@ import "./ApplicationProjects.css";
 import ApplyForProject from './ApplyForProject';
 
 function ApplicationProjects({round}) {
+  const [hasApplied, setHasApplied] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState([]);
   const [showApplyProject, setShowApplyProject] = useState(false);
@@ -35,20 +36,10 @@ function ApplicationProjects({round}) {
 
   getProjects();
 
-  const applyProject = (updatedProject) => {
-    setProjects((previousProjects) =>
-      previousProjects.map((project) => {
-        if (project.unique_id === updatedProject.unique_id) {
-          if (selectedProject === project) {
-            setSelectedProject(updatedProject);
-          }
-          return updatedProject;
-        } else {
-          return project;
-        }
-      }
-      )
-    );
+  const applyProject = (project) => {
+    if (selectedProject.ID === project.ID) {
+      setHasApplied(true);
+    }
 
     setShowApplyProject(false);
   };
@@ -56,6 +47,38 @@ function ApplicationProjects({round}) {
   const applyForProject = (project) => {
     setShowApplyProject(true);
   };
+
+  const getAppStatus = async (project) => {
+    try {
+      const response = await fetch(
+          `http://localhost:3000/UC/api/applicationStatus`,
+          {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({Project: project.ID}),
+          credentials: 'include'
+          }
+      );
+
+      const data = await response.json();
+
+      if(!response.ok) {
+          throw new Error(data);
+      }
+
+      setHasApplied(data);
+    }
+    catch (err) {
+    }
+  };
+
+  const selectProject = async (project) => {
+    setHasApplied(false);
+    setSelectedProject(project);
+    await getAppStatus(project);
+  }
 
   return (
     <div className="projects-box">
@@ -65,6 +88,7 @@ function ApplicationProjects({round}) {
         {showApplyProject && (
           <ApplyForProject
             project={selectedProject}
+            onApply={() => applyProject(selectedProject)}
             onCancel={() => {
               setShowApplyProject(false);}}
           />
@@ -82,7 +106,7 @@ function ApplicationProjects({round}) {
                 <div
                   key={project.id}
                   className="project-item"
-                  onClick={() => setSelectedProject(project)}
+                  onClick={() => selectProject(project)}
                 >
                   {project.Name}
                 </div>
@@ -114,7 +138,7 @@ function ApplicationProjects({round}) {
                 <p>Select a project to view details.</p>
             )}
 
-            {selectedProject && (
+            {selectedProject && !hasApplied && (
                 <div className="app-project-buttons">
                     <button
                         className="apply-project-btn"
@@ -123,6 +147,10 @@ function ApplicationProjects({round}) {
                         Apply for Project
                     </button>
                 </div>
+            )}
+
+            {selectedProject && hasApplied && (
+                <p className="applied-msg">You have applied for this project</p>
             )}
         </div>
 

@@ -522,18 +522,22 @@ async function zipTheFile(filePathToZip){
 }
 
 
-ucBackend.get('/api/applicationStatus', async (req, res) => {
+ucBackend.post('/api/applicationStatus', verifyStudentSession, async (req, res) => {
     try {
-        const { Student, Project } = req.query;
+        const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+        const username = decodedToken.username;
+        const student = await CapstoneStudent.findOne({Username: username});
 
-        if (!Student || !Project ) {
+        const { Project } = req.body;
+
+        if ( !Project ) {
             return res.status(400).json({
                 message: "Missing required fields"
             });
         }
 
         const application = await ProjectApplication.findOne({
-            Student: Student, Project: Project
+            Student: student.StudentID, Project: Project
         });
 
         // student has applied
@@ -552,8 +556,9 @@ ucBackend.get('/api/applicationStatus', async (req, res) => {
 //this probably should be in a different file, but it's here because I don't want to mess with someone else's file
 //takes in a student ID, returns if they have a resume in the db
 ucBackend.get('/api/DoesStudentHaveResume', verifyStudentSession, async (req, res) =>{
-    const studentID = req.body
-    const fullStudent = await CapstoneStudent.findOne({StudentID: studentID}).lean()
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const fullStudent = await CapstoneStudent.findOne({Username: username});
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     if (Object.hasOwn(fullStudent, "Resume"))
     {

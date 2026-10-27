@@ -186,17 +186,6 @@ function AddStudentComponent() {
                                 <input 
                                     type="radio"
                                     name="unit"
-                                    value="ISAD3001"
-                                    onChange={inputChanges}
-                                    required
-                                />
-                                <span> ISAD3001 Capstone Computing Project 2 </span>
-                            </label>
-
-                            <label className="enrol-option"> 
-                                <input 
-                                    type="radio"
-                                    name="unit"
                                     value="ICTE3002"
                                     onChange={inputChanges}
                                     required

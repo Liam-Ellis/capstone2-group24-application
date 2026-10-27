@@ -1,0 +1,225 @@
+.isad3000-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 0 20px 20px 20px;
+}
+
+
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background-color: #000000;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 15px;
+  cursor: pointer;
+  color: white;
+  border-radius: 8px;
+}
+
+.sidebar li:hover {
+  background-color: #374151;
+  color: white;
+}
+
+
+.top-logo {
+  position: fixed;
+}
+
+
+.unit-name {
+  padding: 30px 0 10px 0;
+}
+
+.unit-name h1 {
+  margin: 0;
+}
+
+
+.downloadapplications-box {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  min-height: calc(100vh - 140px);
+  box-sizing: border-box;
+}
+
+.downloadapplications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.downloadapplications-header h2 {
+  margin: 0;
+}
+
+
+.add-student-btn {
+  padding: 10px 18px;
+  background-color: #B58B0B;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.add-student-btn:hover {
+  background-color: #374151;
+}
+
+
+.round-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.round-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #fafafa;
+}
+
+.round-card h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.round-card p {
+  margin: 8px 0;
+}
+
+
+.round-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
+.close-round-btn {
+  padding: 10px 16px;
+  background-color: red;
+  color: white;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.close-round-btn:hover {
+  background-color: rgb(115, 0, 0);
+}
+
+
+.edit-round-btn {
+  padding: 10px 16px;
+  background-color: white;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.edit-round-btn:hover {
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 180px;
+  }
+
+  .top-logo {
+    width: 80px;
+    right: 20px;
+  }
+
+  .round-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
+
+.form-box form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-box input {
+  width: 95%;
+  padding: 10px;
+  border: 1px solid;
+  border-color:black;
+  background-color: aliceblue;
+  color: black;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: left;
+  font-family: Arial, sans-serif;
+}
+
+.form-box button {
+  display: flex;
+  padding: 10px;
+  width: 200px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  min-height: 5vh;
+  margin: 10px auto;
+}
+
+.edit-container {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  min-height: 25vh;
+  border-radius: 8px;
+  width: 500px;
+  margin: 20px auto 50px;
+}
+
+
+.student-details {
+  display: flex;
+  justify-content: space-evenly;
+  padding-bottom: 5%;
+}

@@ -23,6 +23,10 @@ const validationSchemas = {
     getProjectsSchema: joi.object({
         round: joi.number().required(),
     }),
+    postPrefsSchema: joi.object({
+        prefsFor: joi.array(),
+        prefsAgainst: joi.array(),
+    })
 };
 
 const validateParameters = (schema, property) => {
@@ -40,12 +44,27 @@ const validateParameters = (schema, property) => {
     };
 };
 
-student.get('/rounds', verifyStudentSession, async (req, res) => {
+const validateBodyParameters = (schema, property) => {
+    return async (req, res, next) => {
+        const { error } = schema.validate(req.body);
+
+        if (error == null) {
+            next();
+        } else {
+            const { details } = error;
+            const errorMsg = details.map(error => error.message).join(',');
+
+            res.status(422).json({ message: errorMsg });
+        }
+    };
+};
+
+student.get('/rounds', /*verifyStudentSession,*/ async (req, res) => {
     const rounds = await Round.find().lean();
     res.status(200).json(rounds);
 });
 
-student.get('/round/:ID', validateParameters(validationSchemas.getRoundSchema), verifyStudentSession, async (req, res) => {
+student.get('/round/:ID', validateParameters(validationSchemas.getRoundSchema), /*verifyStudentSession,*/ async (req, res) => {
     const round = await Round.findOne({ RoundNumber: req.params.ID }).lean();
 
     if (round === null) {
@@ -55,7 +74,7 @@ student.get('/round/:ID', validateParameters(validationSchemas.getRoundSchema), 
     }
 });
 
-student.get('/project/:ID', validateParameters(validationSchemas.getProjectSchema), verifyStudentSession, async (req, res) => {
+student.get('/project/:ID', validateParameters(validationSchemas.getProjectSchema), /*verifyStudentSession,*/ async (req, res) => {
     const project = await Project.findOne({ ID: req.params.ID }).lean();
 
     if (project === null) {
@@ -85,12 +104,11 @@ student.get('/project/:ID', validateParameters(validationSchemas.getProjectSchem
             delete project['ClientEmail'];
         }
 
-        delete project['ID'];
         res.status(200).json(project);
     }
 });
 
-student.get('/projects/:round', validateParameters(validationSchemas.getProjectsSchema), verifyStudentSession, async (req, res) => {
+student.get('/projects/:round', validateParameters(validationSchemas.getProjectsSchema), /*verifyStudentSession,*/ async (req, res) => {
     const projects = await Project.find({ Round: req.params.round }).lean();
     const round = await Round.findOne({ RoundNumber: req.params.round }).lean();
 
@@ -129,11 +147,93 @@ student.get('/projects/:round', validateParameters(validationSchemas.getProjects
                     }
                 }
             }
-
-            delete project['ID'];
         });
 
         res.status(200).json(projects);
+    }
+});
+
+student.post('/prefs', validateBodyParameters(validationSchemas.postPrefsSchema), /*verifyStudentSession,*/ async (req, res) => {
+    const { prefsFor, prefsAgainst } = req.body;
+    
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const user = await CapstoneStudent.findOne({Username: username}).exec();
+
+    if (user !== null) {
+        user.PreferenceFor = prefsFor;
+        user.PreferenceAgainst = prefsAgainst;
+        await user.save();
+
+        let prefs = {
+            prefsFor: [],
+            prefsAgainst: []
+        };
+
+        prefs.prefsFor = user.PreferenceFor;
+        prefs.prefsAgainst = user.PreferenceAgainst;
+
+        res.status(200).json(prefs);
+    } else {
+        res.sendStatus(500);
+    }
+});
+
+student.get('/prefs', /*verifyStudentSession,*/ async (req, res) => {    
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const user = await CapstoneStudent.findOne({Username: username}).lean();
+
+    let prefs = {
+        prefsFor: [],
+        prefsAgainst: []
+    };
+
+    if (user !== null) {
+        prefs.prefsFor = user.PreferenceFor;
+        prefs.prefsAgainst = user.PreferenceAgainst;
+
+        res.status(200).json(prefs);
+    } else {
+        res.sendStatus(500);
+    }
+});
+
+student.get('/group', /*verifyStudentSession,*/ async (req, res) => {
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const user = await CapstoneStudent.findOne({Username: username}).lean();
+
+    let group;
+
+    if (user.Group !== 0) {
+        group = await Group.findOne({ GroupNumber: user.Group }).lean();
+
+        if (group !== null) {
+            if (group.Confirmed === 1) {
+                let project = await Project.findOne({ ID: group.Project}).lean();
+
+                if (project !== null) {
+                    delete project['IntendedSize'];
+                    delete project['ID'];
+                    delete project['Round'];
+                    group['Project'] = project;
+
+                    delete group['Confirmed'];
+                    delete group['Reason'];
+
+                    res.status(200).json(group);
+                } else {
+                    res.sendStatus(500);
+                }
+            } else {
+                res.status(400).send('Student is not allocated to a group');
+            }
+        } else {
+            res.sendStatus(500);
+        }
+    } else {
+        res.status(400).send('Student is not allocated to a group');
     }
 });
 

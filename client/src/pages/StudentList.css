@@ -179,6 +179,12 @@
   flex-direction: column;
 }
 
+.form-box2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
 .form-box input {
   width: 95%;
   padding: 10px;
@@ -219,34 +225,140 @@
 
 .confirm-delete-container {
   position: relative;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 25vh;
+  border: 1px solid black;
   border-radius: 8px;
   width: 500px;
   margin: 20px auto 50px;
-  padding-bottom: 10%;
-  background-color:black;
+  padding-bottom: 5%;
+  padding-top: 5%;
+  background-color:rgb(238, 238, 238);
 }
 
 .confirm-delete-container p {
-  margin: 50px auto 5%;
-  text-align: center;
-  min-height: auto;
   font-size: 20px;
-  padding-top: 5%;
-  width: 300px;
-  color:rgb(243, 242, 242);
+  color:black;
   font-family: Arial, sans-serif;
 }
 
 .delete-container {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .student-details {
   display: flex;
   justify-content: space-evenly;
   padding-bottom: 5%;
+}
+
+.student-detail-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-delete-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-delete-btn {
+  padding: 8px 15px;
+  background-color: white;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cancel-delete-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.confirm-delete-btn {
+  background-color: red;
+  color: white;
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.confirm-delete-btn:hover {
+  background-color: rgb(115, 0, 0);
+}
+
+.cancel-edit-btn {
+  padding: 10px 16px;
+  background-color: white;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cancel-edit-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.edit-student-btn {
+  background-color: #B58B0B;
+  color: white;
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.edit-student-btn:hover {
+  background-color: #4f3e00;
+}
+
+.delete-student-btn {
+  background-color: red;
+  color: white;
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: "M PLUS U", sans-serif;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.delete-student-btn:hover {
+  background-color: rgb(115, 0, 0);
+}
+
+.student-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 450px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+  padding-bottom: 0px;
+  margin-bottom: 3%;
+  background-color: #fafafa;
+}
+
+.student-card h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.student-card p {
+  margin: 8px 0;
 }

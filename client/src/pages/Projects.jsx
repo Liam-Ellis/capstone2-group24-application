@@ -1,24 +1,46 @@
 import { useState } from "react";
 import "./Projects.css";
 import AddProject from "./AddProject";
+import backendURL from "../backendURL";
 
-function Projects() {
+function Projects({round, roundExpired}) {
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState([]);
   const [showAddProject, setShowAddProject] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
 
-  const addProject = (newProject) => {
-    const projectWithId = {
-      ...newProject,
-      unique_id: Date.now()
-    };
+  const fetchProjects = async () => {
+    try {
+        const response = await fetch(
+            backendURL + `/UC/api/projects/${round}`,
+            {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            }
+        );
 
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setProjects(data);
+    }
+    catch (err) {
+        console.error("Unable to get projects: ", err);
+    }
+  };
+
+  fetchProjects();
+
+  const addProject = (newProject) => {
     setProjects((previousProjects) => [
       ...previousProjects,
       {
-        id: previousProjects.length + 1,
-        ...projectWithId
+        ...newProject
       }
     ]);
 
@@ -28,10 +50,8 @@ function Projects() {
   const editProject = (updatedProject) => {
     setProjects((previousProjects) =>
       previousProjects.map((project) => {
-        if (project.unique_id === updatedProject.unique_id) {
-          if (selectedProject === project) {
-            setSelectedProject(updatedProject);
-          }
+        if (project.ID === updatedProject.ID) {
+          setSelectedProject(updatedProject);
           return updatedProject;
         } else {
           return project;
@@ -49,10 +69,37 @@ function Projects() {
     setShowAddProject(true);
   };
 
-   const deleteProject = (project) => {
-    setProjects(projects.filter(proj => proj !== project));
-    if (selectedProject === project) {
-      setSelectedProject(null);
+   const deleteProject = async (projectToDelete) => {
+    try {
+        const response = await fetch(
+            backendURL + `/UC/api/project/${projectToDelete.ID}`,
+            {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.message);
+        }
+        
+        setProjects((previousProjects) =>
+          previousProjects.map((project) => {
+            if (project.ID !== projectToDelete.ID) {
+              return project;
+            }
+          }
+        )
+        );
+
+        setSelectedProject(null);
+    }
+    catch (err) {
+        console.error("Unable to get projects: ", err);
     }
   };
 
@@ -60,17 +107,20 @@ function Projects() {
     <div className="projects-box">
       <div className="projects-header">
         <h4>Available Projects</h4>
-        <button
-          className="add-project-btn"
-          onClick={() => {
-            setEditingProject(null);
-            setShowAddProject(true);}}
-        >
-          + Add Project
-        </button>
+        {!roundExpired && (
+          <button
+            className="add-project-btn"
+            onClick={() => {
+              setEditingProject(null);
+              setShowAddProject(true);}}
+          >
+            + Add Project
+          </button>
+        )}
 
         {showAddProject && (
           <AddProject
+            round={round}
             existingProject={editingProject}
             onAddProject={addProject}
             onEditProject={editProject}
@@ -90,61 +140,68 @@ function Projects() {
             <div className="project-list">
               {projects.map((project) => (
                 <div
-                  key={project.id}
+                  key={project.ID}
                   className="project-item"
                   onClick={() => setSelectedProject(project)}
                 >
-                  {project.name}
+                  {project.Name}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="project-details">
+        <div className="project-details">
             <h3>Details</h3>
 
             {selectedProject ? (
-              <>
-                <p><strong>Description: </strong>{selectedProject.description}</p>
-              </>
+                <>
+                    <p>
+                        <strong>Description: </strong>
+                        {selectedProject.Description}
+                    </p>
+
+                    <p>
+                        <strong>Client: </strong>
+                        {selectedProject.Client}
+                    </p>
+
+                    <p>
+                        <strong>Contact: </strong>
+                        {selectedProject.ClientEmail}
+                    </p>
+
+                    <p>
+                        <strong>Project Type: </strong>
+                        {selectedProject.Type}
+                    </p>
+
+                    <p>
+                        <strong>Intended Group Size: </strong>
+                        {selectedProject.IntendedSize}
+                    </p>
+                </>
             ) : (
-              <p>Select a project to view details.</p>
+                <p>Select a project to view details.</p>
             )}
 
-            {selectedProject ? (
-              <>
-                <p><strong>Client: </strong>{selectedProject.client}</p>
-              </>
-            ) : (
-              <p></p>
-            )}
+            {selectedProject && !roundExpired && (
+                <div className="project-page-buttons">
+                    <button
+                        className="delete-project-btn"
+                        onClick={() => deleteProject(selectedProject)}
+                    >
+                        Delete Project
+                    </button>
 
-            {selectedProject ? (
-              <>
-                <p><strong>Contact: </strong>{selectedProject.clientEmail}</p>
-              </>
-            ) : (
-              <p></p>
+                    <button
+                        className="edit-project-btn"
+                        onClick={() => openEditProject(selectedProject)}
+                    >
+                        Edit Project
+                    </button>
+                </div>
             )}
-
-            {selectedProject && (
-              <div className="project-buttons">
-                <button
-                  className="delete-project-btn"
-                  onClick={() => deleteProject(selectedProject)}
-                >
-                  Delete Project
-                </button>
-
-                <button
-                  className="edit-project-btn"
-                  onClick={() => openEditProject(selectedProject)}
-                >
-                  Edit Project
-                </button>
-              </div>
-            )}
-          </div>
+        </div>
 
         </div>
 

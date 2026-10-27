@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./AddRound.css";
+import backendURL from "../backendURL";
 
 function AddRound({
   onAddRound,
@@ -7,51 +8,87 @@ function AddRound({
   onCancel,
   existingRound
 }) {
-  const [roundName, setRoundName] = useState("");
-  const [semester, setSemester] = useState("Semester 1, 2026");
-  const [status, setStatus] = useState("Draft");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [maxApplications, setMaxApplications] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (existingRound) {
-      setRoundName(existingRound.name || "");
-      setSemester(existingRound.semester || "Semester 1, 2026");
-      setStatus(existingRound.status || "Draft");
-      setStartDate(existingRound.startDate || "");
-      setEndDate(existingRound.endDate || "");
-      setMaxApplications(existingRound.maxApplications || "");
+      setStartDate(existingRound.StartDate || "");
+      setEndDate(existingRound.EndDate || "");
     } else {
-      setRoundName("");
-      setSemester("Semester 1, 2026");
-      setStatus("Draft");
       setStartDate("");
       setEndDate("");
-      setMaxApplications("");
     }
   }, [existingRound]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setError("");
 
     const roundData = {
       ...existingRound,
-      name: roundName,
-      semester: semester,
-      status: status,
-      startDate: startDate,
-      endDate: endDate,
-      maxApplications: maxApplications
+      StartDate: startDate,
+      EndDate: endDate,
     };
 
     if (existingRound) {
-      onEditRound(roundData);
+      try {
+        const response = await fetch(
+            backendURL + "/UC/api/EditRound",
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(roundData),
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.text();
+        if(!response.ok) {
+          if (data.includes("{") && data.includes("message")) {
+            setError(JSON.parse(data).message);
+          } else {
+            setError(data);
+          }
+        } else {
+          onEditRound(JSON.parse(data));
+        }
+      }
+      catch (err) {
+        setError(err);
+      }
     } else {
-      onAddRound({
-        ...roundData,
-        applications: 0
-      });
+      try {
+        const response = await fetch(
+            backendURL + "/UC/api/SaveNewRound",
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(roundData),
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.text();
+        if(!response.ok) {
+          if (data.includes("{") && data.includes("message")) {
+            setError(JSON.parse(data).message);
+          } else {
+            setError(data);
+          }
+        } else {
+          onAddRound(JSON.parse(data));
+        }
+      }
+      catch (err) {
+          setError(err);
+      }
     }
   };
 
@@ -74,50 +111,6 @@ function AddRound({
         </div>
 
         <form onSubmit={handleSubmit}>
-
-          <div className="form-section">
-            <h3>Round Details</h3>
-
-            <label>
-              Round Name
-              <input
-                type="text"
-                placeholder="Round 1"
-                value={roundName}
-                onChange={(event) =>
-                  setRoundName(event.target.value)
-                }
-                required
-              />
-            </label>
-
-            <label>
-              Semester
-              <select
-                value={semester}
-                onChange={(event) =>
-                  setSemester(event.target.value)
-                }
-              >
-                <option>Semester 1, 2026</option>
-                <option>Semester 2, 2026</option>
-              </select>
-            </label>
-
-            <label>
-              Status
-              <select
-                value={status}
-                onChange={(event) =>
-                  setStatus(event.target.value)
-                }
-              >
-                <option>Draft</option>
-                <option>Open</option>
-              </select>
-            </label>
-          </div>
-
           <div className="form-section">
             <h3>Application Period</h3>
 
@@ -150,24 +143,6 @@ function AddRound({
             </div>
           </div>
 
-          <div className="form-section">
-            <h3>Application Settings</h3>
-
-            <label>
-              Maximum Applications
-              <input
-                type="number"
-                min="1"
-                placeholder="50"
-                value={maxApplications}
-                onChange={(event) =>
-                  setMaxApplications(event.target.value)
-                }
-                required
-              />
-            </label>
-          </div>
-
           <div className="form-buttons">
 
             <button
@@ -187,6 +162,10 @@ function AddRound({
 
           </div>
 
+          {error && (
+            <div className="error-msg-div">
+              <p>{error}</p>
+            </div>)}
         </form>
 
       </div>

@@ -1,46 +1,110 @@
 import { useEffect, useState } from "react";
 import "./AddProject.css";
+import backendURL from "../backendURL";
 
-function AddProject({ 
+function AddProject({
+  round, 
   onAddProject, 
   onEditProject,
   onCancel,
   existingProject
- }) {
+}) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [client, setClient] = useState("");
   const [clientEmail, setClientEmail] = useState("");
+  const [projectType, setProjectType] = useState("");
+  const [intendedGroupSize, setIntendedGroupSize] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (existingProject) {
-      setProjectName(existingProject.name || "");
-      setDescription(existingProject.description || "");
-      setClient(existingProject.client || "");
-      setClientEmail(existingProject.clientEmail || "");
+      setProjectName(existingProject.Name || "");
+      setDescription(existingProject.Description || "");
+      setClient(existingProject.Client || "");
+      setClientEmail(existingProject.ClientEmail || "");
+      setProjectType(existingProject.Type || "");
+      setIntendedGroupSize(existingProject.IntendedSize || "");
     } else {
       setProjectName("");
       setDescription("");
       setClient("");
       setClientEmail("");
+      setProjectType("");
+      setIntendedGroupSize("");
     }
   }, [existingProject]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const projectData = {
       ...existingProject,
-      name: projectName,
-      description: description,
-      client: client,
-      clientEmail: clientEmail
+      Name: projectName,
+      Description: description,
+      Client: client,
+      Round: round,
+      ClientEmail: clientEmail,
+      Type: projectType,
+      IntendedSize: intendedGroupSize
     };
 
     if (existingProject) {
-      onEditProject(projectData);
+      try {
+        const response = await fetch(
+            backendURL + "/UC/api/SaveEditedProject",
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectData),
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.text();
+        if(!response.ok) {
+          if (data.includes("{") && data.includes("message")) {
+            setError(JSON.parse(data).message);
+          } else {
+            setError(data);
+          }
+        } else {
+          onEditProject(JSON.parse(data));
+        }
+      }
+      catch (err) {
+        setError(err);
+      }
     } else {
-      onAddProject(projectData);
+      try {
+        const response = await fetch(
+            backendURL + "/UC/api/SaveNewProject",
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectData),
+            credentials: 'include'
+            }
+        );
+
+        const data = await response.text();
+        if(!response.ok) {
+          if (data.includes("{") && data.includes("message")) {
+            setError(JSON.parse(data).message);
+          } else {
+            setError(data);
+          }
+        } else {
+          onAddProject(JSON.parse(data));
+        }
+      }
+      catch (err) {
+          setError(err);
+      }
     }
   };
 
@@ -104,6 +168,31 @@ function AddProject({
                 required
               />
             </label>
+
+            <label>
+              Project Type
+              <select
+                value={projectType}
+                onChange={(event) => setProjectType(event.target.value)}
+                required
+              >
+                <option value="">Select Project Type</option>
+                <option value="Work">Work</option>
+                <option value="Group">Group</option>
+              </select>
+            </label>
+
+            <label>
+              Intended Group Size
+              <input
+                type="number"
+                min="1"
+                value={intendedGroupSize}
+                onChange={(event) => setIntendedGroupSize(event.target.value)}
+                placeholder="Group Size"
+                required
+              />
+            </label>
           </div>
 
           <div className="form-buttons">
@@ -123,6 +212,10 @@ function AddProject({
             </button>
           </div>
 
+          {error && (
+            <div className="error-msg-div">
+              <p>{error}</p>
+            </div>)}
         </form>
       </div>
     </div>
@@ -130,4 +223,3 @@ function AddProject({
 }
 
 export default AddProject;
-

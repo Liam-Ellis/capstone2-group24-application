@@ -1,79 +1,62 @@
 import "./StudentList.css";
-import logo from "./logo.webp";
 import Dropdown from "./Dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import backendURL from "../backendURL";
 
-function StudentList() {
-  const navigate = useNavigate();
+function StudentList({ unitName, unitTitle }) {
+    const navigate = useNavigate();
 
-  const sidebar = [
-    {
-      name: "Institution Page",
-      path: "/ucdashboard/institution"
-    },
-    {
-      name: "Units",
-      path: "/ucdashboard"
-    },
-    {
-      name: "Settings",
-      path: "/ucdashboard/settings"
-    }
-  ];
-
-  const [student, setStudents] = useState([
-        {
-            id: 1, 
-            name: "Josiah Barnes",
-            email: "josiah@student.curtin.edu.au",
-            course: "Software Engineering",
-            cwa: 68.6
-        },
-        {
-            id: 2, 
-            name: "Noel Kapadia",
-            email: "noel@student.curtin.edu.au",
-            course: "Information Technology",
-            cwa: 61.2
-        },
-        {
-            id: 3, 
-            name: "Amelia Koh",
-            email: "amelia@student.curtin.edu.au",
-            course: "Computer Science",
-            cwa: 61.2
-        }
-    ]);
+    const [students, setStudents] = useState([]);
 
     const [editingId, setEditingId] = useState(null);
-    const [pendingDelete, setPendingDelete] = useState(null);  
+    const [pendingDelete, setPendingDelete] = useState(null);
+    const [error, setError] = useState("");
+
 
     const [studentDetails, setStudentDetails] = useState({
-        name: "",
-        email: "",
-        course: "",
-        cwa: ""
+        ID: "",
+        Name: "",
+        Email: "",
+        Major: "",
+        CWA: 0.0,
+        Unit: "",
     });
+
+    const sidebar = [
+        {
+            name: "Units",
+            path: "/ucdashboard"
+        },
+        {
+            name: "Rounds",
+            path: "/ucdashboard/rounds"
+        },
+        {
+            name: "Group Allocation",
+            path: "/ucdashboard/groups"
+        }
+    ];
 
     const inputChanges = (e) => {
         const { name, value } = e.target;
 
         setStudentDetails(prevDetails => ({
-            ...prevDetails, 
+            ...prevDetails,
             [name]: value
         }));
     };
 
     const handleEdit = (student) => {
         setPendingDelete(null);
-        setEditingId(student.id);
+        setEditingId(student.StudentID);
 
         setStudentDetails({
-            name: student.name,
-            email: student.email,
-            course: student.course,
-            cwa: student.cwa
+            ID: student.StudentID, 
+            Name: student.Name,
+            Email: student.Email,
+            Major: student.Major,
+            CWA: student.CWA
         });
     };
 
@@ -82,206 +65,364 @@ function StudentList() {
         setPendingDelete(id);
     };
 
-    const handleSave = () => {
-        setStudents(prevStudents => 
-            prevStudents.map(student => 
-                student.id === editingId
-                    ? {
-                        ...student,
-                        ...studentDetails
+    const handleSave = async () => {
+        try {
+            const response = await fetch(
+                backendURL + `/studentManage/capstone/updatebyID/${studentDetails.ID}`,
+                {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(studentDetails),
+                credentials: 'include'
+                }
+            );
+
+            const data = await response.text();
+            if(!response.ok) {
+                if (data.includes("{") && data.includes("error")) {
+                    setError(JSON.parse(data).error);
+                } else {
+                    setError(data);
+                }
+            } else {
+                setStudents(prevStudents =>
+                    prevStudents.map(student =>
+                        student.StudentID === editingId
+                            ? {
+                                ...student,
+                                ...studentDetails
+                            }
+                            : student
+                    )
+                );
+
+                setStudents(prevStudents =>
+                    prevStudents.filter(student => student.Unit !== 'WORK3008')
+                );
+
+                setEditingId(null);
+            }
+        }
+        catch (err) {
+            setError(err);
+        }
+    };
+
+    const confirmDelete = async (id) => {
+        try {
+            const response = await fetch(
+                backendURL + `/studentManage/capstone/delete/${id}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                }
+            );
+
+            const data = await response.text();
+            if(!response.ok) {
+                if (data.includes("{") && data.includes("error")) {
+                    setError(JSON.parse(data).error);
+                } else {
+                    setError(data);
+                }
+            } else {
+                setStudents(prevStudents =>
+                    prevStudents.filter(student => student.StudentID !== id)
+                );
+
+                setPendingDelete(null);
+            }
+        }
+        catch (err) {
+            setError(err);
+        }
+    };
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            let requestString = backendURL + "/UC/api/requestAllCapstoneStudents";
+            if (unitName.toUpperCase() === "ICTE3002") {
+                requestString = backendURL + "/UC/api/requestAllHCIStudents";
+            }
+
+            try {
+                const response = await fetch(
+                    requestString,
+                    {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
                     }
-                    : student
-            )
-        );
-        setEditingId(null);
-    };
+                );
 
-    const confirmDelete = (id) => {
-        setStudents((prevStudents) => 
-            prevStudents.filter(student => student.id !== id));
-        setPendingDelete(null);
-    };
+                const data = await response.json();
+                if(!response.ok) {
+                    throw new Error(data.message);
+                }
+                
+                setStudents(data);
+            }
+            catch (err) {
+                console.error("Unable to get students: ", err);
+            }
+        };
 
-  return (
-    <div className="isad3000-container">
+        fetchStudents();
+    }, []);
 
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <h2>UC Dashboard</h2>
+    return (
+        <div className="isad3000-container">
 
-        <nav>
-          <ul>
-            {sidebar.map((item) => (
-              <li
-                key={item.name}
-                onClick={() => navigate(item.path)}
-              >
-                {item.name}
-              </li>
-            ))}
+            {/* Sidebar */}
+            <aside className="sidebar">
+                <h2>UC Dashboard</h2>
 
-            <Dropdown
-                          unitName="ISAD3000"
-                          items={[
-                            {
-                              name: "Announcements",
-                              path: "/ucdashboard/isad3000/announcements"
-                            },
-                            {
-                              name: "Student List",
-                              path: "/ucdashboard/isad3000/students"
-                            },
-                            {
-                              name: "Group Allocation",
-                              path: "/ucdashboard/isad3000/groups"
-                            },
-                          ]}
-            />
-          </ul>
-        </nav>
-      </aside>
+                <nav>
+                    <ul>
+                        {sidebar.map((item) => (
+                            <li
+                                key={item.name}
+                                onClick={() => navigate(item.path)}
+                            >
+                                {item.name}
+                            </li>
+                        ))}
 
-      {/* Logo */}
-      <img
-        src={logo}
-        alt="Logo"
-        className="top-logo"
-      />
+                        <Dropdown
+                            unitName={unitName}
+                            items={[
+                                /*{
+                                    name: "Announcements",
+                                    path: `/ucdashboard/${unitName}/announcements`
+                                },*/
+                                {
+                                    name: "Student List",
+                                    path: `/ucdashboard/${unitName}`
+                                }
+                            ]}
+                        />
+                    </ul>
+                </nav>
+            </aside>
 
-      {/* Main Content */}
-      <main className="main-content">
 
-        <section className="unit-name">
-          <h1>Capstone Project 1 | ISAD3000</h1>
-          <p>Student List and Group Allocation</p>
-        </section>
+            {/* Main Content */}
+            <main className="main-content">
 
-        <div className="studentlist-box">
+                <section className="unit-name">
+                    <h1>{unitTitle} | {unitName}</h1>
+                    <p>Student List</p>
+                </section>
 
-          <div className="studentlist-header">
+                <div className="studentlist-box">
 
-            <h2>Student Details</h2>
+                    <div className="studentlist-header">
 
-            <button
-              className="add-student-btn"
-              onClick={() => {
-                navigate("/ucdashboard/isad3000/addstudent");
-              }}
-            >
-              + Add Student (Manual)
-            </button>
+                        <h2>Student Details</h2>
 
-            <button
-              className="add-student-btn"
-              onClick={() => {
-                navigate("/ucdashboard/isad3000/addstudents");
-              }}
-            >
-              + Add Students (CSV)
-            </button>
-          </div>
+                        <button
+                            className="add-student-btn"
+                            onClick={() => {
+                                navigate(`/ucdashboard/${unitName.toLowerCase()}/addstudent`);
+                            }}
+                        >
+                            + Add Student (Manual)
+                        </button>
 
-          <div className="form-box">
-                {student.map((student) => {
-                    const isEditing = editingId === student.id;
-                    const isDeleting = pendingDelete === student.id;
-    
-                    return (
-                        <div key={student.id} className="student">
-                            {isEditing ? (
-                                <>
-                                    <div className="edit-container">
+                        <button
+                            className="add-student-btn"
+                            onClick={() => {
+                                navigate(`/ucdashboard/${unitName.toLowerCase()}/addstudents`);
+                            }}
+                        >
+                            + Add Students (CSV)
+                        </button>
 
-                                    <input 
-                                        type="text"
-                                        name="name"
-                                        value={studentDetails.name}
-                                        onChange={inputChanges}
-                                    />
-                                    <input 
-                                        type="email"
-                                        name="email"
-                                        value={studentDetails.email}                                            onChange={inputChanges}
-                                    />
-                                    <input 
-                                        type="text"
-                                        name="course"
-                                        value={studentDetails.course}
-                                        onChange={inputChanges}
-                                    />
-                                    <input 
-                                        type="number"
-                                        name="cwa"
-                                        value={studentDetails.cwa}
-                                        onChange={inputChanges}
-                                    />
-                                    
-                                    <button onClick={handleSave}
-                                        title="Save student">
-                                        Save
-                                    </button>
+                    </div>
 
-                                    <button onClick={() => setEditingId(null)}
-                                        title="Cancel Editing">
-                                        Cancel
-                                    </button>
-                                </div> 
-                            </>
-                        ) : isDeleting ? (
-                            <>
-                                <div className="delete-container">
-                                    <div className="confirm-delete-container">
-                                        <p>
-                                            Are you sure you want to remove{" "}
-                                            <strong>{student.name}</strong>?
-                                        </p>
+                    <div className="form-box2">
 
-                                        <button onClick={() => setPendingDelete(null)}
-                                        >
-                                            Cancel
-                                        </button>
+                        {students.map((student) => {
 
-                                        <button onClick={() => confirmDelete(student.id)}
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
+                            const isEditing = editingId === student.StudentID;
+                            const isDeleting = pendingDelete === student.StudentID;
+
+                            return (
+                                <div>
+                                <div key={student.StudentID} className="student-card">
+
+                                    {isEditing ? (
+
+                                        <div className="form-section">
+                                            <label> Name
+                                                <input
+                                                    type="text"
+                                                    name="Name"
+                                                    value={studentDetails.Name}
+                                                    onChange={inputChanges}
+                                                />
+                                            </label>
+
+                                            <label> Email
+                                                <input
+                                                    type="email"
+                                                    name="Email"
+                                                    value={studentDetails.Email}
+                                                    onChange={inputChanges}
+                                                />                                 
+                                            </label>
+
+                                            <label> Major
+                                                <input
+                                                    type="text"
+                                                    name="Major"
+                                                    value={studentDetails.Major}
+                                                    onChange={inputChanges}
+                                                />
+                                            </label>
+
+                                            <label> CWA
+                                                <input
+                                                    type="number"
+                                                    name="CWA"
+                                                    value={studentDetails.CWA}
+                                                    onChange={inputChanges}
+                                                />
+                                            </label>
+
+                                            <label> Unit
+                                                <select
+                                                    name="Unit"
+                                                    value={studentDetails.Unit}
+                                                    required
+                                                    onChange={inputChanges}
+                                                >
+                                                    <option value="ISAD3000">
+                                                        ISAD3000                           
+                                                     </option>
+
+                                                    <option value="WORK3008">
+                                                        WORK3008
+                                                    </option>
+                                                </select>
+                                            </label>
+
+                                            <div className="student-detail-buttons">
+                                                <button
+                                                    onClick={handleSave}
+                                                    title="Save student"
+                                                    className="edit-student-btn"
+                                                >
+                                                    Save
+                                                </button>
+
+                                                <button
+                                                    onClick={() => setEditingId(null)}
+                                                    title="Cancel Editing"
+                                                    className="cancel-edit-btn"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+
+                                            {error && (
+                                                <div className="error-msg-div">
+                                                    <p>{error}</p>
+                                                </div>)}
+                                        </div>
+
+                                    ) : isDeleting ? (
+
+                                        <div className="delete-container">
+
+                                            <div className="confirm-delete-container">
+
+                                                <p>
+                                                    Are you sure you want to remove
+                                                </p>
+
+                                                <p>
+                                                    <strong>{student.Name}</strong>?
+                                                </p>
+
+                                                <div className="confirm-delete-buttons">
+                                                    <button
+                                                        onClick={() => setPendingDelete(null)}
+                                                        className="cancel-delete-btn"
+                                                    >
+                                                        Cancel
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => confirmDelete(student.StudentID)}
+                                                        className="confirm-delete-btn"
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+
+                                                {error && (
+                                                <div className="error-msg-div">
+                                                    <p>{error}</p>
+                                                </div>)}
+                                            </div>
+
+                                        </div>
+
+                                    ) : (
+
+                                        <div className="form-section">
+
+                                            <div className="student-detail-text">
+                                                <p><b>Name: </b>{student.Name}</p>
+                                                <p><b>Email: </b>{student.Email}</p>  
+                                                <p><b>Major: </b>{student.Major}</p>           
+                                                <p><b>CWA: </b>{student.CWA}</p>
+                                            </div>
+
+                                            <div className="student-detail-buttons">
+
+                                                <button
+                                                    onClick={() => handleEdit(student)}
+                                                    title="Edit student"
+                                                    className="edit-student-btn"
+                                                >
+                                                    Edit
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleRemove(student.StudentID)}
+                                                    title="Remove student"
+                                                    className="delete-student-btn"
+                                                >
+                                                    Remove
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    )}
+
                                 </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className="student-details">
-                                    <div className="student-detail-text">
-                                    <h4>{student.name}</h4>
-                                    <h4>{student.email}</h4>
-                                    <h4>{student.course}</h4>
-                                    <h4>CWA: {student.cwa}</h4>
-                                    </div>
-                                    <div>
-                                    <button onClick={() => handleEdit(student)}
-                                        title="Edit student">
-                                        Edit
-                                    </button>
-                                    <button onClick={() => handleRemove(student.id)}
-                                        title="Remove student">
-                                        Remove
-                                    </button>
-                                    </div>
                                 </div>
-                            </>
-                        )}
+                            );
+                        })}
 
-                        </div>
-
-                    );
-                })}
+                    </div>
                 </div>
+
+            </main>
+
         </div>
-
-      </main>
-
-    </div>
-  );
+    );
 }
 
 export default StudentList;

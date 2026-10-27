@@ -1,4 +1,4 @@
-const Application = require("../models/ApplicationModel.js");
+const Application = require("../models/ProjectApplication.js");
 
 const uploadApplication = async (req, res) => {
     try {
@@ -8,17 +8,30 @@ const uploadApplication = async (req, res) => {
             });
         }
 
-        const application = new Application({
-            fileName: req.file.originalname,
-            filePath: req.file.path
-        });
+        const { Student, Project, Type } = req.body;
+    
+        if (!Student || !Project || !Type ) {
+            return res.status(400).json({
+                message: "Missing required fields"
+            });
+        }
+        
+        if (!["Resume", "CoverLetter"].includes(Type)) {
+            return res.status(400).json({
+                message: "Type must be either Resume or Cover Letter"
+            });
+        }
 
-        await application.save();
+        await Application.create({
+            Student, 
+            Project, 
+            Type,
+            [Type]: req.file.buffer
+        });
 
         res.status(201).json({
-            message: "Application submitted successfully!"
+            message: "Application submitted successfully!",
         });
-
     }
     catch (err) {
         console.error("Unable to save application: ", err);
@@ -28,4 +41,30 @@ const uploadApplication = async (req, res) => {
     }
 }
 
-module.exports = { uploadApplication };
+const getApplicationStatus = async (req, res) => {
+    try {
+        const { Student, Project } = req.query;
+
+        if (!Student || !Project ) {
+            return res.status(400).json({
+                message: "Missing required fields"
+            });
+        }
+
+        const application = await Application.findOne({
+            Student, Project
+        });
+
+        // student has applied
+        return res.status(200).json(!!application);
+    }
+    catch (error) {
+        console.error("Unable to get application status: ", error);
+
+        return res.status(500).json({
+            message: "Unable to get application status"
+        });
+    }
+};
+
+module.exports = { uploadApplication, getApplicationStatus };

@@ -1,0 +1,84 @@
+import { test, expect } from '@playwright/test';
+const mongoose = require("mongoose")
+const {Project} = require ("../../../../models")
+require("dotenv").config();
+mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
+
+//testing for the different outcomes of posting an individual student
+
+/**
+ * @type {import("playwright-core").APIRequestContext}
+ */
+let apiContext;
+
+test.describe('Edit existing Project', () => {
+    test.beforeAll(async ({ playwright }) => {
+        apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/editProj'});
+    });
+
+    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async ({page, browserName}) => {
+        test.skip(browserName !== 'firefox', 'only 1 of this test should run at a time and since this is backend it doesnt need to be tested on every browser. Locks dont actually fix this issue, so this is how im handling it');
+        const validProject = ({
+                ID: "-1",
+                Type: "Work",
+                Round: 2,
+                Name: "Liam's project",
+                Client: "Liam Ellis",
+                ClientEmail: "Liam@email",
+                Description: "cool project",
+                IntendedSize: 6
+            });
+        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                },
+                body: JSON.stringify(validProject), // Converts JS object to JSON string
+            });
+            expect(response.status).toEqual(200);
+
+            const projectToEdit = await Project.findOne({ ID: -1})
+
+            expect(projectToEdit.Type).toEqual("Work")
+            expect(projectToEdit.Round).toEqual(2)
+            expect(projectToEdit.Name).toEqual("Liam's project")
+            expect(projectToEdit.Description).toEqual("cool project")
+            expect(projectToEdit.IntendedSize).toEqual(6)
+
+
+            //cleanup
+            projectToEdit.Type =  "Group"
+            projectToEdit.Round =  "1"
+            projectToEdit.Name =  "Testing Project"
+            projectToEdit.Client = "not Liam"
+            projectToEdit.ClientEmail = "testing@email"
+            projectToEdit.Description =  "This is for playwright testing"
+            projectToEdit.IntendedSize =  6
+            await projectToEdit.save()
+    });
+
+
+    test('invalid API edit request, ID doesnt exist', async () => {
+        const invalidProject = ({
+                ID: "-10",
+                Type: "Group",
+                Round: 1,
+                Name: "Liam's project",
+                Description: "cool project",
+                IntendedSize: 6
+            });
+        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json', // Tells backend to parse as JSON
+                },
+                body: JSON.stringify(invalidProject), // Converts JS object to JSON string
+            });
+            expect(response.status).toEqual(400);
+    });
+
+    
+
+    
+});
+

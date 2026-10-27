@@ -1,4 +1,4 @@
-const Preference = require("../models/PreferenceModel.js");
+const Preference = require("../models/CapstoneStudent.js");
 
 const getPreference = async (req, res) => {
     try {

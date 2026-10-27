@@ -1,11 +1,11 @@
-const Project = require("../models/projectModel.js");
+const Project = require("../models/Project.js");
 
 // get projects for a specific round
 const getProjectsByRound = async (req, res) => {
     try {
         const { roundId } = req.params;
         const project = await Project.find({
-            round: roundId
+            Round: parseInt(roundId)
         });
 
         res.status(200).json(project);

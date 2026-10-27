@@ -58,6 +58,9 @@ Thumbs.db
 /playwright/.cache/
 /playwright/.auth/
 
+# Multer
+/upload/
+
 # Plaintext
 
 environment.env

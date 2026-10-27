@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 const mongoose = require("mongoose")
 const {Project} = require ("../../../../models")
-const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
-mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
+require("dotenv").config();
+mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
 
 //testing for the different outcomes of posting an individual student
 
@@ -23,7 +23,7 @@ test.describe('Individual studont POST', () => {
     test('valid API edit request',{lock: 'POST_valid_project_edit',}, async () => {
         const validProject = ({
                 ID: "-1",
-                Type: "WORK",
+                Type: "Work",
                 Round: 2,
                 Name: "Liam's project",
                 Client: "Liam Ellis",
@@ -42,7 +42,7 @@ test.describe('Individual studont POST', () => {
 
             const projectToEdit = await Project.findOne({ ID: -1})
 
-            expect(projectToEdit.Type).toEqual("WORK")
+            expect(projectToEdit.Type).toEqual("Work")
             expect(projectToEdit.Round).toEqual(2)
             expect(projectToEdit.Name).toEqual("Liam's project")
             expect(projectToEdit.Description).toEqual("cool project")

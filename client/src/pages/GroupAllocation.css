@@ -536,6 +536,21 @@
     background: #f3f4f6;
 }
 
+.save-button {
+    padding: 9px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    background: #118415;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.save-button:hover {
+    background: #34f377;
+}
+
 /* Responsive */
 
 @media (max-width: 1100px) {
@@ -629,4 +644,114 @@
 .major-badge.information-technology {
     background: #D1FAE5;
     color: #047857;
+}
+
+
+.group-project {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.group-project label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.group-project select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #1f2937;
+    font: inherit;
+    font-size: 14px;
+}
+
+.group-project select:focus {
+    outline: 2px solid #b58b0b;
+    outline-offset: 1px;
+    border-color: #b58b0b;
+}
+
+.project-assignment-status {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.student-preferred-projects {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #4b5563;
+}
+
+.preferred-project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.preferred-project-tag {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: #e5edf9;
+    color: #244a80;
+    font-size: 11px;
+    border: 1px solid #7896c2;
+}
+
+.student-preferred-teammates {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #4b5563;
+}
+
+.preferred-teammate-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.preferred-teammate-tag {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: #fafafa;
+    color: #244a80;
+    font-size: 11px;
+    border: 1px solid #7896c2;
+}
+
+.avoid-teammate-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.avoid-teammate-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  background-color: #fef2f2;
+  color: #991b1b;
+  font-size: 11px;
+}
+.student-avoid-teammates {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./Projects.css";
 import AddProject from "./AddProject";
+import backendURL from "../backendURL";
 
 function Projects({round, roundExpired}) {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -11,7 +12,7 @@ function Projects({round, roundExpired}) {
   const fetchProjects = async () => {
     try {
         const response = await fetch(
-            `http://localhost:3000/UC/api/projects/${round}`,
+            backendURL + `/UC/api/projects/${round}`,
             {
             method: 'GET',
             headers: {
@@ -71,7 +72,7 @@ function Projects({round, roundExpired}) {
    const deleteProject = async (projectToDelete) => {
     try {
         const response = await fetch(
-            `http://localhost:3000/UC/api/project/${projectToDelete.ID}`,
+            backendURL + `/UC/api/project/${projectToDelete.ID}`,
             {
             method: 'DELETE',
             headers: {

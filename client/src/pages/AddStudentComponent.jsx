@@ -2,6 +2,7 @@
 import './AddStudentComponent.css'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import backendURL from '../backendURL';
 
 function AddStudentComponent() {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function AddStudentComponent() {
     async function PostStudent (){
         try 
         {
-            const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+            const response = await fetch(backendURL + '/UC/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

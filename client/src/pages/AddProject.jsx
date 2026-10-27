@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./AddProject.css";
+import backendURL from "../backendURL";
 
 function AddProject({
   round, 
@@ -51,7 +52,7 @@ function AddProject({
     if (existingProject) {
       try {
         const response = await fetch(
-            "http://localhost:3000/UC/api/SaveEditedProject",
+            backendURL + "/UC/api/SaveEditedProject",
             {
             method: 'POST',
             headers: {
@@ -78,7 +79,7 @@ function AddProject({
     } else {
       try {
         const response = await fetch(
-            "http://localhost:3000/UC/api/SaveNewProject",
+            backendURL + "/UC/api/SaveNewProject",
             {
             method: 'POST',
             headers: {

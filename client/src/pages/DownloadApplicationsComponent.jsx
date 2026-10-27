@@ -1,11 +1,14 @@
 import './DownloadApplicationsComponent.css'
 import { useState } from "react";
 import WorkProjects from '../components/WorkProjects'
+import backendURL from '../backendURL';
 
 function DownloadApplicationsComponent () {
     const [round, setRound] = useState(-1);
     const [rounds, setRounds] = useState([]);
     const [roundsList, setRoundsList] = useState([]);
+
+    
 
     //will be a 2 dimenstional array after startup. 
     //first dimension is round, second is project. e.g. roundslist[0][2] would get look at round 1 and get the 3rd project 
@@ -15,7 +18,7 @@ function DownloadApplicationsComponent () {
         let workProjects = null 
         //array of rounds.
         let roundss = null
-        const projectsResponse = await fetch('http://localhost:3000/UC/api/requestAllWORKProjects', {
+        const projectsResponse = await fetch(backendURL + '/UC/api/requestAllWORKProjects', {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -24,7 +27,7 @@ function DownloadApplicationsComponent () {
 
         workProjects = await projectsResponse.json()
 
-        const roundsResponse = await fetch('http://localhost:3000/UC/api/requestAllRounds', {
+        const roundsResponse = await fetch(backendURL + '/UC/api/requestAllRounds', {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

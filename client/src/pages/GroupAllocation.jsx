@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./GroupAllocation.css";
 import Sidebar from "./Sidebar";
+import backendURL from "../backendURL";
 
 
 
@@ -92,7 +93,7 @@ function GroupAllocation() {
 
     async function addApplicationsToStudent(student)
     {
-        const FetchURL = 'http://localhost:3000/UC/api/requestAllGroupApplicationsForStudent/' + student.StudentID
+        const FetchURL = backendURL + '/UC/api/requestAllGroupApplicationsForStudent/' + student.StudentID
         const applicationsResponse = await fetch(FetchURL, {
                 method: 'GET',
                 headers: {
@@ -113,7 +114,7 @@ function GroupAllocation() {
     }
 
     const startUp = async () => {
-        const studentResponse = await fetch('http://localhost:3000/UC/api/requestAllCapstoneStudents', {
+        const studentResponse = await fetch(backendURL + '/UC/api/requestAllCapstoneStudents', {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -213,7 +214,7 @@ function GroupAllocation() {
 
 
 
-        groupResponse = await fetch('http://localhost:3000/UC/api/requestAllGroups', {
+        groupResponse = await fetch(backendURL + '/UC/api/requestAllGroups', {
                     method: 'GET',
                     headers: {
                     'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -247,7 +248,7 @@ function GroupAllocation() {
         }*/
         initialGroups.forEach(addRelevantStudents)
 
-        const projectResponse = await fetch('http://localhost:3000/UC/api/requestAllGroupProjects', {
+        const projectResponse = await fetch(backendURL + '/UC/api/requestAllGroupProjects', {
                     method: 'GET',
                     headers: {
                     'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -288,7 +289,7 @@ function GroupAllocation() {
                 saveGroups.push(tempGroup)
             }
 
-            const response = await fetch('http://localhost:3000/UC/api/SaveGroups', {
+            const response = await fetch(backendURL + '/UC/api/SaveGroups', {
                             method: 'POST',
                             headers: {
                             'Content-Type': 'application/json', // Tells backend to parse as JSON

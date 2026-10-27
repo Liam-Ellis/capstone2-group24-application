@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./WorkProjects.css";
+import backendURL from "../backendURL";
 
 function WorkProjects({roundNum, roundsList}) {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -14,7 +15,7 @@ function WorkProjects({roundNum, roundsList}) {
   {
     try
     {
-      const getURL = 'http://localhost:3000/UC/api/getWorkProjectApplications/' + selectedProject.ID
+      const getURL = backendURL + '/UC/api/getWorkProjectApplications/' + selectedProject.ID
       const response = await fetch(getURL, {
               method: 'GET',
       });

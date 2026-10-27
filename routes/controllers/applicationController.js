@@ -36,16 +36,23 @@ const uploadApplication = async (req, res) => {
                 return res.status(400).json({
                     message: "No Resume uploaded"
                 });
+            } else {
+                const application = await ProjectApplication.create({
+                    CoverLetter: { data: req.file.buffer, contentType: 'application/pdf' },
+                    Type: req.body.Type,
+                    Student: student.StudentID,
+                    Project: req.body.ID,
+                    Resume: student.Resume
+                });
             }
+        } else {
+            const application = await ProjectApplication.create({
+                Type: req.body.Type,
+                Student: student.StudentID,
+                Project: req.body.ID,
+                Resume: student.Resume
+            });
         }
-
-        const application = await ProjectApplication.create({
-            CoverLetter: { data: fs.readFileSync(path.join('./upload/' + req.file.filename)), contentType: 'application/pdf' },
-            Type: req.body.Type,
-            Student: student.StudentID,
-            Project: req.body.ID,
-            Resume: student.Resume
-        });
 
         res.status(201).json({
             message: "Application submitted successfully!",

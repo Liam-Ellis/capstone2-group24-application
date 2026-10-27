@@ -54,9 +54,11 @@ function UploadResume() {
     };
 
     return(
-            <div className="resume-form-box">
-                <div className="form-box">
-                    <form onSubmit={handleSubmit}>                
+        <div className="form-container2">
+            <div className="resume-card">
+                <div className="form-section">
+                    <form onSubmit={handleSubmit}>    
+                        <label> Upload Resume   
                         <input
                             type="file"
                             name="document"
@@ -64,13 +66,15 @@ function UploadResume() {
                             onChange={inputChanges}
                             required
                         />
+                        </label>
 
-                        <button type="submit">
+                        <button className="upload-resume-btn" type="submit">
                             Submit
                         </button>    
                     </form>
                 </div>
             </div>
+        </div>
     )
 
 }

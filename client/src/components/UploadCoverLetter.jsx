@@ -55,10 +55,12 @@ function UploadCoverLetter({ applicationUploaded }) {
     };
 
     return(
-                <div className="form-box">
+         <div className="form-container2">
+            <div className="resume-card">
+                <div className="form-section">
                     <form onSubmit={handleSubmit}>
                 
-                        <label> Upload Cover Letter </label>    
+                        <label> Upload Cover Letter   
                         <input
                             type="file"
                             name="document"
@@ -66,12 +68,15 @@ function UploadCoverLetter({ applicationUploaded }) {
                             onChange={inputChanges}
                             required
                         />
+                        </label>
 
-                        <button type="submit">
+                        <button className="upload-resume-btn" type="submit">
                             Submit
                         </button>    
                     </form>
                 </div>
+            </div>
+        </div>
     )
 
 }

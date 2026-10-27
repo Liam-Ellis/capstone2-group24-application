@@ -133,20 +133,12 @@ async function transformRow(row, type) {
         row.Name = row.STU_GVN_NM + ' ' + row.STU_FAMILY_NM;
         row.Major = row.AWARD_ON_SSP_1;
         row.CWA = Number(row.CWA);
-<<<<<<< HEAD
         row.Username = row.STU_ID + '@student.curtin.edu.au';
         row.PlainPassword = password;
         row.Password = securePassword;
         row.Salt = salt;
         row.Email = row.STU_ID + '@student.curtin.edu.au';
         row.Unit = 'ISAD3000';
-=======
-        row.Username = row.STU_ID;
-        row.Password = 'dummyPassword';
-        row.Salt = 'dummySalt';
-        row.Email = row.STU_ID + '@student.curtin.edu.au';
-        row.Unit = 'dummyUnit';
->>>>>>> 4f9b18b4e41d679f896accce6d09676eef86ad00
         row.TermsAccepted = 0;
         row.Group = 0;
     }

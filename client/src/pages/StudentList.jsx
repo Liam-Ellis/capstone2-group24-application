@@ -75,6 +75,7 @@ function StudentList({ unitName, unitTitle }) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(studentDetails),
+                credentials: 'include'
                 }
             );
 
@@ -118,6 +119,7 @@ function StudentList({ unitName, unitTitle }) {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include'
                 }
             );
 

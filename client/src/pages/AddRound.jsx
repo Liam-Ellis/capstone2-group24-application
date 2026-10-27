@@ -43,6 +43,7 @@ function AddRound({
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(roundData),
+            credentials: 'include'
             }
         );
 
@@ -70,6 +71,7 @@ function AddRound({
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(roundData),
+            credentials: 'include'
             }
         );
 

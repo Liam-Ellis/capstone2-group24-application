@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import notification from '../assets/notification.png'
-import PreferencePage from './PreferencePage';
+import PreferencePage from './preferencePage';
 
 function StudentPrefsPage() {
     const navigate = useNavigate();

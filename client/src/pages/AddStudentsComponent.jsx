@@ -2,6 +2,7 @@
 import './AddStudentsComponent.css'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import backendURL from '../backendURL';
 
 function AddStudents({unitName}) {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ function AddStudents({unitName}) {
             {
                 capstoneOrHci = 'hci'
             }
-            const uploadCsvUrl = 'http://localhost:3000/csv/upload/' + capstoneOrHci
+            const uploadCsvUrl = backendURL + '/csv/upload/' + capstoneOrHci
             const response = await fetch(
                 uploadCsvUrl,
                 {

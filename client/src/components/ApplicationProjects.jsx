@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./ApplicationProjects.css";
 import ApplyForProject from './ApplyForProject';
+import backendURL from "../backendURL";
 
 function ApplicationProjects({round}) {
   const [hasApplied, setHasApplied] = useState(false);
@@ -11,7 +12,7 @@ function ApplicationProjects({round}) {
   const getProjects = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3000/student/projects/${round}`,
+                backendURL + `/student/projects/${round}`,
                 {
                 method: 'GET',
                 headers: {
@@ -51,7 +52,7 @@ function ApplicationProjects({round}) {
   const getAppStatus = async (project) => {
     try {
       const response = await fetch(
-          `http://localhost:3000/UC/api/applicationStatus`,
+          backendURL + `/UC/api/applicationStatus`,
           {
           method: 'POST',
           headers: {

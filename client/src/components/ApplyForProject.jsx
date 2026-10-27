@@ -3,6 +3,7 @@ import "./ApplyForProject.css";
 import UploadResume from "./UploadResume";
 import UploadCoverLeter from "./UploadCoverLetter";
 import PreferenceComponent from "./PreferenceComponent";
+import backendURL from "../backendURL";
 
 function ApplyForProject({ 
   onCancel,
@@ -16,7 +17,7 @@ function ApplyForProject({
   const getResumeStatus = async () => {
     try {
       const response = await fetch(
-        'http://localhost:3000/UC/api/DoesStudentHaveResume',
+        backendURL + '/UC/api/DoesStudentHaveResume',
         {
             method: 'GET',
             credentials: 'include'
@@ -49,7 +50,7 @@ function ApplyForProject({
 
 
         const response = await fetch(
-            'http://localhost:3000/student/application/upload',
+            backendURL + '/student/application/upload',
             {
                 method: 'POST',
                 body: appDetails,

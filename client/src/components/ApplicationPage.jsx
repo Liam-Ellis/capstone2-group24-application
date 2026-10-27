@@ -5,6 +5,8 @@ import ApplicationProjects from './ApplicationProjects';
 
 import notification from '../assets/notification.png'
 
+import backendURL from '../backendURL';
+
 function ApplicationPage() {
     const navigate = useNavigate();
 
@@ -15,7 +17,7 @@ function ApplicationPage() {
             const fetchRounds = async () => {
                 try {
                     const response = await fetch(
-                        "http://localhost:3000/student/round",
+                        backendURL + "/student/round",
                         {
                         method: 'GET',
                         headers: {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./AddRound.css";
+import backendURL from "../backendURL";
 
 function AddRound({
   onAddRound,
@@ -35,7 +36,7 @@ function AddRound({
     if (existingRound) {
       try {
         const response = await fetch(
-            "http://localhost:3000/UC/api/EditRound",
+            backendURL + "/UC/api/EditRound",
             {
             method: 'POST',
             headers: {
@@ -62,7 +63,7 @@ function AddRound({
     } else {
       try {
         const response = await fetch(
-            "http://localhost:3000/UC/api/SaveNewRound",
+            backendURL + "/UC/api/SaveNewRound",
             {
             method: 'POST',
             headers: {

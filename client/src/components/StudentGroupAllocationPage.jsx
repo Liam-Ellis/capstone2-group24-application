@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import './StudentUnitMenu.css';
 import notification from '../assets/notification.png'
+import backendURL from '../backendURL';
 
 function Student_GroupAllocation() {
     const [hasGroup, setHasGroup] = useState(false);
@@ -17,7 +18,7 @@ function Student_GroupAllocation() {
     const getGroup = async () => {
         try {
             const response = await fetch(
-                'http://localhost:3000/student/group',
+                backendURL + '/student/group',
                 {
                     credentials: "include"
                 }

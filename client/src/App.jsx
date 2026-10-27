@@ -16,6 +16,7 @@ import ApplicationPage from './components/ApplicationPage';
 import UploadResumePage from './components/UploadResumePage';
 import StudentPrefsPage from './components/StudentPrefsPage';
 import Student_GroupAllocation from './components/StudentGroupAllocationPage';
+import backendURL from './backendURL';
 
 import { Routes, Route, useNavigate } from "react-router-dom"
 
@@ -25,7 +26,7 @@ function Home() {
   const loadPage = async () => {
     try {
       const studentStatus = await fetch(
-        'http://localhost:3000/auth/loggedInStudentStatus',
+        backendURL + '/auth/loggedInStudentStatus',
         {
             method: 'GET',
             headers: {
@@ -36,7 +37,7 @@ function Home() {
       );
 
       const staffStatus = await fetch(
-        'http://localhost:3000/auth/loggedInStaffStatus',
+        backendURL + '/auth/loggedInStaffStatus',
         {
             method: 'GET',
             headers: {

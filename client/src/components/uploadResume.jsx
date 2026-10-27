@@ -1,6 +1,7 @@
 /* Student upload resume */
 import { useState } from 'react';
 import './UploadResume.css' 
+import backendURL from '../backendURL';
 
 function UploadResume() {
     const [resume, setResume] = useState({
@@ -32,7 +33,7 @@ function UploadResume() {
 
 
             console.log("now attempting fetch")
-            const response = await fetch('http://localhost:3000/UC/api/saveStudentResume', {
+            const response = await fetch(backendURL + '/UC/api/saveStudentResume', {
                 method: 'POST',
                 body: saveData,
                 credentials: 'include'

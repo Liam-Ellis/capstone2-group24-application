@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PreferencePage.css'
+import backendURL from '../backendURL';
 
 function PreferencePage() {
     const [prefs, setPrefs] = useState({
@@ -14,7 +15,7 @@ function PreferencePage() {
         const getPrefs = async () => {
             try {
                 const response = await fetch(
-                    'http://localhost:3000/student/prefs',
+                    backendURL + '/student/prefs',
                     {
                         method: 'GET',
                         headers: {
@@ -41,7 +42,7 @@ function PreferencePage() {
 
         try {
             const response = await fetch(
-                'http://localhost:3000/student/prefs',
+                backendURL + '/student/prefs',
                 {
                     method: 'POST',
                     headers: {

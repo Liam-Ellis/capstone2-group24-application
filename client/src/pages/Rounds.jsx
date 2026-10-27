@@ -4,6 +4,7 @@ import "./Projects.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AddRound from "./AddRound";
+import backendURL from "../backendURL";
 
 function Rounds() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ function Rounds() {
   const fetchRounds = async () => {
     try {
         const response = await fetch(
-            "http://localhost:3000/UC/api/requestAllRounds",
+            backendURL + "/UC/api/requestAllRounds",
             {
             method: 'GET',
             headers: {
@@ -89,7 +90,7 @@ function Rounds() {
   const closeRound = async (initialRound) => {
         try {
         const response = await fetch(
-            `http://localhost:3000/UC/api/closeRound`,
+            backendURL + `/UC/api/closeRound`,
             {
             method: 'POST',
             headers: {

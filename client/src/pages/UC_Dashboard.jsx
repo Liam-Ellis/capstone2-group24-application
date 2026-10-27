@@ -37,7 +37,7 @@ function UC_Dashboard() {
       <main className="main-content">
 
         <section className="greeting">
-          <h1>Hi "Username"!</h1>
+          <h1>Welcome!</h1>
           <p></p>
         </section>
 

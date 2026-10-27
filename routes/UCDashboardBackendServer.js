@@ -14,6 +14,7 @@ const { boolean } = require("joi")
 const multer = require("multer");
 const path = require("node:path");
 const verifyStudentSession = require('./auth').verifyStudentSession;
+const verifyStaffSession = require('./auth').verifyStaffSession;
 const jwt = require('jsonwebtoken');
 const randomstring = require('randomstring');
 const argon2 = require('argon2');
@@ -230,7 +231,7 @@ ucBackend.post('/api/POST_student', async (req, res) => {
     
 });
 
-ucBackend.get('/api/requestAllCapstoneStudents', async (req, res) => {
+ucBackend.get('/api/requestAllCapstoneStudents', verifyStaffSession, async (req, res) => {
     const students = await CapstoneStudent.find({Unit: "ISAD3000"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(students))
@@ -242,7 +243,7 @@ ucBackend.get('/api/requestAllHCIStudents', async (req, res) => {
     res.send(JSON.stringify(students))
 });
 
-ucBackend.get('/api/requestAllGroups', async (req, res) =>{
+ucBackend.get('/api/requestAllGroups', verifyStaffSession, async (req, res) =>{
     const groups = await Group.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))

@@ -1,13 +1,8 @@
 import { test, expect } from '@playwright/test';
 const mongoose = require("mongoose")
 const {CapstoneStudent} = require ("../../../../models")
-<<<<<<< HEAD
 require("dotenv").config();
 mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
-=======
-const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
-mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
->>>>>>> e3c02735a05f9a5d35b95bd318101cf793f05fba
 
 
 //testing for the different outcomes of posting an individual student

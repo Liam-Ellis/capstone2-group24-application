@@ -30,7 +30,6 @@ function AddStudents() {
         // to run the program when backend is not done
         console.log("Confirm button clicked");
         console.log("selected file: ", studentList.document)
-        alert("Student List uploaded successfully!");
         navigate("/ucdashboard/isad3000/students");
  
         //send CSV file to the backend and store in the database
@@ -43,13 +42,15 @@ function AddStudents() {
                 "http://localhost:3000/csv/upload/capstone",
                 {
                     method: "POST",
-                    multipart: { document: { name: 'students.csv', mimeType: 'text/csv', buffer: saveData } }
+                    body: saveData,
+                    credentials: 'include'
                 }
             );
 
             const data = await response.json();
             if(!response.ok) {
                 throw new Error(data.message);
+
             }
             else {
                 console.log("Confirm button clicked");

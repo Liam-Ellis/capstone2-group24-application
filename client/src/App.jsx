@@ -47,10 +47,10 @@ function Home() {
         }
       );
 
-      if (studentStatus.ok) {
+      if (false) {
         navigate('/studentdashboard');
       }
-      else if (staffStatus.ok) {
+      else if (false) {
         navigate('/ucdashboard');
       }
       else {

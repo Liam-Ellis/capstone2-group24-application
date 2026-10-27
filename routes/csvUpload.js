@@ -114,6 +114,7 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
             recordsFailed: transformedRows.length - saved.length
         
         });
+        
 
     } catch (error) {
         next(error);
@@ -132,22 +133,22 @@ async function transformRow(row, type) {
         row.Name = row.STU_GVN_NM + ' ' + row.STU_FAMILY_NM;
         row.Major = row.AWARD_ON_SSP_1;
         row.CWA = Number(row.CWA);
+<<<<<<< HEAD
         row.Username = row.STU_ID + '@student.curtin.edu.au';
         row.PlainPassword = password;
         row.Password = securePassword;
         row.Salt = salt;
         row.Email = row.STU_ID + '@student.curtin.edu.au';
         row.Unit = 'ISAD3000';
+=======
+        row.Username = row.STU_ID;
+        row.Password = 'dummyPassword';
+        row.Salt = 'dummySalt';
+        row.Email = row.STU_ID + '@student.curtin.edu.au';
+        row.Unit = 'dummyUnit';
+>>>>>>> 4f9b18b4e41d679f896accce6d09676eef86ad00
         row.TermsAccepted = 0;
-
-        if (row.Group) row.Group = Number(row.Group);
-        if (row.TermsAccepted) row.TermsAccepted = Number(row.TermsAccepted);
-        if (typeof row.PreferenceFor == 'string') {
-            row.PreferenceFor = row.PreferenceFor.split(',').map(s => s.trim());
-        }
-        if (typeof row.PreferenceAgainst == 'string') {
-            row.PreferenceAgainst = row.PreferenceAgainst.split(',').map(s => s.trim());
-        }
+        row.Group = 0;
     }
     return row;
 }

@@ -65,7 +65,7 @@ function AddStudents() {
         <div>
               <div className="form-container2">
                 <div className="round-card">
-                    <div className="form-section">
+                    <div className="form-section" onDrop={inputChanges}>
                         <form onSubmit={handleSubmit}>
             
                             <label> Upload Student List    
@@ -79,7 +79,7 @@ function AddStudents() {
                              </label>
 
                             <button className="confirm-student-list" type="submit">
-                                Confirm
+                                Upload
                             </button>
                         </form>
                     </div>

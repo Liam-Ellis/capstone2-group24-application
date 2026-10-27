@@ -90,7 +90,7 @@ function WorkProjects({roundNum, roundsList}) {
             )}
 
             {selectedProject && (
-                <div className="project-buttons">
+                <div>
                     <button
                         className="download-applications-btn"
                         onClick={() => downloadApplications(selectedProject)}

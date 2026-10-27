@@ -17,7 +17,7 @@ const notAppliedPair = [
 
 test.describe('Verify get application status', () => {
     test.beforeAll(async () => {
-        await mongoose.connect(MONGO_URI);
+        await mongoose.connect(MONGO_URI, {dbName: 'test'});
         await Application.create({
             Student: appliedPair[0],
             Project: appliedPair[1],

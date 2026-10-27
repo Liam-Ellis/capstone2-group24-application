@@ -10,7 +10,7 @@ function SetupAccount() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  const [userType, setUserType] = useState("Student");
+  //const [userType, setUserType] = useState("Student");
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (event) => {
@@ -28,7 +28,7 @@ function SetupAccount() {
           },
           body: JSON.stringify({
               email: email,
-              type: userType.toLowerCase()
+              type: 'staff'
           }),
           credentials: "include"
       }
@@ -63,20 +63,7 @@ function SetupAccount() {
 
                 <div className="form-section">
                   <label>
-                    Type
-                    <select
-                      value={userType}
-                      onChange={(event) =>
-                        setUserType(event.target.value)
-                      }
-                    >
-                      <option>Student</option>
-                      <option>Staff</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Curtin Email
+                    Staff Email
                     <input
                       type="text"
                       value={email}

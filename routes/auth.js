@@ -86,7 +86,9 @@ const sendPasswordEmail = async (to, password) => {
         from: "Dashboard Web App <auth@curtindashboard.tech>",
         to: to,
         subject: "Welcome, here are your details",
-        html: `<strong>Here is your default password: ${password}</strong>`,
+        html: `<strong>View your dashboard <a href="http://www.curtindashboard.tech">here</a>:
+                <br></br>Username: ${to}
+                <br></br>Password: ${password}</strong>`,
     });
 
     if (error) {

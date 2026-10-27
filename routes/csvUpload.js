@@ -11,6 +11,11 @@ const csv = require('csv-parser');
 const { pipeline } = require("stream/promises");
 const CapstoneStudent = require("../models/CapstoneStudent");
 const HCIStudent = require("../models/HCIStudent");
+const randomstring = require('randomstring');
+const argon2 = require('argon2');
+const Resend = require('resend');
+require("dotenv").config();
+const resend = new Resend.Resend(process.env.RESEND_API_KEY);
 
 const upload = multer({
     dest: 'uploads/',
@@ -47,6 +52,21 @@ const modelsByType = {
     hci: HCIStudent
 };
 
+const sendPasswordEmail = async (to, password) => {
+    const { data, error } = await resend.emails.send({
+        from: "Dashboard Web App <auth@curtindashboard.tech>",
+        to: to,
+        subject: "Welcome, here are your details",
+        html: `<strong>View your dashboard <a href="http://www.curtindashboard.tech">here</a></strong>
+                <br></br><strong>Username:</strong> ${to}
+                <br></br><strong>Password:</strong> ${password}`,
+    });
+
+    if (error) {
+        throw error;
+    }
+};
+
 router.post('/upload/:type', upload.single('document'), async (req, res, next) => {
     const Model = modelsByType[req.params.type];
 
@@ -70,21 +90,32 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
             return res.status(400).json({message: "CSV file is empty."});
         }
 
-        const transformedRows = rows.map(row => transformRow(row, req.params.type));
-        try
-        {
-            const saved = await Model.insertMany(transformedRows, {ordered: false });
-            
-            res.json({
-                message: "File Uploaded.",
-                recordsSaved: saved.length,
-                recordsFailed: transformedRows.length - saved.length
-        
-            });
-        } catch (error)
-        {
-            console.log("failed to upload students: " + error)
+        //const transformedRows = rows.map(row => transformRow(row, req.params.type));
+        let transformedRows = [];
+        for (const row of rows) {
+            let newRow = await transformRow(row, req.params.type);
+            transformedRows.push(newRow);
         }
+
+        let saved = [];
+
+        for (const row of transformedRows) {
+            let password = row.PlainPassword;
+            delete row['PlainPassword'];
+            let savedStudent = await Model.insertOne(row);
+
+            await sendPasswordEmail(savedStudent.Email, password);
+
+            saved.push(savedStudent);
+        }
+
+        res.json({
+            message: "File Uploaded.",
+            recordsSaved: saved.length,
+            recordsFailed: transformedRows.length - saved.length
+        
+        });
+        
 
     } catch (error) {
         next(error);
@@ -92,19 +123,23 @@ router.post('/upload/:type', upload.single('document'), async (req, res, next) =
 
 });
 
-function transformRow(row, type) {
+async function transformRow(row, type) {
 
     if (type === 'capstone') {
+        const password = randomstring.generate(12);
+        const salt = randomstring.generate(16);
+        const securePassword = await argon2.hash(salt + password);
 
         row.StudentID = row.STU_ID;
         row.Name = row.STU_GVN_NM + ' ' + row.STU_FAMILY_NM;
         row.Major = row.AWARD_ON_SSP_1;
         row.CWA = Number(row.CWA);
-        row.Username = row.STU_ID;
-        row.Password = 'dummyPassword';
-        row.Salt = 'dummySalt';
+        row.Username = row.STU_ID + '@student.curtin.edu.au';
+        row.PlainPassword = password;
+        row.Password = securePassword;
+        row.Salt = salt;
         row.Email = row.STU_ID + '@student.curtin.edu.au';
-        row.Unit = 'dummyUnit';
+        row.Unit = 'ISAD3000';
         row.TermsAccepted = 0;
         row.Group = 0;
     }

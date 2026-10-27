@@ -15,6 +15,10 @@ const multer = require("multer");
 const path = require("node:path");
 const verifyStudentSession = require('./auth').verifyStudentSession;
 const jwt = require('jsonwebtoken');
+const randomstring = require('randomstring');
+const argon2 = require('argon2');
+const Resend = require('resend');
+const resend = new Resend.Resend(process.env.RESEND_API_KEY);
 
 
 const joi = require('joi');
@@ -60,6 +64,21 @@ const validateBodyParameters = (schema, property) => {
             res.status(422).json({ message: errorMsg });
         }
     };
+};
+
+const sendPasswordEmail = async (to, password) => {
+    const { data, error } = await resend.emails.send({
+        from: "Dashboard Web App <auth@curtindashboard.tech>",
+        to: to,
+        subject: "Welcome, here are your details",
+        html: `<strong>View your dashboard <a href="http://www.curtindashboard.tech">here</a></strong>
+                <br></br><strong>Username:</strong> ${to}
+                <br></br><strong>Password:</strong> ${password}`,
+    });
+
+    if (error) {
+        throw error;
+    }
 };
 
 ucBackend.post('/api/SaveNewRound', validateBodyParameters(validationSchemas.saveRoundSchema), async (req, res) => {
@@ -173,10 +192,12 @@ ucBackend.post('/api/POST_student', async (req, res) => {
     //const StudentObject = JSON.parse(req.body)
     const StudentObject = req.body
     let studentDBModel = null;
+    const newPassword = randomstring.generate(12);
+
     try
     {
     //check to see if the student is valid and create the object required
-        studentDBModel = createValidStudent(StudentObject)
+        studentDBModel = await createValidStudent(StudentObject, newPassword)
         console.log(studentDBModel)
             
     } catch (exception)
@@ -200,6 +221,9 @@ ucBackend.post('/api/POST_student', async (req, res) => {
     const newStudent = new CapstoneStudent(studentDBModel)
     await newStudent.save()
     console.log("student saved")
+
+    await sendPasswordEmail(newStudent.Email, newPassword);
+
     return res.status(200).json({ 
         message: "Data received successfully"
     }).end()
@@ -208,6 +232,12 @@ ucBackend.post('/api/POST_student', async (req, res) => {
 
 ucBackend.get('/api/requestAllCapstoneStudents', async (req, res) => {
     const students = await CapstoneStudent.find({Unit: "ISAD3000"}).lean()
+    //convert the java object 'students' into a JSON object, then send it to whoever called this.
+    res.send(JSON.stringify(students))
+});
+
+ucBackend.get('/api/requestAllHCIStudents', async (req, res) => {
+    const students = await CapstoneStudent.find({Unit: "ICTE3002"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(students))
 });
@@ -379,7 +409,7 @@ async function studentExistsInDB(inStudent){
     }
 }
 
-function createValidStudent(inStudent)
+async function createValidStudent(inStudent, newPassword)
 {
     if (!inStudent.email.includes("@"))
     {
@@ -399,20 +429,23 @@ function createValidStudent(inStudent)
     //console.log(Object.values(inStudent))
     //console.log(Object.keys(inStudent))
     //console.log(Object.hasOwn(inStudent, "email"));
-    
+        
+    const salt = randomstring.generate(16);
+    const securePassword = await argon2.hash(salt + newPassword);
+
     const mongooseStudent = 
     {
         Email: inStudent.email,
         Group: '0', //for all students Group 0 means no group
         Name: inStudent.firstName + ' ' + inStudent.lastName,
-        Password: 'Password1',//TODO: randomly generate passwords
+        Password: securePassword,//TODO: randomly generate passwords
         StudentID: inStudent.studentId,
         TermsAccepted: 0,
         Unit: inStudent.unit, //the unit is given as a list, but we don't need a list, just 1 unit
         Major: inStudent.course, 
         CWA: inStudent.cwa,
         Username: inStudent.email, //the username needs to be unique. idk if using the student ID is good longterm, but it helps shortterm
-        Salt: 'idk' //I dont understand the salt other than it helps keep passwords safe. we don't need to set it properly yet
+        Salt: salt //I dont understand the salt other than it helps keep passwords safe. we don't need to set it properly yet
     }
     return mongooseStudent
 }
@@ -495,18 +528,22 @@ async function zipTheFile(filePathToZip){
 }
 
 
-ucBackend.get('/api/applicationStatus', async (req, res) => {
+ucBackend.post('/api/applicationStatus', verifyStudentSession, async (req, res) => {
     try {
-        const { Student, Project } = req.query;
+        const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+        const username = decodedToken.username;
+        const student = await CapstoneStudent.findOne({Username: username});
 
-        if (!Student || !Project ) {
+        const { Project } = req.body;
+
+        if ( !Project ) {
             return res.status(400).json({
                 message: "Missing required fields"
             });
         }
 
         const application = await ProjectApplication.findOne({
-            Student: Student, Project: Project
+            Student: student.StudentID, Project: Project
         });
 
         // student has applied
@@ -525,10 +562,11 @@ ucBackend.get('/api/applicationStatus', async (req, res) => {
 //this probably should be in a different file, but it's here because I don't want to mess with someone else's file
 //takes in a student ID, returns if they have a resume in the db
 ucBackend.get('/api/DoesStudentHaveResume', verifyStudentSession, async (req, res) =>{
-    const studentID = req.body
-    const fullStudent = await CapstoneStudent.findOne({StudentID: studentID}).lean()
+    const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
+    const username = decodedToken.username;
+    const fullStudent = await CapstoneStudent.findOne({Username: username});
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
-    if (Object.hasOwn(fullStudent, "Resume"))
+    if (fullStudent.Resume !== null)
     {
         return res.status(200).json({ 
         hasResume: "true"

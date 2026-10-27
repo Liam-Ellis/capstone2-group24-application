@@ -1,14 +1,42 @@
 import { useEffect, useState } from "react";
 import "./ApplyForProject.css";
+import UploadResume from "./UploadResume";
 import UploadCoverLeter from "./UploadCoverLetter";
 import PreferenceComponent from "./PreferenceComponent";
 
 function ApplyForProject({ 
   onCancel,
+  onApply,
   project
 }) {
   const [coverLetter, setCoverLetter] = useState(null);
   const [formErrors, setFormErrors] = useState({});
+  const [hasResume, setHasResume] = useState("");
+
+  const getResumeStatus = async () => {
+    try {
+      const response = await fetch(
+        'http://localhost:3000/UC/api/DoesStudentHaveResume',
+        {
+            method: 'GET',
+            credentials: 'include'
+        }
+      );
+
+      const resumeStatus = await response.json();
+
+      if (response.ok) {
+        setHasResume(resumeStatus.hasResume);
+      } else {
+        setHasResume("false");
+      }
+    }
+    catch (err) {
+      setHasResume("false");
+    }
+  }
+
+  getResumeStatus();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +59,7 @@ function ApplyForProject({
 
         const data = await response.text();
         if(response.ok) {
+          onApply();
           onCancel();
         }
         else {
@@ -68,6 +97,10 @@ function ApplyForProject({
             X
           </button>
         </div>
+
+        {project.Type.toLowerCase() === 'work' && hasResume === 'false' && (
+          <UploadResume />
+        )}
 
         {project.Type.toLowerCase() === 'work' && (
           <UploadCoverLeter applicationUploaded={setCoverLetter} />

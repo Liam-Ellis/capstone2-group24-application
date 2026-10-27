@@ -8,6 +8,7 @@ import './StudentUnitMenu.css';
 import notification from '../assets/notification.png'
 
 function Student_GroupAllocation() {
+    const [hasGroup, setHasGroup] = useState(false);
     const [groupNumber, setGroupNumber] = useState(0);
     const [project, setProject] = useState(null);
     const [groupMembers, setGroupMembers] = useState([]);
@@ -24,12 +25,14 @@ function Student_GroupAllocation() {
 
             const data = await response.text();
             if(!response.ok) {
+                setHasGroup(false);
                 throw new Error(data.message);
             } else {
                 const groupData = JSON.parse(data);
                 setGroupNumber(groupData.GroupNumber);
                 setProject(groupData.Project);
                 setGroupMembers(groupData.Students);
+                setHasGroup(true);
             }
         }
         catch (err) {
@@ -45,7 +48,6 @@ function Student_GroupAllocation() {
                 <h1 className="dashboard-title">Dashboard</h1>
                 <button className="link" onClick={() => navigate("/studentdashboard")}>Home</button>
                 <button className="link" onClick={() => navigate("/studentdashboard/prefs")}>Settings</button>
-                <button className="link">Log Out</button>
             </div>
             <div className="content">
                 <div className="header">
@@ -56,39 +58,45 @@ function Student_GroupAllocation() {
                     </div>
                 </div>
                 <p className="introText">Please find your Group Allocation Details below:</p>
-                <div className="allocationGrid">
-                    <h3 className="sectionTitle">Your Group Number:</h3>
-                    <div className="innerGrid">
-                        <p>Group {groupNumber}</p>
-                    </div>
-                    <h3 className="sectionTitle">Your Group Members:</h3>
-                    <div className="innerGrid">
-                        {groupMembers.map((member) => (
-                        <p>{member}</p>
-                        ))}
-                    </div>
-                    <h3 className="sectionTitle">Your Project:</h3>
-                    <div className="innerGrid">
-                        {project && (
-                            <><p>
-                                <strong>Name: </strong>
-                                {project.Name}
-                            </p><p>
-                                    <strong>Description: </strong>
-                                    {project.Description}
+                {hasGroup ? (
+                    <div className="allocationGrid">
+                        <h3 className="sectionTitle">Your Group Number:</h3>
+                        <div className="innerGrid">
+                            <p>Group {groupNumber}</p>
+                        </div>
+                        <h3 className="sectionTitle">Your Group Members:</h3>
+                        <div className="innerGrid">
+                            {groupMembers.map((member) => (
+                            <p>{member}</p>
+                            ))}
+                        </div>
+                        <h3 className="sectionTitle">Your Project:</h3>
+                        <div className="innerGrid">
+                            {project && (
+                                <><p>
+                                    <strong>Name: </strong>
+                                    {project.Name}
                                 </p><p>
-                                    <strong>Client: </strong>
-                                    {project.Client}
-                                </p><p>
-                                    <strong>Contact: </strong>
-                                    {project.ClientEmail}
-                                </p><p>
-                                    <strong>Project Type: </strong>
-                                    {project.Type}
-                                </p></>
-                        )}
+                                        <strong>Description: </strong>
+                                        {project.Description}
+                                    </p><p>
+                                        <strong>Client: </strong>
+                                        {project.Client}
+                                    </p><p>
+                                        <strong>Contact: </strong>
+                                        {project.ClientEmail}
+                                    </p><p>
+                                        <strong>Project Type: </strong>
+                                        {project.Type}
+                                    </p></>
+                            )}
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="allocationGrid">
+                        <h3>You have not been allocated to a group</h3>
+                    </div>
+                )}
             </div>
         </div> 
     );

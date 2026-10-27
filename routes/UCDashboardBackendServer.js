@@ -566,7 +566,7 @@ ucBackend.get('/api/DoesStudentHaveResume', verifyStudentSession, async (req, re
     const username = decodedToken.username;
     const fullStudent = await CapstoneStudent.findOne({Username: username});
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
-    if (Object.hasOwn(fullStudent, "Resume"))
+    if (fullStudent.Resume !== null)
     {
         return res.status(200).json({ 
         hasResume: "true"

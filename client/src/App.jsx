@@ -23,35 +23,40 @@ function Home() {
   const navigate = useNavigate();
 
   const loadPage = async () => {
-    const studentStatus = await fetch(
-      'http://localhost:3000/auth/loggedInStudentStatus',
-      {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          credentials: "include"
-      }
-    );
+    try {
+      const studentStatus = await fetch(
+        'http://localhost:3000/auth/loggedInStudentStatus',
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: "include"
+        }
+      );
 
-    const staffStatus = await fetch(
-      'http://localhost:3000/auth/loggedInStaffStatus',
-      {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          credentials: "include"
-      }
-    );
+      const staffStatus = await fetch(
+        'http://localhost:3000/auth/loggedInStaffStatus',
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: "include"
+        }
+      );
 
-    if (studentStatus.ok) {
-      navigate('/studentdashboard');
+      if (studentStatus.ok) {
+        navigate('/studentdashboard');
+      }
+      else if (staffStatus.ok) {
+        navigate('/ucdashboard');
+      }
+      else {
+        navigate('/login');
+      }
     }
-    else if (staffStatus.ok) {
-      navigate('/ucdashboard');
-    }
-    else {
+    catch (err) {
       navigate('/login');
     }
   };

@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import mongoose from 'mongoose';
 import Application from '../../../models/ProjectApplication';
+require("dotenv").config();
 
 const statusURL = 'http://localhost:3000/UC/api/applicationStatus';
-const MONGO_URI = "mongodb://kohmeiyun06_db_user:lrhfG7tc8mAkHKwb@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin"
 
 const appliedPair = [ 
     new mongoose.Types.ObjectId().toString(),
@@ -21,7 +21,7 @@ test.describe('Verify get application status', () => {
     
     test.beforeAll(async ({ playwright }) => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/student/checkApplicationStatus'});
-        await mongoose.connect(MONGO_URI);
+        await mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
         await Application.create({
             Student: appliedPair[0],
             Project: appliedPair[1],

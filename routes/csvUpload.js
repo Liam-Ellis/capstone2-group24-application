@@ -14,6 +14,7 @@ const HCIStudent = require("../models/HCIStudent");
 const randomstring = require('randomstring');
 const argon2 = require('argon2');
 const Resend = require('resend');
+require("dotenv").config();
 const resend = new Resend.Resend(process.env.RESEND_API_KEY);
 
 const upload = multer({

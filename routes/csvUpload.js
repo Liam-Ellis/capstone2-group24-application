@@ -58,7 +58,7 @@ const sendPasswordEmail = async (to, password) => {
         subject: "Welcome, here are your details",
         html: `<strong>View your dashboard <a href="http://www.curtindashboard.tech">here</a></strong>
                 <br></br><strong>Username:</strong> ${to}
-                <br></br><strnog>Password:</strong> ${password}`,
+                <br></br><strong>Password:</strong> ${password}`,
     });
 
     if (error) {

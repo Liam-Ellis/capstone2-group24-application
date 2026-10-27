@@ -1,8 +1,13 @@
 import { test, expect } from '@playwright/test';
 const mongoose = require("mongoose")
 const {CapstoneStudent} = require ("../../../../models")
+<<<<<<< HEAD
 require("dotenv").config();
 mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
+=======
+const DATABASE_PATH = "mongodb://liam_db_user:LiamPassword@ac-h3febtm-shard-00-00.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-01.17jnurt.mongodb.net:27017,ac-h3febtm-shard-00-02.17jnurt.mongodb.net:27017/?ssl=true&replicaSet=atlas-12gxsl-shard-0&authSource=admin&appName=Capstone24"
+mongoose.connect(DATABASE_PATH, {dbName: 'ccp24'});
+>>>>>>> e3c02735a05f9a5d35b95bd318101cf793f05fba
 
 
 //testing for the different outcomes of posting an individual student
@@ -17,19 +22,16 @@ test.describe('Individual student POST', () => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/addIndv'});
     });
 
-    test('valid API Post request',{lock: 'Student_db',}, async ({page, browserName}) => {
-        test.skip(browserName !== 'firefox', 'only 1 of this test should run at a time. Locks dont actually fix this issue, so this is how im handling it');
+    test('valid API Post request',{lock: 'POST_valid_indivdual_student',}, async () => {
         const validStudent = ({
                 studentId: "12341234",
                 lastName: "Student",
                 firstName: "Valid",
                 email: "validStudent@testemail",
                 course: "doesn't matter",
-                unit: ["ISAD"],
-                Major: "Software Engineering",
-                CWA: 60.1
+                unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -55,11 +57,9 @@ test.describe('Individual student POST', () => {
                 firstName: "Valid",
                 email: "validStudent@testemail",
                 course: "doesn't matter",
-                unit: ["ISAD"],
-                Major: "Software Engineering",
-                CWA: 60.1
+                unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -76,11 +76,9 @@ test.describe('Individual student POST', () => {
                 firstName: "Valid",
                 email: "validStudentBadtestemail",
                 course: "doesn't matter",
-                unit: ["ISAD"],
-                Major: "Software Engineering",
-                CWA: 60.1
+                unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -97,11 +95,9 @@ test.describe('Individual student POST', () => {
                 firstName: "Valid",
                 email: "validStudentBadtestemail",
                 course: "doesn't matter",
-                unit: ["ISAD"],
-                Major: "Software Engineering",
-                CWA: 60.1
+                unit: ["ISAD"]
             });
-        const response = await fetch('http://localhost:3000/UC/api/POST_student', {
+        const response = await fetch('http://localhost:50000/api/POST_student', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

@@ -50,16 +50,6 @@ const CapstoneStudentSchema = new mongoose.Schema({
         required: true,
     },
 
-    Major: {
-        type: String,
-        required: true,
-    },
-
-    CWA: {
-        type: Number,
-        required: true,
-    },
-
     Username: {
         type: String,
         required: true,

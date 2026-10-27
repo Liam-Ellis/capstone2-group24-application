@@ -11,13 +11,16 @@ mongoose.connect(process.env.MONGODB_STRING, {dbName: 'test'});
  */
 let apiContext;
 
-test.describe('Edit existing projects', () => {
+test.describe('Individual studont POST', () => {
     test.beforeAll(async ({ playwright }) => {
         apiContext = await playwright.request.newContext({baseURL: 'http://localhost:3000/uc/editProj'});
     });
 
-    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async ({page, browserName}) => {
-        test.skip(browserName !== 'firefox', 'I need only 1 version of this test to run, the locks just dont work and this test refuses to not run in parralel with other tests');
+
+
+
+
+    test('valid API edit request',{lock: 'POST_valid_project_edit',}, async () => {
         const validProject = ({
                 ID: "-1",
                 Type: "Work",
@@ -28,7 +31,7 @@ test.describe('Edit existing projects', () => {
                 Description: "cool project",
                 IntendedSize: 6
             });
-        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
+        const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
@@ -67,7 +70,7 @@ test.describe('Edit existing projects', () => {
                 Description: "cool project",
                 IntendedSize: 6
             });
-        const response = await fetch('http://localhost:3000/UC/api/SaveEditedProject', {
+        const response = await fetch('http://localhost:50000/api/SaveEditedProject', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON

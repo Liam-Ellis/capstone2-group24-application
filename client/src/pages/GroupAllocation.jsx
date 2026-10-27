@@ -318,21 +318,21 @@ function GroupAllocation() {
 
     
     const allocatedStudentIds = groups.flatMap((group) =>
-        group.StudentObjects.map((student) => student.StudentID)
+        group.students.map((student) => student.id)
     );
 
     const filteredStudents = students.filter((student) => {
-        const fullName = student.Name
-            //add this back later maybe, if we implement first/last in db `${student.firstName} ${student.familyName}`.toLowerCase();
+        const fullName =
+            `${student.firstName} ${student.familyName}`.toLowerCase();
 
         const matchesSearch =
             fullName.includes(searchTerm.toLowerCase()) ||
-            student.StudentID.includes(searchTerm);
+            student.id.includes(searchTerm);
 
         const matchesMajor =
-            majorFilter === "All" || student.Major === majorFilter;
+            majorFilter === "All" || student.major === majorFilter;
 
-        const isAllocated = allocatedStudentIds.includes(student.StudentID);
+        const isAllocated = allocatedStudentIds.includes(student.id);
 
         const matchesAllocation =
             allocationFilter === "all" ||
@@ -352,7 +352,7 @@ function GroupAllocation() {
     });
 
     const unallocatedStudents = students.filter(
-        (student) => !allocatedStudentIds.includes(student.StudentID)
+        (student) => !allocatedStudentIds.includes(student.id)
     );
 
     const toggleStudent = (studentId) => {
@@ -410,12 +410,12 @@ function GroupAllocation() {
         }
 
         const studentsToAdd = students.filter((student) =>
-            selectedStudents.includes(student.StudentID)
+            selectedStudents.includes(student.id)
         );
 
         setGroups((current) =>
             current.map((group) =>
-                group.GroupNumber === groupId
+                group.id === groupId
                     ? {
                         ...group,
                         StudentObjects: [
@@ -458,7 +458,7 @@ function GroupAllocation() {
 
     const removeGroup = (groupId) => {
         setGroups((current) =>
-            current.filter((group) => group.GroupNumber !== groupId)
+            current.filter((group) => group.id !== groupId)
         );
 
         setSaveMessage("");
@@ -623,12 +623,12 @@ function GroupAllocation() {
 
                             return (
                                 <div
-                                    key={student.StudentID}
+                                    key={student.id}
                                     className={`student-item ${
                                         isSelected ? "selected" : ""
                                     } ${isAllocated ? "allocated" : ""}`}
                                     onClick={() =>
-                                        toggleStudent(student.StudentID)
+                                        toggleStudent(student.id)
                                     }
                                 >
                                     <div className="student-checkbox">
@@ -637,7 +637,7 @@ function GroupAllocation() {
                                             checked={isSelected}
                                             disabled={isAllocated}
                                             onChange={() =>
-                                                toggleStudent(student.StudentID)
+                                                toggleStudent(student.id)
                                             }
                                             onClick={(event) =>
                                                 event.stopPropagation()
@@ -647,22 +647,23 @@ function GroupAllocation() {
 
                                     <div className="student-info">
                                         <strong>
-                                            {student.Name}
+                                            {student.firstName}{" "}
+                                            {student.familyName}
                                         </strong>
 
                                         
 
                                         <div className="student-meta">
-                                            <span className={`student-major ${student.Major
+                                            <span className={`student-major ${student.major
                                                 .toLowerCase()
                                                 .replaceAll(" ", "-")}`}>
-                                                {student.Major}
+                                                {student.major}
                                             </span>
 
-                                            <span>{student.StudentID}</span>
+                                            <span>{student.id}</span>
 
                                             <span>
-                                                CWA {student.CWA.toFixed(3)}
+                                                CWA {student.cwa.toFixed(3)}
                                             </span>
                                         
                                             </div>

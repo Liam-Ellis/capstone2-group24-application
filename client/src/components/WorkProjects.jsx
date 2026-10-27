@@ -18,6 +18,7 @@ function WorkProjects({roundNum, roundsList}) {
       const getURL = backendURL + '/UC/api/getWorkProjectApplications/' + selectedProject.ID
       const response = await fetch(getURL, {
               method: 'GET',
+              credentials: 'include'
       });
       if(!response.ok) {
         throw new Error(data.message);

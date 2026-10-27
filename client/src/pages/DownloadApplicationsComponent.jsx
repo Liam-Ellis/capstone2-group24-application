@@ -22,7 +22,8 @@ function DownloadApplicationsComponent () {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
-                }
+                },
+                credentials: 'include'
         });
 
         workProjects = await projectsResponse.json()
@@ -31,7 +32,8 @@ function DownloadApplicationsComponent () {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
-                }
+                },
+                credentials: 'include'
         });
 
         roundss = await roundsResponse.json()

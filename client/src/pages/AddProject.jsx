@@ -59,6 +59,7 @@ function AddProject({
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(projectData),
+            credentials: 'include'
             }
         );
 
@@ -86,6 +87,7 @@ function AddProject({
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(projectData),
+            credentials: 'include'
             }
         );
 

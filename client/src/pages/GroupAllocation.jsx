@@ -98,7 +98,9 @@ function GroupAllocation() {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
-                }
+                },
+                credentials: 'include'
+                
         });
         const studentProjects = await applicationsResponse.json()
         student.AppliedProjects = []
@@ -118,7 +120,8 @@ function GroupAllocation() {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json', // Tells backend to parse as JSON
-                }
+                },
+                credentials: 'include'
         });
         
         const studentData = await studentResponse.json();
@@ -218,7 +221,8 @@ function GroupAllocation() {
                     method: 'GET',
                     headers: {
                     'Content-Type': 'application/json', // Tells backend to parse as JSON
-                    }
+                    },
+                    credentials: 'include'
         });
                     
         initialGroups = await groupResponse.json()
@@ -252,7 +256,8 @@ function GroupAllocation() {
                     method: 'GET',
                     headers: {
                     'Content-Type': 'application/json', // Tells backend to parse as JSON
-                    }
+                    },
+                    credentials: 'include'
         });
         
 
@@ -295,6 +300,7 @@ function GroupAllocation() {
                             'Content-Type': 'application/json', // Tells backend to parse as JSON
                             },
                             body: JSON.stringify(saveGroups), // Converts JS object to JSON string
+                            credentials: 'include'
                         });
             if(response.status == 200)
             {

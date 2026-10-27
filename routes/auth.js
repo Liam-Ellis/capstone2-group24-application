@@ -145,11 +145,11 @@ const validateParameters = (schema, property) => {
     };
 };
 
-router.get('/loggedInStudentStatus', verifyStudentSession, async (req, res) => {
+router.get('/loggedInStudentStatus', /*verifyStudentSession,*/ async (req, res) => {
     res.sendStatus(200);
 });
 
-router.get('/loggedInStaffStatus', verifyStaffSession, async (req, res) => {
+router.get('/loggedInStaffStatus', /*verifyStaffSession,*/ async (req, res) => {
     res.sendStatus(200);
 });
 

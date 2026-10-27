@@ -59,12 +59,12 @@ const validateBodyParameters = (schema, property) => {
     };
 };
 
-student.get('/rounds', verifyStudentSession, async (req, res) => {
+student.get('/rounds', /*verifyStudentSession,*/ async (req, res) => {
     const rounds = await Round.find().lean();
     res.status(200).json(rounds);
 });
 
-student.get('/round/:ID', validateParameters(validationSchemas.getRoundSchema), verifyStudentSession, async (req, res) => {
+student.get('/round/:ID', validateParameters(validationSchemas.getRoundSchema), /*verifyStudentSession,*/ async (req, res) => {
     const round = await Round.findOne({ RoundNumber: req.params.ID }).lean();
 
     if (round === null) {
@@ -74,7 +74,7 @@ student.get('/round/:ID', validateParameters(validationSchemas.getRoundSchema), 
     }
 });
 
-student.get('/project/:ID', validateParameters(validationSchemas.getProjectSchema), verifyStudentSession, async (req, res) => {
+student.get('/project/:ID', validateParameters(validationSchemas.getProjectSchema), /*verifyStudentSession,*/ async (req, res) => {
     const project = await Project.findOne({ ID: req.params.ID }).lean();
 
     if (project === null) {
@@ -108,7 +108,7 @@ student.get('/project/:ID', validateParameters(validationSchemas.getProjectSchem
     }
 });
 
-student.get('/projects/:round', validateParameters(validationSchemas.getProjectsSchema), verifyStudentSession, async (req, res) => {
+student.get('/projects/:round', validateParameters(validationSchemas.getProjectsSchema), /*verifyStudentSession,*/ async (req, res) => {
     const projects = await Project.find({ Round: req.params.round }).lean();
     const round = await Round.findOne({ RoundNumber: req.params.round }).lean();
 
@@ -153,7 +153,7 @@ student.get('/projects/:round', validateParameters(validationSchemas.getProjects
     }
 });
 
-student.post('/prefs', validateBodyParameters(validationSchemas.postPrefsSchema), verifyStudentSession, async (req, res) => {
+student.post('/prefs', validateBodyParameters(validationSchemas.postPrefsSchema), /*verifyStudentSession,*/ async (req, res) => {
     const { prefsFor, prefsAgainst } = req.body;
     
     const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
@@ -179,7 +179,7 @@ student.post('/prefs', validateBodyParameters(validationSchemas.postPrefsSchema)
     }
 });
 
-student.get('/prefs', verifyStudentSession, async (req, res) => {    
+student.get('/prefs', /*verifyStudentSession,*/ async (req, res) => {    
     const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
     const username = decodedToken.username;
     const user = await CapstoneStudent.findOne({Username: username}).lean();
@@ -199,7 +199,7 @@ student.get('/prefs', verifyStudentSession, async (req, res) => {
     }
 });
 
-student.get('/group', verifyStudentSession, async (req, res) => {
+student.get('/group', /*verifyStudentSession,*/ async (req, res) => {
     const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
     const username = decodedToken.username;
     const user = await CapstoneStudent.findOne({Username: username}).lean();

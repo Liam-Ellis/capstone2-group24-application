@@ -105,7 +105,7 @@ ucBackend.post('/api/SaveNewRound', validateBodyParameters(validationSchemas.sav
     res.status(201).json(newRound);
 });
 
-ucBackend.post('/api/EditRound', verifyStaffSession, async (req, res) => {
+ucBackend.post('/api/EditRound', /*verifyStaffSession,*/ async (req, res) => {
     const {RoundNumber, StartDate, EndDate} = req.body
 
     let round = await Round.findOne({RoundNumber: RoundNumber}).exec();
@@ -174,7 +174,7 @@ ucBackend.get('/api/projects/:round', validateParameters(validationSchemas.getPr
     }
 });
 
-ucBackend.delete('/api/project/:id', verifyStaffSession, async (req, res) => {
+ucBackend.delete('/api/project/:id', /*verifyStaffSession,*/ async (req, res) => {
     const id = req.params.id;
     const projectToDelete = await Project.findOneAndDelete({ ID: id}).exec();
 
@@ -188,7 +188,7 @@ ucBackend.delete('/api/project/:id', verifyStaffSession, async (req, res) => {
 });
 
 //
-ucBackend.post('/api/POST_student', verifyStaffSession, async (req, res) => {
+ucBackend.post('/api/POST_student', /*verifyStaffSession,*/ async (req, res) => {
     console.log(req.body)
     //const StudentObject = JSON.parse(req.body)
     const StudentObject = req.body
@@ -231,49 +231,49 @@ ucBackend.post('/api/POST_student', verifyStaffSession, async (req, res) => {
     
 });
 
-ucBackend.get('/api/requestAllCapstoneStudents', verifyStaffSession, async (req, res) => {
+ucBackend.get('/api/requestAllCapstoneStudents', /*verifyStaffSession,*/ async (req, res) => {
     const students = await CapstoneStudent.find({Unit: "ISAD3000"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(students))
 });
 
-ucBackend.get('/api/requestAllHCIStudents', verifyStaffSession, async (req, res) => {
+ucBackend.get('/api/requestAllHCIStudents', /*verifyStaffSession,*/ async (req, res) => {
     const students = await CapstoneStudent.find({Unit: "ICTE3002"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(students))
 });
 
-ucBackend.get('/api/requestAllGroups', verifyStaffSession, async (req, res) =>{
+ucBackend.get('/api/requestAllGroups', /*verifyStaffSession,*/ async (req, res) =>{
     const groups = await Group.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))
 });
 
-ucBackend.get('/api/requestAllGroupProjects', verifyStaffSession, async (req, res) =>{
+ucBackend.get('/api/requestAllGroupProjects', /*verifyStaffSession,*/ async (req, res) =>{
     const projects = await Project.find({Type: "Group"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(projects))
 });
 
-ucBackend.get('/api/requestAllWORKProjects', verifyStaffSession, async (req, res) =>{
+ucBackend.get('/api/requestAllWORKProjects', /*verifyStaffSession,*/ async (req, res) =>{
     const projects = await Project.find({Type: "Work"}).lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(projects))
 });
 
-ucBackend.get('/api/requestAllProjects', verifyStaffSession, async (req, res) =>{
+ucBackend.get('/api/requestAllProjects', /*verifyStaffSession,*/ async (req, res) =>{
     const groups = await Project.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(groups))
 });
 
-ucBackend.get('/api/requestAllRounds', verifyStaffSession, async (req, res) =>{
+ucBackend.get('/api/requestAllRounds', /*verifyStaffSession,*/ async (req, res) =>{
     const rounds = await Round.find().lean()
     //convert the java object 'students' into a JSON object, then send it to whoever called this.
     res.send(JSON.stringify(rounds))
 });
 
-ucBackend.get('/api/requestAllGroupApplicationsForStudent/:ID', verifyStaffSession, async (req, res) => {
+ucBackend.get('/api/requestAllGroupApplicationsForStudent/:ID', /*verifyStaffSession,*/ async (req, res) => {
     const StudentID = req.params.ID
     const groups = await ProjectApplication.find(
         {
@@ -285,7 +285,7 @@ ucBackend.get('/api/requestAllGroupApplicationsForStudent/:ID', verifyStaffSessi
     res.send(JSON.stringify(groups))
 });
 
-ucBackend.post('/api/SaveNewProject', verifyStaffSession, async (req, res) => {
+ucBackend.post('/api/SaveNewProject', /*verifyStaffSession,*/ async (req, res) => {
     const inProject = req.body
     console.log("saving new project: \n" + inProject + "\n")
     const checkForExistingProject = await Project.findOne({ ID: inProject.ID})
@@ -319,7 +319,7 @@ ucBackend.post('/api/SaveNewProject', verifyStaffSession, async (req, res) => {
 //but the only identifyer currently is the project's name. This means the UC could theoretically edit the name, which would make it impossible find 
 //the correct project to save over. 
 //the solution here is to add some form of ID that the UC can't edit, although that means changing the schema, which I need to discuss with the team.
-ucBackend.post('/api/SaveEditedProject', verifyStaffSession, async (req, res) => {
+ucBackend.post('/api/SaveEditedProject', /*verifyStaffSession,*/ async (req, res) => {
     const inProject = req.body
     console.log("inbound project to edit: \n" + inProject + "\n")
     const projectToEdit = await Project.findOne({ ID: inProject.ID})
@@ -352,7 +352,7 @@ app.get('/api/requestStudentsApplyingForProject', async (req, res) =>{
 });
 */
 
-ucBackend.post('/api/SaveGroups', verifyStaffSession, async (req, res) => {
+ucBackend.post('/api/SaveGroups', /*verifyStaffSession,*/ async (req, res) => {
     //this makes the assumption that the groups are sent as an array of JSONs
     const groups = req.body
     
@@ -377,7 +377,7 @@ ucBackend.post('/api/SaveGroups', verifyStaffSession, async (req, res) => {
     }).end()
 });
 
-ucBackend.post('/api/SaveStudentGroups', verifyStaffSession, async (req, res) => {
+ucBackend.post('/api/SaveStudentGroups', /*verifyStaffSession,*/ async (req, res) => {
     const students = JSON.parse(req.body)
     
     //loop through every student sent in by the frontend
@@ -453,7 +453,7 @@ async function createValidStudent(inStudent, newPassword)
 
 
 
-ucBackend.get('/api/getWorkProjectApplications/:ID', verifyStaffSession, async (req, res) => {
+ucBackend.get('/api/getWorkProjectApplications/:ID', /*verifyStaffSession,*/ async (req, res) => {
     const projectID = JSON.parse(req.params.ID)
     const project = await Project.findOne({ID: projectID}).lean()
     //grab all student applications for the project the frontend chooses
@@ -531,7 +531,7 @@ async function zipTheFile(filePathToZip){
 }
 
 
-ucBackend.post('/api/applicationStatus', verifyStudentSession, async (req, res) => {
+ucBackend.post('/api/applicationStatus', /*verifyStudentSession,*/ async (req, res) => {
     try {
         const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
         const username = decodedToken.username;
@@ -564,7 +564,7 @@ ucBackend.post('/api/applicationStatus', verifyStudentSession, async (req, res) 
 
 //this probably should be in a different file, but it's here because I don't want to mess with someone else's file
 //takes in a student ID, returns if they have a resume in the db
-ucBackend.get('/api/DoesStudentHaveResume', verifyStudentSession, async (req, res) =>{
+ucBackend.get('/api/DoesStudentHaveResume', /*verifyStudentSession,*/ async (req, res) =>{
     const decodedToken = jwt.verify(req.cookies.token, process.env.WEB_TOKEN_KEY);
     const username = decodedToken.username;
     const fullStudent = await CapstoneStudent.findOne({Username: username});
@@ -588,7 +588,7 @@ const storage = multer.memoryStorage();
 const saveLoc = multer({ storage: storage });
 
 
-ucBackend.post('/api/saveStudentResume', verifyStudentSession, saveLoc.any(), async (req, res) =>{
+ucBackend.post('/api/saveStudentResume', /*verifyStudentSession,*/ saveLoc.any(), async (req, res) =>{
     
     console.log(req.body)
     console.log(req.files)

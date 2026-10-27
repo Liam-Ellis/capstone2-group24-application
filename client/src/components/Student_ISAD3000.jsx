@@ -14,7 +14,6 @@ function Student_ISAD3000() {
                 <h1 className="dashboard-title">Dashboard</h1>
                 <button className="link" onClick={() => navigate("/studentdashboard")}>Home</button>
                 <button className="link" onClick={() => navigate("/studentdashboard/prefs")}>Settings</button>
-                <button className="link">Log Out</button>
             </div>
             <div className="content">
                 <div className="header">
